@@ -41,117 +41,543 @@ EZShop is a software application to:
 
 | Stakeholder name  | Description | 
 | ----------------- |:-----------:|
-|   Stakeholder x..     |             | 
+|      Manager             |  Manages the employees and he is responsible for managing the inventory stock  | 
+| Salesperson | He/She is the person who confirms the purchases made by the client|
+| Client | Accesses the shop to get necessary items and pay for them |
+| Supplier | Manages and receives the order made by the manager |
+| maintenance | Offers technical support in case of mulfunction of the system |
+| Credit card system| Manages the payment when the client pays thought a credit card|
 
 # Context Diagram and interfaces
 
 ## Context Diagram
-\<Define here Context diagram using UML use case diagram>
 
-\<actors are a subset of stakeholders>
+
+```plantuml
+@startuml
+
+top to bottom direction
+actor Manager as m
+actor SalesPerson as sp
+actor CreditCardSystem as ccs
+
+rectangle System{
+	usecase "EZShop system" as EZ
+}
+
+m->EZ
+sp->EZ
+ccs-up->EZ
+
+@enduml
+```
+
+
 
 ## Interfaces
-\<describe here each interface in the context diagram>
-
-\<GUIs will be described graphically in a separate document>
 
 | Actor | Logical Interface | Physical Interface  |
-| ------------- |:-------------:| -----:|
-|   Actor x..     |  |  |
-
+| ------------- |:-------------|:-----|
+| Manager | Application GUI | Screen keyboard on PC  |
+| SalesPerson | Aplpicarion GUI | Touch screen on POS|
+|Credit Card System| Visa API | |
 # Stories and personas
-\<A Persona is a realistic impersonation of an actor. Define here a few personas and describe in plain text how a persona interacts with the system>
 
-\<Persona is-an-instance-of actor>
+The following personas and stories are meant to cover different profiles of the User actor
 
-\<stories will be formalized later as scenarios in use cases>
+Rebecca is 35, works as a sales person and for this reason she has to visit different customers every day. For work she drives the company car and gets the full reimbursement of petrol expenses. Rebecca has an inclination for punctuality and precision, and hates being late at her meetings. For this reason, when she needs to put gas in his car, her main interest is to find gas stations that are as close as possible to her position.
+
+David is 45, works at the counter of a shop and has two children. He has to cover several kilometers each day to bring his children to school and take them back, and to go to the gym in the afternoon. Sometimes he has to cut on expenses, and hence his main interest is to find the cheapest gas stations where he can refuel his LPG city car.
+
+Elena is 20, and is a student at the Polytechnic of Turin. She typically goes to the university or to hang out with her friends by bike, but sometimes - especially at night and in Winter - she can not help but rent a car sharing vehicle. In these cases, if possible, she takes the opportunity of refueling the vehicle in order to have bonus credit with the car sharing applications.
+
+Emma is 35 and she has always had a lifelong passion for sport cars. She owns two personalized vintage cars that she personally takes care of, and with whom she goes for a ride every weekend. To keep her cars in good condition, she tries to use only high-performance petrol, and is annoyed that many gas stations often don't offer it.
 
 
 # Functional and non functional requirements
 
 ## Functional Requirements
 
-\<In the form DO SOMETHING, or VERB NOUN, describe high level capabilities of the system>
-
-\<they match to high level use cases>
 
 | ID        | Description  |
-| ------------- |:-------------:| 
-|  FR1     |  |
-|  FR2     |   |
-| FRx..  | | 
+| ------------- |:-------------|
+|FR 1| Manage Sales|
+|FR 1.1| Reporting sales
+|FR 1.1.1| Report daily, weekly, monthly, yearly.
+|FR 1.1.2| Report sales between given dates (from date1 - to date2)
+|FR 1.2| Manage prices
+|FR 1.2.1| Increase/decrease price of a product
+|FR 1.2.2| Increase/decrease price per category
+|FR 1.2.3| Increase/decrease price by a given rate
+|FR 1.3| Manage promotions
+|FR 1.3.1| Create/delete new promotion
+|FR 1.3.2| Assign/remove promotion to products
+|FR 1.3.3| Modify promotion
+|FR 1.4| Manage sales strategy
+|FR 1.4.1| Create/delete strategy
+|FR 1.4.2| Assign/remove strategy to a target customer segment
+|FR 1.4.3| Modify strategy
+|FR 2| Manage Inventory
+|FR 2.1|a.| 
+|FR 3| Manage customers
+|FR 3.1| Manage a single customer
+|FR 3.1.1| Add/remove customer
+|FR 3.1.2| 
+|FR 3.2| Manage customer segments
+|FR 3.2.1| Create/remove customer segment
+|FR 3.2.2| Modify customer segment
+|FR 3.3| Manage customer relationship
+|FR 3.3.1| Send email
+|FR 3.3.2| 
+|FR 4| Support Accounting
+|FR 4.1| 
+
+
+### Access right, actor vs function
+
+| Function | Admin | User | Anonymous User |
+| ------------- |:-------------|--|--|
+| FR1.1| yes | only user X for user X| no|
+| FR1.2| yes | only user X for user X| no |
+| FR1.3| yes | no | no|
+| FR2 | yes | no | no|
+| FR3 | yes  | no|no|
+|FR4  | yes  | yes | yes| 
+|FR5.1 | yes | yes| no|
+|FR5.2 |no  |no |no|
+|FR5.3 |yes |yes|no|
 
 ## Non Functional Requirements
+| ID        | Type        | Description  | Refers to |
+| ------------- |:-------------:| :-----| -----:|
+|  NFR1     | Usability | No training required for the use of the application | All FR |
+|  NFR2     | Performance | All operations should complete in less than 1 sec | All FR |
+|  NFR3     | Portability | HTML5 compatibility. Must support Chrome and Firefox in OS Windows 7+, Unix and Android 6+. | All FR |
+|  NFR4     | Privacy     | The data of the management of the store should be private and disclosed. | All FR |
+|  NFR5     | Localisation | Decimal numbers use . (dot) as decimal separator  | All FR, notably FR4|
 
-\<Describe constraints on functional requirements>
 
-| ID        | Type (efficiency, reliability, ..)           | Description  | Refers to |
-| ------------- |:-------------:| :-----:| -----:|
-|  NFR1     |   |  | |
-|  NFR2     | |  | |
-|  NFR3     | | | |
-| NFRx .. | | | | 
+
 
 
 # Use case diagram and use cases
 
 
 ## Use case diagram
-\<define here UML Use case diagram UCD summarizing all use cases, and their relationships>
+
+```plantuml
+@startuml
+left to right direction
+actor Manager as m
+actor :Sales Person: as sp
+actor "Credit Card System" as ccs
+actor "Supplier" as sup
+
+rectangle "Use cases"{
+usecase "Manage Inventory" as mi
+usecase "Manage Employee" as me
+usecase "Make order" as mo
+usecase "Order Payment Method" as opm
+
+usecase "Perform Payment" as pp
+usecase "Credit card Payment" as cc
+usecase "Cash Payment" as cash
+
+usecase "Search Item" as si
+usecase "Scan cart items" as scan
+usecase "print receipt" as pr
+usecase "Log_In" as li
+usecase "Log_Out" as lo
+usecase "Print FIdelity Card" as pfc
+usecase "Update Fidelity points" as ufc
+usecase "Search Fidelity Card" as sfc
 
 
-\<next describe here each use case in the UCD>
-### Use case 1, UC1
-| Actors Involved        |  |
-| ------------- |:-------------:| 
-|  Precondition     | \<Boolean expression, must evaluate to true before the UC can start> |  
-|  Post condition     | \<Boolean expression, must evaluate to true after UC is finished> |
-|  Nominal Scenario     | \<Textual description of actions executed by the UC> |
-|  Variants     | \<other executions, ex in case of errors> |
+
+mi -[hidden]down- si
+mo -[hidden]right- mi
+
+si -[hidden]left- li
+li -[hidden]left- lo
+
+cc -[hidden]right- cash
+pp -[hidden]up- mi
+
+sup -[hidden]right- m
+mi -[hidden]left- me
+
+pfc -[hidden]left- si
+ufc -[hidden]right- me
+sfc -[hidden]left- pfc
+}
+
+
+m --> mi
+m --> me
+
+sp-up->si
+sp-up->scan
+sp-up->li
+sp-up->lo
+sp-up->pfc
+sp-up->sfc
+
+
+mo -> sup
+me -[hidden]down- pp
+
+cc -left-> ccs
+
+pr   <.   pp :include
+cash <.   pp :include
+cc   <.   pp :include
+mo   <.r. mi :include
+ufc  <.r. pp :include
+mi   <.   si :extends
+opm  .l.> mo :extends
+pp   .> scan :extends
+@enduml
+```
+
+
+```plantuml
+@startuml
+(Manage Inventory) .> (Available Stock) :include
+(Manage Inventory) .> (Add Item) :include
+(Manage Inventory) .> (Remove Item) :include
+(Manage Inventory) .> (Update Item) :include
+
+(Manage Employee) -[hidden]up-- (Manage Inventory)
+(Manage Employee) .> (Add Sales Person) :include
+(Manage Employee) .> (Remove/Deactivate Sales Person) :include
+(Manage Employee) .> (Update Sales Person) :include
+@enduml
+```
+
+## Use cases
+
+
+### Use case 1, UC1 - Update Item
+
+| Actors Involved        | Manager|
+| ------------- |:-------------:|
+|  Precondition     	| Item exists in Inventory |
+|  Post condition     	| Item's details are updated |
+|  Nominal Scenario     | An item has wrong or old info and must be updated  |
+|  Variants     		|  |
+
+
+
+### Use case 2, UC2 - Remove Item
+
+| Actors Involved       |   Manager|
+| ------------- |:-------------:|
+|  Precondition     	| Item exists in Iventory |
+|  Post condition    	| Item does not exist in Inventory |
+|  Nominal Scenario     | Item is not sold anymore and must be removed from the Inventory |
+|  Variants     		| |
+
+### Use case 3, UC3 - Add Item
+
+| Actors Involved       |  Manager |
+| ------------- |:-------------:|
+|  Precondition     	| Item does not exist in Inventory |
+|  Post condition     	| Item exists in Iventory |
+|  Nominal Scenario   	| Manager add an item that previously was not availably to be sold |
+|  Variants     		| User U can delete only his / her account. Administrator can delete any account |
+
+
+### Use case 4, UC4 - Available Stock
+
+| Actors Involved       | Manager |
+| ------------- |:-------------:|
+|  Precondition     	| The inventory exists |
+|  Post condition     	| The manager knows the items in stock and out of stock |
+|  Nominal Scenario     | The manager needs to know the stock availability of the items in the inventory. He gets and indication of all the items in stock and what is their availability |
+
+
+
+
+### Use case 5, UC5 - Update Sales Person
+
+| Actors Involved       | Manager |
+| ------------- |:-------------:|
+|  Precondition     	| Sales Person is exists |
+|  Post condition     	| Sales Person's details arr added or updated |
+|  Nominal Scenario     | The sales person personal information has changed and must be updated |
+|  Variants     		| The sales person exists but he/she is deactivated, the manager can re-activate the account|
+
+
+
+### Use case 6, UC6 - Remove Sales Person
+
+| Actors Involved  |                        Manager          |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     | Sales Person is exists |
+| Post condition   | Sales Person account is removed from the system |
+| Nominal Scenario | The manager has fired an employee; The employee left the business |
+| Variants         | - |
+
+### Use case 6.1, UC6.1 - Deactivate Sales Person
+
+| Actors Involved  |                        Manager          |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     | Sales Person is exists |
+| Post condition   | Sales Person account is suspended but still present in the system |
+| Nominal Scenario | The manager has fired an employee; The employee left the business |
+| Variants         | - |
+
+
+
+### Use case 7, UC7 - Add Sales Person
+
+| Actors Involved  |                   Manager                    |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     | Sales person does not exist |
+| Post condition   | The sales person has an account |
+|                  | The sales person can log in |
+| Nominal Scenario | The business hires a new employee |
+| Variants         | - |
+
+
+
+### Use case 8, UC8 - Make Order
+
+| Actors Involved  |          Manager                      |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| The remaining stock of at least one item is deemed too low |
+| Post condition    | The order is placed |
+|					| The order has been sent to the supplier |
+|					| The supplier has been payed for the order |
+| Nominal Scenario 	| The manager checked the stock availability and believes that a restock is necessary. The manager creates and order, choses a payment option and the order is sent to the supplier |
+| Variants          | - |
+
+
+
+### Use case 9, UC9 - Log In
+| Actors Involved  |                    Sales Person                 |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| The sales person account has been added by the manager |
+| Post condition   	| The sales person acessed his personal account |
+| Nominal Scenario 	| The sales person starts his/her shift, accesses account on which transactions will be registered |
+| Variants 			| Sales person can log-in only on his/her account|
+|					| Sales person lost/forgot his/her password, The Manager can unlock the account by updating sales person|	
+
+
+### Use case 10, UC10 - Log Out
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| Sales person is logged-in in his/her account |
+| Post condition   	| Sales person is logged-out of his/her account |
+| Nominal Scenario 	| The sales person has completed his/her shift and has to log-out |
+| Variants          | The sales person can log-out only from his/her account |
+|					| The sales person forgot to log-out, The manager performs the log-out bu using manager-key |
+
+
+
+### Use case 11, UC11 - Scan Cart Items
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| The client brought to the cashier the items he/she wants to buy |
+|					| The cashier is logged-in |
+| Post condition   	| Cart items have been scanned |
+|					| The total cost of the items is available |
+| Nominal Scenario 	| The client has collected all items of interest, gives them to the cashier, the cashiers scans them and inform the client of the price of his/her purchase |
+| Variants          | The client does not want to conclude the purchase, the cashier cancel the scanned items |
+
+
+### Use case 12, UC12 - Perform Payment
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| The cashier has scanned the items brought by the client |
+|					| The client has chosen a payment method |
+| Post condition   	| The payment for the cart items has been completed |
+|					| Fidelity card points updated |
+|					| The system has printed a receipt
+| Nominal Scenario 	| The cashier informs the client of the price, the client informs the cashier of the payment method, the client pays for his purchase, client receives the receipt|
+| Variants          | The client's credit card payment option is rejected, choses a different payment method |
+|					| The client does not have the required amount of money, the cashier cancels the cart items|
+
+### Use case 13, UC13 - Search Fidelity Card
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| Fidelity card for client does exists |
+| Post condition   	| Client of fidelity card found |
+| Nominal Scenario 	| The cashier inputs the clients name or fidelity card number and gets the clients profile with fidelity points|
+| Variants          | - |
+
+### Use case 14, UC14 - Print Fidelity Card
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| Fidelity card for client does not exist |
+| Post condition   	| Fidelity card for the client has been created |
+| Nominal Scenario 	| The client asks for the fidelity card, the cashier checks that the client does not have one, the cashier prints a fidelity card|
+| Variants          | - |
+
+#### Relevant scenarios
+
 
 ##### Scenario 1.1 
 
-\<describe here scenarios instances of UC1>
-
-\<a scenario is a sequence of steps that corresponds to a particular execution of one use case>
-
-\<a scenario is a more formal description of a story>
-
-\<only relevant scenarios should be described>
-
-| Scenario 1.1 | |
+| Scenario |  Update Item through list |
 | ------------- |:-------------:| 
-|  Precondition     | \<Boolean expression, must evaluate to true before the scenario can start> |
-|  Post condition     | \<Boolean expression, must evaluate to true after scenario is finished> |
-| Step#        | Description  |
-|  1     |  |  
-|  2     |  |
-|  ...     |  |
+|  Precondition     | Item is present in inventory |
+|  Post condition     | Item has new details |
+|  Step#        | Description  |
+|  1    |  Manager prints on screen the list of items in the inventory |
+|  2    |  Manager selects the item to be updated |
+|  3	|  Manager updates item |
+|  4    |  Manager saves changes |
 
 ##### Scenario 1.2
 
-##### Scenario 1.x
+| Scenario |  Update Item through item search |
+| ------------- |:-------------:| 
+|  Precondition     | Item is present in inventory |
+|  Post condition     | Item has new details |
+|  Step#        | Description  |
+|  1    |  Manager inputs items ID in search space |
+|  2    |  The system return the item profile |
+|  3	|  Manager updates item |
+|  4    |  Manager saves changes |
 
-### Use case 2, UC2
-..
 
-### Use case x, UCx
-..
+##### Scenario 3.1 
+
+| Scenario |  Add item in inventory |
+| ------------- |:-------------:| 
+|  Precondition     | Item is not present in inventory |
+|  Post condition     | New item is in inventory |
+|  Step#        | Description  |
+|  1    |  Manager selects "add item" button |
+|  2    |  System shows to manager the fields to fill |
+|  3	|  Manager inserts item details |
+|  4    |  Manager saves changes |
 
 
+##### Scenario 8.1 
+
+| Scenario |  Order made to restock inventory |
+| ------------- |:-------------:| 
+|  Precondition     | One or more items in the inventory need restock |
+|  Post condition     | The supplier is informed of the order |
+|  Step#        | Description  |
+|  1    |  Manager chooses "make order" in in the system  |
+|  2    |  System shows to manager empty list order |
+|  3	|  Manager inserts items to order |
+|  4    |  Manager chooses the Supplier to whom to send the order |
+|  5	|  Manager chooses payment option|
+|  6    |  Manager confirms order |
+
+
+##### Scenario 12.1 
+
+| Scenario |  pay with credit card |
+| ------------- |:-------------:| 
+|  Precondition     | Cashier has scanned the items in the shopping cart of the client |
+|  Post condition     | Client payed for his/hers purchase with credit card |
+|  Step#        | Description  |
+|  1    |  Client chooses to pay with credit card|
+|  2    |  Cashier informs the system |
+|  3	|  Client reaches credit card reader device with his/hers credit card and inserts credentials|
+|  4    |  The system gets the commit of the transaction from the credit card system |
+|  5    |  Receipt is printed |
+
+##### Scenario 12.2 
+| Scenario |  pay with cash |
+| ------------- |:-------------:| 
+|  Precondition     | Cashier has scanned the items in the shopping cart of the client |
+|  Post condition     | Client payed for his/hers purchase in cash  |
+|  Step#        | Description  | 
+|  1    |  Client chooses to pay with cash|
+|  2    |  Cashier informs the system |
+|  3	|  Cashier receives money from client|
+|  4    |  The system gets the commit of the transaction by the cashier|
+|  5    |  Receipt is printed |
 
 # Glossary
+```plantuml
+@startuml
+class EZShop{
+ name
+ profits
+ losses
+}
+class Salesperson {
+ Wages
+ % work time
+}
+class Manager{
+ name
+ owner or not
+}
+class Shop_building{
+ Area
+ Market value
+}
+class Order{
+ order cost
+}
+class Supplier{
+ Company name
+}
+class Product{
+ Expiration Date
+}
+class Product_Descriptor{
+ Prod_ID
+ Prod_name
+}
+class Purchase{
+ timestamp
+}
+class Customer{
+ credit card
+}
+class Fidelity_card{
+ points
+}
+class Inventory
 
-\<use UML class diagram to define important terms, or concepts in the domain of the system, and their relationships> 
+note "Full time is 100%" as spN
+spN .. Salesperson
 
-\<concepts are used consistently all over the document, ex in use cases, requirements etc>
+EZShop -- Manager
+EZShop -- "0..*" Salesperson
+EZShop -- Shop_building
+EZShop -- "*" Purchase
+EZShop -- Inventory
+
+Inventory -- "*" Order
+Order "*" -- Supplier
+Inventory -- "*" Product
+
+Product "*" -- Product_Descriptor
+Product "*" -- Purchase
+
+Purchase -- Customer
+Customer -- Fidelity_card
+@enduml
+```
 
 # System Design
-\<describe here system design>
 
-\<must be consistent with Context diagram>
+Not really meaningful in this case.  Only software components are needed.
 
 # Deployment Diagram 
 
-\<describe here deployment diagram >
+Client server model. The application runs on a server or virtual machine, any client accesses it through PC or POS.
+
+```plantuml
+artifact "EZShop Application" as ezshop
+node "server" as s
+node "POS" as pc
+s -- ezshop
+s -- "*" pc
+```
 
