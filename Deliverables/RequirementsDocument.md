@@ -56,18 +56,14 @@ EZShop is a software application to:
 ```plantuml
 @startuml
 
-top to bottom direction
-actor Manager as m
-actor SalesPerson as sp
-actor CreditCardSystem as ccs
-
 rectangle System{
 	usecase "EZShop system" as EZ
 }
 
-m->EZ
-sp->EZ
-ccs-up->EZ
+Manager->EZ
+SalesPerson->EZ
+CreditCardSystem <-up-EZ
+Scanner -up-> EZ
 
 @enduml
 ```
@@ -80,7 +76,8 @@ ccs-up->EZ
 | ------------- |:-------------|:-----|
 | Manager | Application GUI | Screen keyboard on PC  |
 | SalesPerson | Aplpicarion GUI | Touch screen on POS|
-|Credit Card System| Visa API | |
+| Credit Card System| Payment gateway API | Dedicated console |
+| Scanner | Scanner API | Scanning device |
 # Stories and personas
 
 The following personas and stories are meant to cover different profiles of the User actor
@@ -102,50 +99,83 @@ Emma is 35 and she has always had a lifelong passion for sport cars. She owns tw
 | ID        | Description  |
 | ------------- |:-------------|
 |FR 1| Manage Sales|
-|FR 1.1| Reporting sales
-|FR 1.1.1| Report daily, weekly, monthly, yearly.
-|FR 1.1.2| Report sales between given dates (from date1 - to date2)
-|FR 1.2| Manage prices
-|FR 1.2.1| Increase/decrease price of a product
-|FR 1.2.2| Increase/decrease price per category
-|FR 1.2.3| Increase/decrease price by a given rate
-|FR 1.3| Manage promotions
-|FR 1.3.1| Create/delete new promotion
-|FR 1.3.2| Assign/remove promotion to products
-|FR 1.3.3| Modify promotion
-|FR 1.4| Manage sales strategy
-|FR 1.4.1| Create/delete strategy
-|FR 1.4.2| Assign/remove strategy to a target customer segment
-|FR 1.4.3| Modify strategy
+|FR 1.1| Manage prices
+|FR 1.1.1| Increase/decrease price of a product.
+|FR 1.1.2| Increase/decrease price of category.
+|FR 1.1.3| Increase/decrease price of given rate.
+|FR 1.2| Manage offers
+|FR 1.2.1| Create/delete new offers
+|FR 1.2.2| Assign/remove offer from product
+|FR 1.2.3| Modify offer
+|FR 1.3| Manage payment method
+|FR 1.3.1| Add/remove payment method
+|FR 1.3.2| Add/remove accepted cards (visa, mastercard, etc)
+|FR 1.4| Manage cash register
+|FR 1.4.1| Create/delete cash register
+|FR 1.4.2| Enable/disable cash register
+|FR 1.5| Manage employee
+|FR 1.5.1| Add/remove employee
+|FR 1.5.2| Create/delete employee credentials 
+|FR 1.6| Generate receipt
+|FR 1.7| Void receipt
 |FR 2| Manage Inventory
-|FR 2.1|a.| 
-|FR 3| Manage customers
-|FR 3.1| Manage a single customer
-|FR 3.1.1| Add/remove customer
-|FR 3.1.2| 
-|FR 3.2| Manage customer segments
-|FR 3.2.1| Create/remove customer segment
-|FR 3.2.2| Modify customer segment
-|FR 3.3| Manage customer relationship
-|FR 3.3.1| Send email
-|FR 3.3.2| 
-|FR 4| Support Accounting
-|FR 4.1| 
+|FR 2.1| Manage product categories
+|FR 2.1.1| Create/delete product categories
+|FR 2.1.2| Assign/remove products from categories
+|FR 2.1.3| Modify product category
+|FR 2.2| Manage stock
+|FR 2.2.1| Display stock of products|
+|FR 2.2.2| Increase/decrease stock automatically after sale or voiding receipt|
+|FR 2.2.3| Manage low stock|
+|FR 2.2.3.1| Set alert for low stock|
+|FR 2.2.3.2| Send notification when low stock is reached|
+|FR 2.2.4| Set/unset "in stock" flag|
+|FR 2.3| Manage restock|
+|FR 2.3.1| Create/remove order|
+|FR 2.3.2| Modify order|
+|FR 2.3.3| Perform order via mail|
+|FR 3| Manage customer with fidelity card|
+|FR 3.1| Manage a single customer|
+|FR 3.1.1|Add/remove customer|
+|FR 3.1.2|Modify customer data|
+|FR 3.2|Manage customer classification|
+|FR 3.2.1|Create/remove customer classification|
+|FR 3.2.2|Modify customer classification|
+|FR 3.3|Manage customer mailing list|
+|FR 3.3.1|Send email|
+|FR 3.3.2|Assign/remove promotion to customer|
+|FR 3.3.3|Subscribe/unsubscribe customers from mailing.|
+|FR 3.4|Manage fidelity cards|
+|FR 3.4.1|Create/delete fidelity card|
+|FR 3.4.2|Assign/remove fidelity card to customer|
+|FR 4|Support Accounting|
+|FR 4.1|Reporting sales|
+|FR 4.1.1|Report daily, weekly, monthly, yearly.|
+|FR 4.1.2|Report sales between given dates (from date1 - to date2)|
+|FR 4.1.3|Format report to csv or txt|
+|FR 4.2|Electronic invoicing (with suppliers)|
+|FR 4.2.1|Create electronic invoice|
+|FR 4.2.2|Print electronic invoice|
+|FR 4.2.3|Cancel electronic invoice|
+|FR 4.2.4|Assign supplier order to electronic invoice|
+|FR 4.3|Electronic billing (with customers)|
+|FR 4.3.1|Create electronic bill|
+|FR 4.3.2|Print electronic bill|
+|FR 4.3.3|Cancel electronic bill|
+|FR 4.3.4|Assign customer order to electronic bill|
 
 
 ### Access right, actor vs function
 
-| Function | Admin | User | Anonymous User |
-| ------------- |:-------------|--|--|
-| FR1.1| yes | only user X for user X| no|
-| FR1.2| yes | only user X for user X| no |
-| FR1.3| yes | no | no|
-| FR2 | yes | no | no|
-| FR3 | yes  | no|no|
-|FR4  | yes  | yes | yes| 
-|FR5.1 | yes | yes| no|
-|FR5.2 |no  |no |no|
-|FR5.3 |yes |yes|no|
+| Function | Manager | Sales Person | 
+| ------------- |:-------------|--|
+| FR 1| yes | no |
+| FR 1.6| yes | yes|
+| FR 2| yes | no |
+| FR 1.3| yes | no |
+| FR 3 | yes | yes |
+| FR 4 | yes | no |
+| FR 4.3| yes | yes |
 
 ## Non Functional Requirements
 | ID        | Type        | Description  | Refers to |
@@ -172,12 +202,13 @@ actor Manager as m
 actor :Sales Person: as sp
 actor "Credit Card System" as ccs
 actor "Supplier" as sup
+actor "Scanner" as scanner
 
 rectangle "Use cases"{
 usecase "Manage Inventory" as mi
 usecase "Manage Employee" as me
 usecase "Make order" as mo
-usecase "Order Payment Method" as opm
+usecase "Manage Accounting" as ma
 
 usecase "Perform Payment" as pp
 usecase "Credit card Payment" as cc
@@ -189,7 +220,7 @@ usecase "print receipt" as pr
 usecase "Log_In" as li
 usecase "Log_Out" as lo
 usecase "Print FIdelity Card" as pfc
-usecase "Update Fidelity points" as ufc
+usecase "Update Fidelity points" as ufp
 usecase "Search Fidelity Card" as sfc
 
 
@@ -207,13 +238,15 @@ sup -[hidden]right- m
 mi -[hidden]left- me
 
 pfc -[hidden]left- si
-ufc -[hidden]right- me
+ufp -[hidden]right- me
 sfc -[hidden]left- pfc
 }
 
 
 m --> mi
 m --> me
+m --> ma
+
 
 sp-up->si
 sp-up->scan
@@ -222,6 +255,7 @@ sp-up->lo
 sp-up->pfc
 sp-up->sfc
 
+scanner -up-> scan
 
 mo -> sup
 me -[hidden]down- pp
@@ -232,10 +266,9 @@ pr   <.   pp :include
 cash <.   pp :include
 cc   <.   pp :include
 mo   <.r. mi :include
-ufc  <.r. pp :include
-mi   <.   si :extends
-opm  .l.> mo :extends
-pp   .> scan :extends
+ufp  <.r. pp :include
+mi   .>   si :include
+pp   .>   scan :extends
 @enduml
 ```
 
@@ -256,7 +289,6 @@ pp   .> scan :extends
 
 ## Use cases
 
-
 ### Use case 1, UC1 - Update Item
 
 | Actors Involved        | Manager|
@@ -265,7 +297,6 @@ pp   .> scan :extends
 |  Post condition     	| Item's details are updated |
 |  Nominal Scenario     | An item has wrong or old info and must be updated  |
 |  Variants     		|  |
-
 
 
 ### Use case 2, UC2 - Remove Item
@@ -302,27 +333,18 @@ pp   .> scan :extends
 
 | Actors Involved       | Manager |
 | ------------- |:-------------:|
-|  Precondition     	| Sales Person is exists |
-|  Post condition     	| Sales Person's details arr added or updated |
+|  Precondition     	| Sales Person exists |
+|  Post condition     	| Sales Person's details are added or updated |
 |  Nominal Scenario     | The sales person personal information has changed and must be updated |
 |  Variants     		| The sales person exists but he/she is deactivated, the manager can re-activate the account|
 
 
 
-### Use case 6, UC6 - Remove Sales Person
+### Use case 6, UC6 - Deactivate Sales Person
 
 | Actors Involved  |                        Manager          |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     | Sales Person is exists |
-| Post condition   | Sales Person account is removed from the system |
-| Nominal Scenario | The manager has fired an employee; The employee left the business |
-| Variants         | - |
-
-### Use case 6.1, UC6.1 - Deactivate Sales Person
-
-| Actors Involved  |                        Manager          |
-| ---------------- | :----------------------------------------------------------: |
-| Precondition     | Sales Person is exists |
+| Precondition     | Sales Person does have an account on his/her name |
 | Post condition   | Sales Person account is suspended but still present in the system |
 | Nominal Scenario | The manager has fired an employee; The employee left the business |
 | Variants         | - |
@@ -396,10 +418,10 @@ pp   .> scan :extends
 |					| The client has chosen a payment method |
 | Post condition   	| The payment for the cart items has been completed |
 |					| Fidelity card points updated |
-|					| The system has printed a receipt
+|					| The system has printed a receipt|
 | Nominal Scenario 	| The cashier informs the client of the price, the client informs the cashier of the payment method, the client pays for his purchase, client receives the receipt|
-| Variants          | The client's credit card payment option is rejected, choses a different payment method |
-|					| The client does not have the required amount of money, the cashier cancels the cart items|
+| Variants          | The client's credit card payment option is rejected, chooses a different payment method |
+|					| The client does not have the required amount of money or does not want to go through with the payment, the cashier cancels the cart items|
 
 ### Use case 13, UC13 - Search Fidelity Card
 
@@ -508,21 +530,25 @@ class EZShop{
  profits
  losses
 }
+class Shop_building{
+ Area
+ Market value
+}
+class Person{
+ Name
+ Surname
+}
 class Salesperson {
  Wages
  % work time
 }
 class Manager{
- name
  owner or not
-}
-class Shop_building{
- Area
- Market value
 }
 class Order{
  order cost
 }
+
 class Supplier{
  Company name
 }
@@ -536,12 +562,21 @@ class Product_Descriptor{
 class Purchase{
  timestamp
 }
+class Receipt{
+ purchase cost
+ receipt number
+}
+class Payment_method{
+ isCash or not
+ isCredit card or not
+}
 class Customer{
- credit card
+ ID
 }
 class Fidelity_card{
  points
 }
+
 class Inventory
 
 note "Full time is 100%" as spN
@@ -549,19 +584,28 @@ spN .. Salesperson
 
 EZShop -- Manager
 EZShop -- "0..*" Salesperson
-EZShop -- Shop_building
+EZShop -- "1..*" Shop_building
 EZShop -- "*" Purchase
 EZShop -- Inventory
+Salesperson --"*" Purchase: > manages
 
-Inventory -- "*" Order
-Order "*" -- Supplier
+Order "*" -- Supplier: > provided_by
 Inventory -- "*" Product
 
 Product "*" -- Product_Descriptor
 Product "*" -- Purchase
+Order - "*" Product_Descriptor
+(Order, Product_Descriptor) .. Quantity
 
-Purchase -- Customer
-Customer -- Fidelity_card
+Purchase -- Receipt
+Purchase "0..*"-- Payment_method: > done with
+Customer "0..*"-- Payment_method: < used by
+Customer --"0..1" Fidelity_card: > owns
+
+Person <|-- Manager
+Person <|-- Customer
+Person <|-- Salesperson
+
 @enduml
 ```
 
