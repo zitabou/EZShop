@@ -45,8 +45,9 @@ EZShop is a software application to:
 | Salesperson | He/She is the person who confirms the purchases made by the client|
 | Client | Accesses the shop to get necessary items and pay for them |
 | Supplier | Manages and receives the order made by the manager |
-| maintenance | Offers technical support in case of mulfunction of the system |
+| Maintenance | Offers technical support in case of mulfunction of the system |
 | Credit card system| Manages the payment when the client pays thought a credit card|
+| Scanner| It is a device that will detect the physical item in the inventory catalogue
 
 # Context Diagram and interfaces
 
