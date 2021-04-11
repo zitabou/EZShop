@@ -291,9 +291,10 @@ pp   .>   scan :extends
 (Manage Inventory) .> (Update Item) :include
 
 (Manage Employee) -[hidden]up-- (Manage Inventory)
-(Manage Employee) .> (Add Sales Person) :include
-(Manage Employee) .> (Remove/Deactivate Sales Person) :include
-(Manage Employee) .> (Update Sales Person) :include
+(Manage Employee) .> (Add Employee) :include
+(Manage Employee) .> (Deactivate Employee) :include
+(Manage Employee) .> (Update Employee) :include
+(Manage Employee) .> (Search Employee) :include
 
 (Manage accounting) -[hidden]up-- (Manage Employee)
 (Manage accounting) .> (print report) :include
