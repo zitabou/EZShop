@@ -1,6 +1,6 @@
 # Requirements Document 
 
-Authors:
+Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras
 
 Date:
 
@@ -80,15 +80,15 @@ Scanner -up-> EZ
 | Scanner | Scanner API | Scanning device |
 # Stories and personas
 
-The following personas and stories are meant to cover different profiles of the User actor
+The following personas and stories are meant to cover different profiles of the Salesperson
 
-Rebecca is 35, works as a sales person and for this reason she has to visit different customers every day. For work she drives the company car and gets the full reimbursement of petrol expenses. Rebecca has an inclination for punctuality and precision, and hates being late at her meetings. For this reason, when she needs to put gas in his car, her main interest is to find gas stations that are as close as possible to her position.
+Rebecca is 35, works as a sales person. She has a child and she is not married. When going to work she doesn't need to have more problems due to the software she will have to use during that time. She doesn't care about advanced or complicated operations and wants to perform what is necessary fast and without any problems and the least interaction with the clients as possible. 
 
-David is 45, works at the counter of a shop and has two children. He has to cover several kilometers each day to bring his children to school and take them back, and to go to the gym in the afternoon. Sometimes he has to cut on expenses, and hence his main interest is to find the cheapest gas stations where he can refuel his LPG city car.
+David is 62, works at the counter of a shop and has two children and one grandchild. He doesn't like technology and the most high tech device in his home is the TV and an old PC. He doesn't have a smartphone or use email by choice. If it was for him he would use an old cash register instead of computer. 
 
-Elena is 20, and is a student at the Polytechnic of Turin. She typically goes to the university or to hang out with her friends by bike, but sometimes - especially at night and in Winter - she can not help but rent a car sharing vehicle. In these cases, if possible, she takes the opportunity of refueling the vehicle in order to have bonus credit with the car sharing applications.
+Elena is 20, and is a student at the Polytechnic of Turin. She is single and works part time to pay for daily expenses. She is very familira with technology and has no problem with exploring new technology and services.
 
-Emma is 35 and she has always had a lifelong passion for sport cars. She owns two personalized vintage cars that she personally takes care of, and with whom she goes for a ride every weekend. To keep her cars in good condition, she tries to use only high-performance petrol, and is annoyed that many gas stations often don't offer it.
+Emma is 36, and works as at the counter. She is not married and leaves alone with her five cats. She is very active against animal cruelty and mistreatment. She is very social and likes to interact with clients and have a quick chat while performing her job.
 
 
 # Functional and non functional requirements
@@ -200,11 +200,15 @@ Emma is 35 and she has always had a lifelong passion for sport cars. She owns tw
 left to right direction
 actor Manager as m
 actor :Sales Person: as sp
-actor "Credit Card System" as ccs
-actor "Supplier" as sup
-actor "Scanner" as scanner
+actor :Credit Card System: as ccs
+actor Supplier as sup
+actor Scanner as scanner
 
 rectangle "Use cases"{
+
+usecase "Log_In" as li
+usecase "Log_Out" as lo
+
 usecase "Manage Inventory" as mi
 usecase "Manage Employee" as me
 usecase "Make order" as mo
@@ -214,22 +218,23 @@ usecase "Perform Payment" as pp
 usecase "Credit card Payment" as cc
 usecase "Cash Payment" as cash
 
+
 usecase "Search Item" as si
 usecase "Scan cart items" as scan
 usecase "print receipt" as pr
-usecase "Log_In" as li
-usecase "Log_Out" as lo
 usecase "Print FIdelity Card" as pfc
 usecase "Update Fidelity points" as ufp
 usecase "Search Fidelity Card" as sfc
 
 
 
+
+
 mi -[hidden]down- si
 mo -[hidden]right- mi
 
-si -[hidden]left- li
-li -[hidden]left- lo
+si -[hidden]right- li
+li -[hidden]right- lo
 
 cc -[hidden]right- cash
 pp -[hidden]up- mi
@@ -240,12 +245,17 @@ mi -[hidden]left- me
 pfc -[hidden]left- si
 ufp -[hidden]right- me
 sfc -[hidden]left- pfc
+
+me -[hidden]down- pp
+
 }
 
 
 m --> mi
 m --> me
 m --> ma
+m -> li
+m -> lo
 
 
 sp-up->si
@@ -258,7 +268,7 @@ sp-up->sfc
 scanner -up-> scan
 
 mo -> sup
-me -[hidden]down- pp
+
 
 cc -left-> ccs
 
@@ -282,13 +292,14 @@ pp   .>   scan :extends
 
 (Manage Employee) -[hidden]up-- (Manage Inventory)
 (Manage Employee) .> (Add Sales Person) :include
-(Manage Employee) .> (Deactivate Sales Person) :include
+(Manage Employee) .> (Remove/Deactivate Sales Person) :include
 (Manage Employee) .> (Update Sales Person) :include
 
 (Manage accounting) -[hidden]up-- (Manage Employee)
 (Manage accounting) .> (print report) :include
 (Manage accounting) .> (send report) :include
 (Manage accounting) .> (void receipt) :include
+
 @enduml
 ```
 
