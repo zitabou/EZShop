@@ -282,8 +282,13 @@ pp   .>   scan :extends
 
 (Manage Employee) -[hidden]up-- (Manage Inventory)
 (Manage Employee) .> (Add Sales Person) :include
-(Manage Employee) .> (Remove/Deactivate Sales Person) :include
+(Manage Employee) .> (Deactivate Sales Person) :include
 (Manage Employee) .> (Update Sales Person) :include
+
+(Manage accounting) -[hidden]up-- (Manage Employee)
+(Manage accounting) .> (print report) :include
+(Manage accounting) .> (send report) :include
+(Manage accounting) .> (void receipt) :include
 @enduml
 ```
 
