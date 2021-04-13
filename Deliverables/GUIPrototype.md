@@ -1,8 +1,8 @@
 # Graphical User Interface Prototype  
 
-Authors:
+Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras 
 
-Date:
+Date: 21 april 2021
 
 Version:
 
