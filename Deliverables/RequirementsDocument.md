@@ -89,7 +89,7 @@ David is 62, works at the counter of a shop and has two children and one grandch
 
 Elena is 20, and is a student at the Polytechnic of Turin. She is single and works part time to pay for daily expenses. She is very familira with technology and has no problem with exploring new technology and services.
 
-Emma is 36, and works as at the counter. She is not married and leaves alone with her five cats. She is very active against animal cruelty and mistreatment. She is very social and likes to interact with clients and have a quick chat while performing her job.
+Emma is 36, and works as at the counter. She is not married and leaves alone with hers five cats. She is very active against animal cruelty and mistreatment. She is very social and likes to interact with clients and have a quick chat while performing hers job.
 
 
 # Functional and non functional requirements
@@ -226,7 +226,7 @@ usecase "Cash Payment" as cash
 
 usecase "Search Product" as si
 usecase "Scan cart Products" as scan
-usecase "print receipt" as pr
+usecase "Generate receipt" as pr
 usecase "Print FIdelity Card" as pfc
 usecase "Update Fidelity points" as ufp
 usecase "Search Fidelity Card" as sfc
@@ -302,7 +302,7 @@ pp   .>   scan :extends
 (Manage SalesPerson) .> (Search SalesPerson) :include
 
 (Manage accounting) -[hidden]up-- (Manage SalesPerson)
-(Manage accounting) .> (print accounting report) :include
+(Manage accounting) .> (Generate accounting report) :include
 (Manage accounting) .> (void receipt) :include
 
 @enduml
@@ -365,7 +365,7 @@ pp   .>   scan :extends
 
 | Actors Involved  |                        Manager          |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     | Sales Person SP does have an account on his/her name |
+| Precondition     | Sales Person SP does have an account on his/hers name |
 | Post condition   | Sales Person SP account is suspended but still present in the system |
 | Nominal Scenario | The manager has fired SP; SP has left the EZShop |
 | Variants         | - |
@@ -393,7 +393,7 @@ pp   .>   scan :extends
 | Variants         | - |
 
 
-### Use case 9, UC9 - print accounting report
+### Use case 9, UC9 - Generate accounting report
 
 | Actors Involved  |                   Manager                    |
 | ---------------- | :----------------------------------------------------------: |
@@ -416,23 +416,23 @@ pp   .>   scan :extends
 
 
 ### Use case 11, UC11 - Log In
-| Actors Involved  |                    Sales Person                 |
+| Actors Involved  |                    Sales Person, Manager                 |
 | ---------------- | :----------------------------------------------------------: |
 | Precondition     	| Sales person SP account has been added by the manager |
 | Post condition   	| Sales person has access to his personal account |
-| Nominal Scenario 	| SP starts his/her shift, accesses account on which transactions will be registered |
-| Variants 			| SP can log-in only on his/her account|
-|					| SP lost/forgot his/her password, The Manager can unlock the account by updating SP password|	
+| Nominal Scenario 	| SP starts his/hers shift, accesses account on which transactions will be registered |
+| Variants 			| SP can log-in only on his/hers account|
+|					| SP lost/forgot his/hers password, The Manager can unlock the account by updating SP password|	
 
 
 ### Use case 12, UC12 - Log Out
 
-| Actors Involved  |         Sales Person                         |
+| Actors Involved  |         Sales Person, Manager                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Sales person SP is logged-in in his/her account |
-| Post condition   	| Sales person SP is logged-out of his/her account |
-| Nominal Scenario 	| SP has completed his/her shift and has to log-out |
-| Variants          | SP can log-out only from his/her account |
+| Precondition     	| Sales person SP is logged-in in his/hers account |
+| Post condition   	| Sales person SP is logged-out of his/hers account |
+| Nominal Scenario 	| SP has completed his/hers shift and has to log-out |
+| Variants          | SP can log-out only from his/hers account |
 |					| SP forgot to log-out, The manager performs the log-out by using manager privilege |
 
 
@@ -445,7 +445,7 @@ pp   .>   scan :extends
 |					| Cashier CA is logged-in |
 | Post condition   	| Products P in cart have been scanned |
 |					| The total cost of Products P is available |
-| Nominal Scenario 	| CL has collected all P of interest, gives them to CA, CA scans P and informs CL of the price of his/her purchase |
+| Nominal Scenario 	| CL has collected all P of interest, gives them to CA, CA scans P and informs CL of the price of his/hers purchase |
 | Variants          | CL does not want to conclude the purchase, CA cancel the scanned P |
 
 
@@ -457,7 +457,7 @@ pp   .>   scan :extends
 |					| Client CL has choose a payment method |
 | Post condition   	| The payment for Products P has been completed |
 |					| Fidelity card points are updated |
-|					| The system has printed a receipt|
+|					| The system has Generated a receipt|
 | Nominal Scenario 	| CA informs CL of the price, CL informs CA of the payment method, CL pays for his purchase, CL receives the receipt|
 | Variants          | CL's credit card payment option is rejected, chooses a different payment method |
 |					| CL does not have the required amount of money or does not want to go through with the payment, CA cancels the scanned P|
@@ -502,22 +502,23 @@ pp   .>   scan :extends
 |  Precondition     | Product is present in inventory |
 |  Post condition     | Product has new details |
 |  Step#        | Description  |
-|  1    |  Manager inputs Products ID in search space |
-|  2    |  The system return the Product profile |
+|  1    |  Manager search the Products |
+|  2    |  The system return the Product |
 |  3	|  Manager updates Product |
 |  4    |  Manager saves changes |
 
 ##### Scenario 2.1
 
-| Scenario |  Remove Product Prvsoduct |
+| Scenario |  Remove Product |
 | ------------- |:-------------:| 
 |  Precondition     | Product is present in inventory |
 |  Post condition     | Product is not present in inventory |
 |  Step#        | Description  |
-|  1    |  Manager inputs Products ID in search space |
-|  2    |  The system return the Product profile |
-|  3	|  Manager updates Product |
-|  4    |  Manager saves changes |
+|  1    |  Manager search the Products |
+|  2    |  The system return the Product |
+|  3	|  Manager removes Product |
+|  4    |  System informs manager that the deletion was successful|
+|  5    |  System saves changes automatically if successful |
 
 
 ##### Scenario 3.1 
@@ -533,7 +534,88 @@ pp   .>   scan :extends
 |  4    |  Manager saves changes |
 
 
+##### Scenario 5.1 
+
+| Scenario |  Update Sales Person |
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person exists in the system |
+|  Post condition     | Sales Person's details are updated |
+|  Step#        | Description  |
+|  1    |  Manager searches for Sales Person to be updated |
+|  2    |  System shows to manager the fields to fill |
+|  3	|  Manager updates Sales Person's details |
+|  4    |  Manager saves changes |
+
+
+##### Scenario 6.1 
+
+| Scenario |  Deactivate Sales Person |
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person exists in the system and is active |
+|  Post condition     | Sales Person exists in the system and is not active |
+|  Step#        | Description  |
+|  1    |  Sales Person stops working for EZShop |
+|  2    |  Manager searches for Sales Person to decativate |
+|  3    |  System shows to manager the deactivate option |
+|  4	|  Manager deactivates Sales Person |
+|  5    |  Manager saves changes |
+
+
+##### Scenario 7.1 
+
+| Scenario |  Add Sales Person |
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person does not exists in the system |
+|  Post condition     | Sales Person exists in the system |
+|  Step#        | Description  |
+|  1    |  Sales Person starts working for EZShop |
+|  2    |  Manager creates Sales Person account |
+|  3    |  Manager activates Sales Person account |
+|  5    |  Manager saves changes |
+
+
+##### Scenario 7.2
+
+| Scenario |  Add Sales Person |
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person exists in the system but it is not active |
+|  Post condition     | Sales Person exists in the system |
+|  Step#        | Description  |
+|  1    |  Sales Person starts working for EZShop |
+|  2    |  Manager creates Sales Person account |
+|  3    |  Manager activates Sales Person account |
+|  5    |  Manager saves changes |
+
+
 ##### Scenario 8.1 
+
+| Scenario |  Void a receipt |
+| ------------- |:-------------:| 
+|  Precondition     | Receipt has been generated and must be included in accounting |
+|  Post condition     | Receipt is void and does not count in accounting |
+|  Step#        | Description  |
+|  1    |  Sales Person generates a receipt |
+|  2    |  Sales Person tag's the receipt as "to_be_void" |
+|  3    |  Manager accesses receipts with tag "to_be_void" |
+|  5    |  Manager makes receipt void |
+|  6    |  Receipt is indicated as void |
+
+
+##### Scenario 9.1 
+
+| Scenario |  Void a receipt |
+| ------------- |:-------------:| 
+|  Precondition     | Receipt has been generated and must be included in accounting |
+|  Post condition     | Receipt is void and does not count in accounting |
+|  Step#        | Description  |
+|  1    |  Sales Person generates a receipt |
+|  2    |  Sales Person tag's the receipt as "to_be_void" |
+|  3    |  Manager accesses receipts with tag "to_be_void" |
+|  5    |  Manager makes receipt void |
+|  6    |  Receipt is indicated as void |
+
+
+##### Scenario 10.1 
 
 | Scenario |  Order made to restock inventory |
 | ------------- |:-------------:| 
@@ -548,7 +630,75 @@ pp   .>   scan :extends
 |  6    |  Manager confirms order |
 
 
+##### Scenario 11.1 
+
+| Scenario |  Sales Person performs log-in to his/hers account|
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person is not logged-in to his/hers account |
+|  Post condition     | Sales Person is logged-in to his/hers account  |
+|  Step#        | Description  |
+|  1    |  Sales Person starts his/hers shift  |
+|  2    |  Sales Person uses his/hers password and username to access his/hers account |
+
+
+##### Scenario 11.2 
+
+| Scenario |  Manager performs log-in to his/hers account|
+| ------------- |:-------------:| 
+|  Precondition     | Manager is not logged-in to his/hers account |
+|  Post condition     | Manager is logged-in to his/hers account  |
+|  Step#        | Description  |
+|  1    |  Manager wants to access his/hers account  |
+|  2    |  Manager uses his/hers password and username to access his/hers account |
+
+
 ##### Scenario 12.1 
+
+| Scenario |  Sales Person performs log-out from his/hers account|
+| ------------- |:-------------:| 
+|  Precondition     | Sales Person is logged-in to his/hers account |
+|  Post condition     | Sales Person is not logged-in to his/hers account  |
+|  Step#        | Description  |
+|  1    |  Sales Person ends his/hers shift  |
+|  2    |  Sales Person uses log-out feature to log-out from his/hers account |
+
+
+##### Scenario 12.2 
+
+| Scenario |  Manager performs log-out from his/hers account|
+| ------------- |:-------------:| 
+|  Precondition     | Manager is logged-in to his/hers account |
+|  Post condition     | Manager is not logged-in to his/hers account  |
+|  Step#        | Description  |
+|  1    |  Manager wants to exit his/hers account  |
+|  2    |  Manager uses log-out feature to log-out from his/hers account |
+
+
+##### Scenario 13.1 
+
+| Scenario |  Scan products in Cart with scanner |
+| ------------- |:-------------:| 
+|  Precondition     | Client has a cart of products he/she wants to purchase |
+|  Post condition     | The list of products in the cart is created in the system |
+|  Step#        | Description  |
+|  1    |  Client brings products to the Sales Person|
+|  2    |  The Sales Person uses external scanning device to scan the barcode of each product|
+|  3    |  The list of scanned product's is available to the Sales Person|
+
+##### Scenario 13.2
+
+| Scenario |  Scan products in Cart by search |
+| ------------- |:-------------:| 
+|  Precondition     | Client has a cart of products he/she wants to purchase |
+|  Post condition     | The list of products in the cart is created in the system |
+|  Step#        | Description  |
+|  1    |  Client brings products to the Sales Person|
+|  2    |  The Sales Person types to the system the ID of each product|
+|  3    |  The list of scanned product's is available to the Sales Person|
+
+
+
+##### Scenario 14.1 
 
 | Scenario |  pay with credit card |
 | ------------- |:-------------:| 
@@ -561,7 +711,8 @@ pp   .>   scan :extends
 |  4    |  The system gets the commit of the transaction from the credit card system |
 |  5    |  Receipt is printed |
 
-##### Scenario 12.2 
+
+##### Scenario 14.2 
 | Scenario |  pay with cash |
 | ------------- |:-------------:| 
 |  Precondition     | Cashier has scanned the Products in the shopping cart of the client |
@@ -572,6 +723,46 @@ pp   .>   scan :extends
 |  3	|  Cashier receives money from client|
 |  4    |  The system gets the commit of the transaction by the cashier|
 |  5    |  Receipt is printed |
+
+
+##### Scenario 15.1 
+
+| Scenario |  Client wants to know how many points he/she has  |
+| ------------- |:-------------:| 
+|  Precondition     | Client has a fidelity card |
+|  Post condition     | Client is aware of the amount of points accumulated |
+|  Step#        | Description  |
+|  1    |  Client informs the Sales Person about the Id of the fidelity card or the name of the owner|
+|  2    |  Sales Person inputs these details into the system |
+|  3	|  The system shows to the Sales Person the profile of the customer and the points accumulated in the fidelity card|
+|  4    |  The sales Person informs the client about the points |
+
+
+##### Scenario 16.1 
+
+| Scenario |  Client wants to own a fidelity card  |
+| ------------- |:-------------:| 
+|  Precondition     | Client does not have a fidelity card |
+|  Post condition     | Client has a fidelity card on his/hers name |
+|  Step#        | Description  |
+|  1    |  Client informs the Sales Person that he/she would like a fidelity card|
+|  2    |  The Sales Person accesses the fidelity card creation tab |
+|  3	|  The Sales Person inserts client's details to be related to the fidelity card|
+|  4    |  Sales person confirms creation and the system assigns the fidelity card ID |
+|  5    |  Sales Person prints fidelity card |
+
+
+##### Scenario 16.2 
+
+| Scenario |  Client has lost the printed fidelity card  |
+| ------------- |:-------------:| 
+|  Precondition     | Client fidelity card registered but wants to print a physical card |
+|  Post condition     | Client has a printed fidelity card |
+|  Step#        | Description  |
+|  1    |  Client informs the Sales Person that he/she would like to print fidelity card|
+|  2    |  The Sales Person search for the client account by name or by fidelity card ID |
+|  3	|  The system shows client profile |
+|  4    |  Sales Person selects to print the card for that profile |
 
 # Glossary
 ```plantuml
