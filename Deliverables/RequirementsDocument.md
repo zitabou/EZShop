@@ -560,8 +560,14 @@ class Salesperson {
  Wages
  % work time
 }
+class SalesPersonAccount{
+	Username
+	Password
+}
 class Manager{
  owner or not
+}
+class ManagerAccount{
 }
 class Order{
  order cost
@@ -600,12 +606,16 @@ class Inventory
 note "Full time is 100%" as spN
 spN .. Salesperson
 
-EZShop -- Manager
-EZShop -- "0..*" Salesperson
-EZShop -- "1..*" Shop_building
-EZShop -- "*" Purchase
-EZShop -- Inventory
-Salesperson --"*" Purchase: > manages
+EZShop -down- Manager
+EZShop -down- "0..*" Salesperson
+EZShop -left- "1..*" Shop_building
+EZShop -down- "*" Purchase
+EZShop -down- Inventory
+
+Manager -down- ManagerAccount: > owns
+
+Salesperson -down- SalesPersonAccount: > owns
+SalesPersonAccount --"*" Purchase: > performs
 
 Order "*" -- Supplier: > provided_by
 Inventory -- "*" Product
@@ -623,6 +633,8 @@ Customer --"0..1" Fidelity_card: > owns
 Person <|-- Manager
 Person <|-- Customer
 Person <|-- Salesperson
+
+Manager --[hidden]left-- Inventory
 
 @enduml
 ```
