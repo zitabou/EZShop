@@ -28,7 +28,7 @@ Version:
 
 # Essential description
 
-Small shops require a simple application to support the owner or manager. A small shop (ex a food shop) occupies 50-200 square meters, sells 500-2000 different item types, has one or a few cash registers 
+Small shops require a simple application to support the owner or manager. A small shop (ex a food shop) occupies 50-200 square meters, sells 500-2000 different Product types, has one or a few cash registers 
 EZShop is a software application to:
 * manage sales
 * manage inventory
@@ -41,13 +41,13 @@ EZShop is a software application to:
 
 | Stakeholder name  | Description | 
 | ----------------- |:-----------:|
-|      Manager             |  Manages the employees and he is responsible for managing the inventory stock  | 
+|      Manager             |  Manages the SalesPersons and he is responsible for managing the inventory stock  | 
 | Salesperson | He/She is the person who confirms the purchases made by the client|
-| Client | Accesses the shop to get necessary items and pay for them |
+| Client | Accesses the shop to get necessary Products and pay for them |
 | Supplier | Manages and receives the order made by the manager |
 | Maintenance | Offers technical support in case of mulfunction of the system |
 | Credit card system| Manages the payment when the client pays thought a credit card|
-| Scanner| It is a device that will detect the physical item in the inventory catalogue
+| Scanner| It is a device that will detect the physical Product in the inventory catalogue
 
 # Context Diagram and interfaces
 
@@ -114,9 +114,9 @@ Emma is 36, and works as at the counter. She is not married and leaves alone wit
 |FR 1.4| Manage cash register
 |FR 1.4.1| Create/delete cash register
 |FR 1.4.2| Enable/disable cash register
-|FR 1.5| Manage employee
-|FR 1.5.1| Add/remove employee
-|FR 1.5.2| Create/delete employee credentials 
+|FR 1.5| Manage SalesPerson
+|FR 1.5.1| Add/remove SalesPerson
+|FR 1.5.2| Create/delete SalesPerson credentials 
 |FR 1.6| Generate receipt
 |FR 1.7| Void receipt
 |FR 2| Manage Inventory
@@ -135,6 +135,10 @@ Emma is 36, and works as at the counter. She is not married and leaves alone wit
 |FR 2.3.1| Create/remove order|
 |FR 2.3.2| Modify order|
 |FR 2.3.3| Perform order via mail|
+|FR 2.4| Manage products|
+|FR 2.4.1| Add product |
+|FR 2.4.2| Remove product |
+|FR 2.4.3| Update product |
 |FR 3| Manage customer with fidelity card|
 |FR 3.1| Manage a single customer|
 |FR 3.1.1|Add/remove customer|
@@ -211,7 +215,7 @@ usecase "Log_In" as li
 usecase "Log_Out" as lo
 
 usecase "Manage Inventory" as mi
-usecase "Manage Employee" as me
+usecase "Manage SalesPerson" as me
 usecase "Make order" as mo
 usecase "Manage Accounting" as ma
 
@@ -220,8 +224,8 @@ usecase "Credit card Payment" as cc
 usecase "Cash Payment" as cash
 
 
-usecase "Search Item" as si
-usecase "Scan cart items" as scan
+usecase "Search Product" as si
+usecase "Scan cart Products" as scan
 usecase "print receipt" as pr
 usecase "Print FIdelity Card" as pfc
 usecase "Update Fidelity points" as ufp
@@ -287,19 +291,18 @@ pp   .>   scan :extends
 ```plantuml
 @startuml
 (Manage Inventory) .> (Available Stock) :include
-(Manage Inventory) .> (Add Item) :include
-(Manage Inventory) .> (Remove Item) :include
-(Manage Inventory) .> (Update Item) :include
+(Manage Inventory) .> (Add Product) :include
+(Manage Inventory) .> (Remove Product) :include
+(Manage Inventory) .> (Update Product) :include
 
-(Manage Employee) -[hidden]up-- (Manage Inventory)
-(Manage Employee) .> (Add Employee) :include
-(Manage Employee) .> (Deactivate Employee) :include
-(Manage Employee) .> (Update Employee) :include
-(Manage Employee) .> (Search Employee) :include
+(Manage SalesPerson) -[hidden]up-- (Manage Inventory)
+(Manage SalesPerson) .> (Add SalesPerson) :include
+(Manage SalesPerson) .> (Deactivate SalesPerson) :include
+(Manage SalesPerson) .> (Update SalesPerson) :include
+(Manage SalesPerson) .> (Search SalesPerson) :include
 
-(Manage accounting) -[hidden]up-- (Manage Employee)
-(Manage accounting) .> (print report) :include
-(Manage accounting) .> (send report) :include
+(Manage accounting) -[hidden]up-- (Manage SalesPerson)
+(Manage accounting) .> (print accounting report) :include
 (Manage accounting) .> (void receipt) :include
 
 @enduml
@@ -307,33 +310,33 @@ pp   .>   scan :extends
 
 ## Use cases
 
-### Use case 1, UC1 - Update Item
+### Use case 1, UC1 - Update Product
 
 | Actors Involved        | Manager|
 | ------------- |:-------------:|
-|  Precondition     	| Item exists in Inventory |
-|  Post condition     	| Item's details are updated |
-|  Nominal Scenario     | An item has wrong or old info and must be updated  |
+|  Precondition     	| Product P exists in Inventory |
+|  Post condition     	| Product P details are updated |
+|  Nominal Scenario     | P has wrong or old info and must be updated  |
 |  Variants     		|  |
 
 
-### Use case 2, UC2 - Remove Item
+### Use case 2, UC2 - Remove Product
 
 | Actors Involved       |   Manager|
 | ------------- |:-------------:|
-|  Precondition     	| Item exists in Iventory |
-|  Post condition    	| Item does not exist in Inventory |
-|  Nominal Scenario     | Item is not sold anymore and must be removed from the Inventory |
-|  Variants     		| |
+|  Precondition     	| Product P exists in Iventory and Product P has not been part in a purchase during the open fiscal year |
+|  Post condition    	| Product P does not exist in Inventory |
+|  Nominal Scenario     | P is not sold anymore and must be removed from the Inventory |
+|  Variants     		| P is part of a purchase that belongs to the open fiscal year and it cannot be removed|
 
-### Use case 3, UC3 - Add Item
+### Use case 3, UC3 - Add Product
 
 | Actors Involved       |  Manager |
 | ------------- |:-------------:|
-|  Precondition     	| Item does not exist in Inventory |
-|  Post condition     	| Item exists in Iventory |
-|  Nominal Scenario   	| Manager add an item that previously was not availably to be sold |
-|  Variants     		| User U can delete only his / her account. Administrator can delete any account |
+|  Precondition     	| Product P does not exist in Inventory |
+|  Post condition     	| Product P exists in Iventory |
+|  Nominal Scenario   	| Manager adds a P that previously was not availably to be sold |
+|  Variants     		| - |
 
 
 ### Use case 4, UC4 - Available Stock
@@ -341,8 +344,8 @@ pp   .>   scan :extends
 | Actors Involved       | Manager |
 | ------------- |:-------------:|
 |  Precondition     	| The inventory exists |
-|  Post condition     	| The manager knows the items in stock and out of stock |
-|  Nominal Scenario     | The manager needs to know the stock availability of the items in the inventory. He gets and indication of all the items in stock and what is their availability |
+|  Post condition     	| The manager knows the Products in stock and out of stock |
+|  Nominal Scenario     | The manager needs to know the stock availability of the Products in the inventory. He gets an indication of all the Products in stock and what is their availability |
 
 
 
@@ -351,10 +354,10 @@ pp   .>   scan :extends
 
 | Actors Involved       | Manager |
 | ------------- |:-------------:|
-|  Precondition     	| Sales Person exists |
-|  Post condition     	| Sales Person's details are added or updated |
-|  Nominal Scenario     | The sales person personal information has changed and must be updated |
-|  Variants     		| The sales person exists but he/she is deactivated, the manager can re-activate the account|
+|  Precondition     	| Sales Person SP exists |
+|  Post condition     	| Sales Person SP details are added or updated |
+|  Nominal Scenario     | SP's personal information has changed and must be updated |
+|  Variants     		| SP exists but he/she is deactivated, the manager can re-activate the account|
 
 
 
@@ -362,9 +365,9 @@ pp   .>   scan :extends
 
 | Actors Involved  |                        Manager          |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     | Sales Person does have an account on his/her name |
-| Post condition   | Sales Person account is suspended but still present in the system |
-| Nominal Scenario | The manager has fired an employee; The employee left the business |
+| Precondition     | Sales Person SP does have an account on his/her name |
+| Post condition   | Sales Person SP account is suspended but still present in the system |
+| Nominal Scenario | The manager has fired SP; SP has left the EZShop |
 | Variants         | - |
 
 
@@ -373,90 +376,108 @@ pp   .>   scan :extends
 
 | Actors Involved  |                   Manager                    |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     | Sales person does not exist |
-| Post condition   | The sales person has an account |
-|                  | The sales person can log in |
-| Nominal Scenario | The business hires a new employee |
+| Precondition     | Sales person SP does not exist |
+| Post condition   | Sales person SP has an account |
+|                  | Sales person SP can log in |
+| Nominal Scenario | The EZShop hires SP|
 | Variants         | - |
 
 
+### Use case 8, UC8 - Void receipt
 
-### Use case 8, UC8 - Make Order
+| Actors Involved  |                   Manager                    |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     | Receipt R has been generated |
+| Post condition   | Receipt R has been voided |
+| Nominal Scenario | R shouldn't have been generated |
+| Variants         | - |
+
+
+### Use case 9, UC9 - print accounting report
+
+| Actors Involved  |                   Manager                    |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     | Accounting report is required |
+| Post condition   | Accounting report has been printed on screen |
+| Nominal Scenario | The manager needs to see accounting movements for a certain period |
+| Variants         | The accountant of the EZShop asks for the accounting movement during a certain period, the manager can send it via mail |
+
+
+### Use case 10, UC10 - Make Order
 
 | Actors Involved  |          Manager                      |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| The remaining stock of at least one item is deemed too low |
-| Post condition    | The order is placed |
-|					| The order has been sent to the supplier |
-|					| The supplier has been payed for the order |
-| Nominal Scenario 	| The manager checked the stock availability and believes that a restock is necessary. The manager creates and order, choses a payment option and the order is sent to the supplier |
+| Precondition     	| The remaining stock of at least one Product is deemed too low |
+| Post condition    | Order O is placed |
+|					| Order O has been sent to supplier S |
+| Nominal Scenario 	| The manager checked the stock availability and believes that a restock is necessary. The manager creates and order, choses a payment option and the order is sent to S |
 | Variants          | - |
 
 
 
-### Use case 9, UC9 - Log In
+### Use case 11, UC11 - Log In
 | Actors Involved  |                    Sales Person                 |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| The sales person account has been added by the manager |
-| Post condition   	| The sales person acessed his personal account |
-| Nominal Scenario 	| The sales person starts his/her shift, accesses account on which transactions will be registered |
-| Variants 			| Sales person can log-in only on his/her account|
-|					| Sales person lost/forgot his/her password, The Manager can unlock the account by updating sales person|	
+| Precondition     	| Sales person SP account has been added by the manager |
+| Post condition   	| Sales person has access to his personal account |
+| Nominal Scenario 	| SP starts his/her shift, accesses account on which transactions will be registered |
+| Variants 			| SP can log-in only on his/her account|
+|					| SP lost/forgot his/her password, The Manager can unlock the account by updating SP password|	
 
 
-### Use case 10, UC10 - Log Out
-
-| Actors Involved  |         Sales Person                         |
-| ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Sales person is logged-in in his/her account |
-| Post condition   	| Sales person is logged-out of his/her account |
-| Nominal Scenario 	| The sales person has completed his/her shift and has to log-out |
-| Variants          | The sales person can log-out only from his/her account |
-|					| The sales person forgot to log-out, The manager performs the log-out bu using manager-key |
-
-
-
-### Use case 11, UC11 - Scan Cart Items
+### Use case 12, UC12 - Log Out
 
 | Actors Involved  |         Sales Person                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| The client brought to the cashier the items he/she wants to buy |
-|					| The cashier is logged-in |
-| Post condition   	| Cart items have been scanned |
-|					| The total cost of the items is available |
-| Nominal Scenario 	| The client has collected all items of interest, gives them to the cashier, the cashiers scans them and inform the client of the price of his/her purchase |
-| Variants          | The client does not want to conclude the purchase, the cashier cancel the scanned items |
+| Precondition     	| Sales person SP is logged-in in his/her account |
+| Post condition   	| Sales person SP is logged-out of his/her account |
+| Nominal Scenario 	| SP has completed his/her shift and has to log-out |
+| Variants          | SP can log-out only from his/her account |
+|					| SP forgot to log-out, The manager performs the log-out by using manager privilege |
 
 
-### Use case 12, UC12 - Perform Payment
+
+### Use case 13, UC13 - Scan Cart Products
 
 | Actors Involved  |         Sales Person                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| The cashier has scanned the items brought by the client |
-|					| The client has chosen a payment method |
-| Post condition   	| The payment for the cart items has been completed |
-|					| Fidelity card points updated |
+| Precondition     	| Client CL brings to cashier CA the Products P he/she wants to buy |
+|					| Cashier CA is logged-in |
+| Post condition   	| Products P in cart have been scanned |
+|					| The total cost of Products P is available |
+| Nominal Scenario 	| CL has collected all P of interest, gives them to CA, CA scans P and informs CL of the price of his/her purchase |
+| Variants          | CL does not want to conclude the purchase, CA cancel the scanned P |
+
+
+### Use case 14, UC14 - Perform Payment
+
+| Actors Involved  |         Sales Person                         |
+| ---------------- | :----------------------------------------------------------: |
+| Precondition     	| Cashier CA has scanned Products P brought by client CL |
+|					| Client CL has choose a payment method |
+| Post condition   	| The payment for Products P has been completed |
+|					| Fidelity card points are updated |
 |					| The system has printed a receipt|
-| Nominal Scenario 	| The cashier informs the client of the price, the client informs the cashier of the payment method, the client pays for his purchase, client receives the receipt|
-| Variants          | The client's credit card payment option is rejected, chooses a different payment method |
-|					| The client does not have the required amount of money or does not want to go through with the payment, the cashier cancels the cart items|
+| Nominal Scenario 	| CA informs CL of the price, CL informs CA of the payment method, CL pays for his purchase, CL receives the receipt|
+| Variants          | CL's credit card payment option is rejected, chooses a different payment method |
+|					| CL does not have the required amount of money or does not want to go through with the payment, CA cancels the scanned P|
 
-### Use case 13, UC13 - Search Fidelity Card
+### Use case 15, UC15 - Search Fidelity Card
 
 | Actors Involved  |         Sales Person                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Fidelity card for client does exists |
-| Post condition   	| Client of fidelity card found |
-| Nominal Scenario 	| The cashier inputs the clients name or fidelity card number and gets the clients profile with fidelity points|
+| Precondition     	| Fidelity card FC for client CL exist |
+| Post condition   	| Client CL of fidelity card FC found |
+| Nominal Scenario 	| The cashier inputs CL's name or FC number and gets the profile of CL with associated fidelity points|
 | Variants          | - |
 
-### Use case 14, UC14 - Print Fidelity Card
+### Use case 16, UC16 - Print Fidelity Card
 
 | Actors Involved  |         Sales Person                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Fidelity card for client does not exist |
-| Post condition   	| Fidelity card for the client has been created |
-| Nominal Scenario 	| The client asks for the fidelity card, the cashier checks that the client does not have one, the cashier prints a fidelity card|
+| Precondition     	| Fidelity card FC for client CL does not exist |
+| Post condition   	| Fidelity card FC for client CL has been created |
+| Nominal Scenario 	| CL asks for FC, the cashier checks that CL does not have FC , the cashier prints FC|
 | Variants          | - |
 
 #### Relevant scenarios
@@ -464,39 +485,51 @@ pp   .>   scan :extends
 
 ##### Scenario 1.1 
 
-| Scenario |  Update Item through list |
+| Scenario |  Update Product through list |
 | ------------- |:-------------:| 
-|  Precondition     | Item is present in inventory |
-|  Post condition     | Item has new details |
+|  Precondition     | Product is present in inventory |
+|  Post condition     | Product has new details |
 |  Step#        | Description  |
-|  1    |  Manager prints on screen the list of items in the inventory |
-|  2    |  Manager selects the item to be updated |
-|  3	|  Manager updates item |
+|  1    |  Manager prints on screen the list of Products in the inventory |
+|  2    |  Manager selects the Product to be updated |
+|  3	|  Manager updates Product |
 |  4    |  Manager saves changes |
 
 ##### Scenario 1.2
 
-| Scenario |  Update Item through item search |
+| Scenario |  Update Product through Product search |
 | ------------- |:-------------:| 
-|  Precondition     | Item is present in inventory |
-|  Post condition     | Item has new details |
+|  Precondition     | Product is present in inventory |
+|  Post condition     | Product has new details |
 |  Step#        | Description  |
-|  1    |  Manager inputs items ID in search space |
-|  2    |  The system return the item profile |
-|  3	|  Manager updates item |
+|  1    |  Manager inputs Products ID in search space |
+|  2    |  The system return the Product profile |
+|  3	|  Manager updates Product |
+|  4    |  Manager saves changes |
+
+##### Scenario 2.1
+
+| Scenario |  Remove Product Prvsoduct |
+| ------------- |:-------------:| 
+|  Precondition     | Product is present in inventory |
+|  Post condition     | Product is not present in inventory |
+|  Step#        | Description  |
+|  1    |  Manager inputs Products ID in search space |
+|  2    |  The system return the Product profile |
+|  3	|  Manager updates Product |
 |  4    |  Manager saves changes |
 
 
 ##### Scenario 3.1 
 
-| Scenario |  Add item in inventory |
+| Scenario |  Add Product in inventory |
 | ------------- |:-------------:| 
-|  Precondition     | Item is not present in inventory |
-|  Post condition     | New item is in inventory |
+|  Precondition     | Product is not present in inventory |
+|  Post condition     | New Product is in inventory |
 |  Step#        | Description  |
-|  1    |  Manager selects "add item" button |
+|  1    |  Manager selects "add Product" button |
 |  2    |  System shows to manager the fields to fill |
-|  3	|  Manager inserts item details |
+|  3	|  Manager inserts Product details |
 |  4    |  Manager saves changes |
 
 
@@ -504,12 +537,12 @@ pp   .>   scan :extends
 
 | Scenario |  Order made to restock inventory |
 | ------------- |:-------------:| 
-|  Precondition     | One or more items in the inventory need restock |
+|  Precondition     | One or more Products in the inventory need restock |
 |  Post condition     | The supplier is informed of the order |
 |  Step#        | Description  |
 |  1    |  Manager chooses "make order" in in the system  |
 |  2    |  System shows to manager empty list order |
-|  3	|  Manager inserts items to order |
+|  3	|  Manager inserts Products to order |
 |  4    |  Manager chooses the Supplier to whom to send the order |
 |  5	|  Manager chooses payment option|
 |  6    |  Manager confirms order |
@@ -519,7 +552,7 @@ pp   .>   scan :extends
 
 | Scenario |  pay with credit card |
 | ------------- |:-------------:| 
-|  Precondition     | Cashier has scanned the items in the shopping cart of the client |
+|  Precondition     | Cashier has scanned the Products in the shopping cart of the client |
 |  Post condition     | Client payed for his/hers purchase with credit card |
 |  Step#        | Description  |
 |  1    |  Client chooses to pay with credit card|
@@ -531,7 +564,7 @@ pp   .>   scan :extends
 ##### Scenario 12.2 
 | Scenario |  pay with cash |
 | ------------- |:-------------:| 
-|  Precondition     | Cashier has scanned the items in the shopping cart of the client |
+|  Precondition     | Cashier has scanned the Products in the shopping cart of the client |
 |  Post condition     | Client payed for his/hers purchase in cash  |
 |  Step#        | Description  | 
 |  1    |  Client chooses to pay with cash|
@@ -625,7 +658,7 @@ Product "*" -- Purchase
 Order - "*" Product_Descriptor
 (Order, Product_Descriptor) .. Quantity
 
-Purchase -- Receipt
+Purchase -- Receipt: > produces
 Purchase "0..*"-- Payment_method: > done with
 Customer "0..*"-- Payment_method: < used by
 Customer --"0..1" Fidelity_card: > owns
