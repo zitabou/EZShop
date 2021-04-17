@@ -1,6 +1,6 @@
 # Graphical User Interface Prototype  
 
-Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras 
+Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta s282478, Zissis Tabouras 
 
 Date: 21 april 2021
 
