@@ -534,6 +534,23 @@ pp   .>   scan :extends
 |  4    |  Manager saves changes |
 
 
+### Use case 4, UC4 - Available Stock
+
+| Actors Involved       | Manager |
+| ------------- |:-------------:|
+|  Precondition     	| The inventory exists |
+|  Post condition     	| The manager knows the Products in stock and out of stock |
+|  Nominal Scenario     | The manager needs to know the stock availability of the Products in the inventory. He gets an indication of all the Products in stock and what is their availability |
+
+##### Scenario 4.1 
+| Scenario |  Check Available Stock |
+| ------------- |:-------------:| 
+|  Precondition     	| The inventory exists |
+|  Post condition     	| The manager knows the Products in stock and out of stock |
+|  Step#        | Description  |
+|  1    |  Manager visualizes the products in a table |
+|  2    |  Manager scrolls table to the end to view all the products |
+
 ##### Scenario 5.1 
 
 | Scenario |  Update Sales Person |
