@@ -12,7 +12,7 @@ Version:
 
 ## Screenshot 1
 
-[Image]
+![](./images/manage_employee.png)
 
 {info}
 
