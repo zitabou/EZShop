@@ -75,15 +75,15 @@ Scanner -up-> EZ
 
 | Actor | Logical Interface | Physical Interface  |
 | ------------- |:-------------|:-----|
-| Manager | Application GUI | Screen keyboard on PC  |
-| SalesPerson | Aplpicarion GUI | Touch screen on POS|
+| Manager | Application GUI or Web interface | Screen keyboard on PC  |
+| SalesPerson | Application GUI | Touch screen on POS|
 | Credit Card System| Payment gateway API | Dedicated console |
 | Scanner | Scanner API | Scanning device |
 # Stories and personas
 
 The following personas and stories are meant to cover different profiles of the Salesperson
 
-Rebecca is 35, works as a sales person. She has a child and she is not married. When going to work she doesn't need to have more problems due to the software she will have to use during that time. She doesn't care about advanced or complicated operations and wants to perform what is necessary fast and without any problems and the least interaction with the clients as possible. 
+Rebecca is 35, works as a sales person. She has a child and she is not married. When going to work she doesn't need to have more trouble due to the software she will have to use during her shift. She doesn't care about advanced or complicated operations and wants to perform what is necessary fast and without any problems and the least interaction with the clients as possible. 
 
 David is 62, works at the counter of a shop and has two children and one grandchild. He doesn't like technology and the most high tech device in his home is the TV and an old PC. He doesn't have a smartphone or use email by choice. If it was for him he would use an old cash register instead of computer. 
 
@@ -104,21 +104,17 @@ Emma is 36, and works as at the counter. She is not married and leaves alone wit
 |FR 1.1.1| Increase/decrease price of a product.
 |FR 1.1.2| Increase/decrease price of category.
 |FR 1.1.3| Increase/decrease price of given rate.
-|FR 1.2| Manage offers
-|FR 1.2.1| Create/delete new offers
-|FR 1.2.2| Assign/remove offer from product
-|FR 1.2.3| Modify offer
-|FR 1.3| Manage payment method
-|FR 1.3.1| Add/remove payment method
-|FR 1.3.2| Add/remove accepted cards (visa, mastercard, etc)
-|FR 1.4| Manage cash register
-|FR 1.4.1| Create/delete cash register
-|FR 1.4.2| Enable/disable cash register
-|FR 1.5| Manage SalesPerson
-|FR 1.5.1| Add/remove SalesPerson
-|FR 1.5.2| Create/delete SalesPerson credentials 
-|FR 1.6| Generate receipt
-|FR 1.7| Void receipt
+|FR 1.2| Manage payment method
+|FR 1.2.1| Add/remove payment method
+|FR 1.2.2| Add/remove accepted cards (visa, mastercard, etc)
+|FR 1.3| Manage cash register
+|FR 1.3.1| Create/delete cash register
+|FR 1.3.2| Enable/disable cash register
+|FR 1.4| Manage SalesPerson
+|FR 1.4.1| Add/remove SalesPerson
+|FR 1.4.2| Create/delete SalesPerson credentials 
+|FR 1.5| Generate receipt
+|FR 1.6| Void receipt
 |FR 2| Manage Inventory
 |FR 2.1| Manage product categories
 |FR 2.1.1| Create/delete product categories
@@ -175,9 +171,8 @@ Emma is 36, and works as at the counter. She is not married and leaves alone wit
 | Function | Manager | Sales Person | 
 | ------------- |:-------------|--|
 | FR 1| yes | no |
-| FR 1.6| yes | yes|
+| FR 1.5| yes | yes|
 | FR 2| yes | no |
-| FR 1.3| yes | no |
 | FR 3 | yes | yes |
 | FR 4 | yes | no |
 | FR 4.3| yes | yes |
@@ -343,7 +338,7 @@ pp   .>   scan :extends
 
 | Actors Involved       | Manager |
 | ------------- |:-------------:|
-|  Precondition     	| The inventory exists |
+|  Precondition     	| The inventory is not empty |
 |  Post condition     	| The manager knows the Products in stock and out of stock |
 |  Nominal Scenario     | The manager needs to know the stock availability of the Products in the inventory. He gets an indication of all the Products in stock and what is their availability |
 
@@ -410,7 +405,7 @@ pp   .>   scan :extends
 | Precondition     	| The remaining stock of at least one Product is deemed too low |
 | Post condition    | Order O is placed |
 |					| Order O has been sent to supplier S |
-| Nominal Scenario 	| The manager checked the stock availability and believes that a restock is necessary. The manager creates and order, choses a payment option and the order is sent to S |
+| Nominal Scenario 	| The manager checked the stock availability and believes that a restock is necessary. The manager creates and order, chooses a payment option and the order is sent to S |
 | Variants          | - |
 
 
@@ -418,7 +413,7 @@ pp   .>   scan :extends
 ### Use case 11, UC11 - Log In
 | Actors Involved  |                    Sales Person, Manager                 |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Sales person SP account has been added by the manager |
+| Precondition     	| Sales person SP account is present in the system |
 | Post condition   	| Sales person has access to his personal account |
 | Nominal Scenario 	| SP starts his/hers shift, accesses account on which transactions will be registered |
 | Variants 			| SP can log-in only on his/hers account|
@@ -454,7 +449,7 @@ pp   .>   scan :extends
 | Actors Involved  |         Sales Person                         |
 | ---------------- | :----------------------------------------------------------: |
 | Precondition     	| Cashier CA has scanned Products P brought by client CL |
-|					| Client CL has choose a payment method |
+|					| Client CL chose a payment method |
 | Post condition   	| The payment for Products P has been completed |
 |					| Fidelity card points are updated |
 |					| The system has Generated a receipt|
@@ -877,12 +872,14 @@ Not really meaningful in this case.  Only software components are needed.
 
 # Deployment Diagram 
 
-Client server model. The application runs on a server or virtual machine, any client accesses it through PC or POS.
+Client server model. The application runs on a server or virtual machine, any salesperson accesses it through a POS. The manager can access it though a destop application or access the server though a web interface
 
 ```plantuml
 artifact "EZShop Application" as ezshop
+node "Web Interface" as wi
 node "server" as s
 node "POS" as pc
+s -- wi
 s -- ezshop
 s -- "*" pc
 ```
