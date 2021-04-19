@@ -290,7 +290,7 @@ pp   .>   scan :extends
 
 ```plantuml
 @startuml
-(Manage Inventory) .> (Available Stock) :include
+(Manage Inventory) .> (Check Available Stock) :include
 (Manage Inventory) .> (Add Product) :include
 (Manage Inventory) .> (Remove Product) :include
 (Manage Inventory) .> (Update Product) :include
@@ -339,7 +339,7 @@ pp   .>   scan :extends
 |  Variants     		| - |
 
 
-### Use case 4, UC4 - Available Stock
+### Use case 4, UC4 - Check Available Stock
 
 | Actors Involved       | Manager |
 | ------------- |:-------------:|
@@ -532,15 +532,6 @@ pp   .>   scan :extends
 |  2    |  System shows to manager the fields to fill |
 |  3	|  Manager inserts Product details |
 |  4    |  Manager saves changes |
-
-
-### Use case 4, UC4 - Available Stock
-
-| Actors Involved       | Manager |
-| ------------- |:-------------:|
-|  Precondition     	| The inventory exists |
-|  Post condition     	| The manager knows the Products in stock and out of stock |
-|  Nominal Scenario     | The manager needs to know the stock availability of the Products in the inventory. He gets an indication of all the Products in stock and what is their availability |
 
 ##### Scenario 4.1 
 | Scenario |  Check Available Stock |
