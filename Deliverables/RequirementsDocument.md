@@ -413,22 +413,22 @@ pp   .>   scan :extends
 ### Use case 11, UC11 - Log In
 | Actors Involved  |                    Sales Person, Manager                 |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Sales person SP account is present in the system |
-| Post condition   	| Sales person has access to his personal account |
-| Nominal Scenario 	| SP starts his/hers shift, accesses account on which transactions will be registered |
-| Variants 			| SP can log-in only on his/hers account|
-|					| SP lost/forgot his/hers password, The Manager can unlock the account by updating SP password|	
+| Precondition     	| Sales person SP or Manager M account is present in the system |
+| Post condition   	| Sales person SP or Manager M has access to his personal account |
+| Nominal Scenario 	| SP or M starts his/hers shift, accesses account on which transactions will be registered |
+| Variants 			| SP or M can log-in only on his/hers account|
+|					| SP or M lost/forgot his/hers password, The Manager can unlock the account by updating SP password|	
 
 
 ### Use case 12, UC12 - Log Out
 
 | Actors Involved  |         Sales Person, Manager                         |
 | ---------------- | :----------------------------------------------------------: |
-| Precondition     	| Sales person SP is logged-in in his/hers account |
-| Post condition   	| Sales person SP is logged-out of his/hers account |
-| Nominal Scenario 	| SP has completed his/hers shift and has to log-out |
-| Variants          | SP can log-out only from his/hers account |
-|					| SP forgot to log-out, The manager performs the log-out by using manager privilege |
+| Precondition     	| Sales person SP or Manager M is logged-in in his/hers account |
+| Post condition   	| Sales person SP or Manager M is logged-out of his/hers account |
+| Nominal Scenario 	| SP or M has completed his/hers shift and has to log-out |
+| Variants          | SP or M can log-out only from his/hers account |
+|					| SP or M forgot to log-out, The manager performs the log-out by using manager privilege |
 
 
 
@@ -455,6 +455,7 @@ pp   .>   scan :extends
 |					| The system has Generated a receipt|
 | Nominal Scenario 	| CA informs CL of the price, CL informs CA of the payment method, CL pays for his purchase, CL receives the receipt|
 | Variants          | CL's credit card payment option is rejected, chooses a different payment method |
+|					| CA informs CL of the price, CL informs CA of the payment method, CL pays for his purchase, CL receives the receipt via the mail connected to their fidelity card|
 |					| CL does not have the required amount of money or does not want to go through with the payment, CA cancels the scanned P|
 
 ### Use case 15, UC15 - Search Fidelity Card
@@ -872,14 +873,12 @@ Not really meaningful in this case.  Only software components are needed.
 
 # Deployment Diagram 
 
-Client server model. The application runs on a server or virtual machine, any salesperson accesses it through a POS. The manager can access it though a destop application or access the server though a web interface
+Client server model. The application runs on a server or virtual machine, any salesperson accesses it through a POS. The manager can access it though a web interface
 
 ```plantuml
-artifact "EZShop Application" as ezshop
-node "Web Interface" as wi
+artifact "Web Interface" as ezshop
 node "server" as s
 node "POS" as pc
-s -- wi
 s -- ezshop
 s -- "*" pc
 ```
