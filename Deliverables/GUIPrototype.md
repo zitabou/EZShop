@@ -12,7 +12,7 @@ Version:
 
 ## Screenshot 1
 
-![](./images/manage_employee.png)
+![](./images/manage_employee.png =250x)
 
 {info}
 
