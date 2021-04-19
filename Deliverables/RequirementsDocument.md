@@ -783,6 +783,8 @@ class Shop_building{
 class Person{
  Name
  Surname
+ Date of birth
+ Sex
 }
 class Salesperson {
  Wages
@@ -796,13 +798,19 @@ class Manager{
  owner or not
 }
 class ManagerAccount{
+	Username
+	Password
 }
 class Order{
  order cost
+ date
 }
 
 class Supplier{
  Company name
+ Address
+ email
+ phone number
 }
 class Product{
  Expiration Date
@@ -811,19 +819,23 @@ class Product_Descriptor{
  Prod_ID
  Prod_name
 }
+class Product_Category{
+	category name
+}
 class Purchase{
  timestamp
 }
 class Receipt{
  purchase cost
  receipt number
+ date
 }
 class Payment_method{
  isCash or not
  isCredit card or not
 }
 class Customer{
- ID
+ email
 }
 class Fidelity_card{
  points
@@ -848,6 +860,7 @@ SalesPersonAccount --"*" Purchase: > performs
 Order "*" -- Supplier: > provided_by
 Inventory -- "*" Product
 
+Product_Descriptor "*" -right- Product_Category
 Product "*" -- Product_Descriptor
 Product "*" -- Purchase
 Order - "*" Product_Descriptor
