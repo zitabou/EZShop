@@ -2,9 +2,9 @@
 
 Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras
 
-Date:
+Date: 21/04/2020
 
-Version:
+Version: #1
 
 # Contents
 
