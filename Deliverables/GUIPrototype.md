@@ -197,6 +197,7 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 <img src="./images/Storyboards/send_print ACreport.png" alt="send_print ACreport" width="1000"/>
 
+
 ## Manager create order list
 
 <img src="./images/Storyboards/CreateOrderList.png" alt="Create order list" width="1000"/>
@@ -205,3 +206,9 @@ This view is available to the cashier. It is shown when purchase has been comple
 ## Salesperson login and start scanning
 
 <img src="./images/Storyboards/LoginAndStartScanning.png" alt="edit_add employee" width="1000"/>
+
+
+## Salesperson go to checkout
+
+<img src="./images/Storyboards/checkout.png" alt="go to checkout" width="1000"/>
+
