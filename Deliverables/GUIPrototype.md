@@ -14,19 +14,34 @@ Version:
 
 <img src="./images/Login Manager.png" alt="Login Manager" width="800"/>
 
-{info}
+This view is available only to the manager. It is the first page shown. If the manager tries to connect to any other page without having an active session he is redirected here for the login.
+
+1. A <u><b>form</b></u> asks the manager for his account username and password
+2. The login <u><b>button</b></u> is pressed to login with the inserted credentials
+3. A <u><b>dropdown menu</b></u> on the bottom left allows the user to change the language.
 
 ## Screenshot 2
 
 <img src="./images/main menu.png" alt="main menu" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown right after the login.
+
+1. A <u><b>menu</b></u> on the right allows the user to navigate through the available sections. 
+2. A <u><b>chart</b></u> initially shows the current finantial situation of the shop
+3. A <u><b>calendar</b></u> on the right can be used to select another period of time and update the chart accordingly
+
 
 ## Screenshot 3
 
 <img src="./images/Accounting Section.png" alt="Accounting Section" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown when the manager selects from the vertical menu on the left the "manage accounting" button.
+
+1. A <u><b>data grid</b></u> shows invoices. elements of the grid can be reordered by means of the arrow buttons and filtered by means of the <u><b>search bar</b></u>, where one can look for an ID, and the <u><b>date inputs</b></u>. The Status section indicates if the invoice was a mistake, and therefore was listed by the cashier as "to be void".
+2. A <u><b>print button</b></u> prints to pdf the shown list of invoices, 
+3. A <u><b>send email</b></u> button allows the manager to send that same pdf via email(see workflow "Manager send/print accounting report") 
+4. A <u><b>void receipt button</b></u> allows the manager to void a receipt in the "to be void" state.
+
 
 ## Screenshot 4 - Make order
 
@@ -35,7 +50,7 @@ Version:
 
 This view is available only to the manager. It is shown when the manager selects from the vertical menu on the left the "make order" button.
 
-1. A <u><b>data gride</b></u> at the top of page show products, Items with fewer quantity have more priority.
+1. A <u><b>data grid</b></u> at the top of page show products, Items with fewer quantity have more priority.
     for making order easier manager can also click on <u><b>reorder</b></u> link to order previous order again.
 2. In box of <u><b>order</b></u> you can see the list of selected order and also <u><b>changing supplier</b></u> is          possible there is also a link for <u><b>adding new supplier</b></u>.
 3. Whenever order compeleted you can click on <u><b>confirm order</b></u>.
@@ -158,6 +173,11 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 # Storyboards
 
+## Manager login
+
+<img src="./images/Storyboards/workflow_managerlogin.png" alt="edit_add employee" width="1000"/>
+
+
 ## Manager add/update salesperson
 
 <img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1000"/>
@@ -171,3 +191,8 @@ This view is available to the cashier. It is shown when purchase has been comple
 ## Manager send/print accounting report
 
 <img src="./images/Storyboards/send_print ACreport.png" alt="send_print ACreport" width="1000"/>
+
+
+## Salesperson login and start scanning
+
+<img src="./images/Storyboards/LoginAndStartScanning.png" alt="edit_add employee" width="1000"/>
