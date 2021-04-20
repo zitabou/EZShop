@@ -28,11 +28,18 @@ Version:
 
 {info}
 
-## Screenshot 4
+## Screenshot 4 - Make order
 
 <img src="./images/make order.png" alt="make order" width="800"/>
 
-{info}
+
+this screen shown when a user(manager of system) click on a make order tab.
+
+1. A data gride at the top of page show products, Items with fewer quantity have more priority.
+    for making order easier manager can also click on reorder link to order previous order again.
+2. In box of order you can see the list of selected order and also changing supplier is          possible there is also a link for adding supplier.
+3. Whenever order compeleted you can confirm your order.
+
 
 ## Screenshot 5
 
