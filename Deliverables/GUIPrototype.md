@@ -59,8 +59,8 @@ From here the manager can:
 
 This view is available only to the manager. It is shown when the manager selects to update or add an employee, which is available in the <b>"Manage employee"</b> view (screenshot 6). The creation of an emlpoyee will automatically assign an <b>ID number</b> to the entry which will be confirmed when changes are confirmed
 From here the manager can:
-1. <u><b>Update</b></u> the <b>details</b> of the selected <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>" view (screenshot 7).
-2. <u><b>Add</b></u> information related to an new <b>Salesperson</b>.
+1. <u><b>Update</b></u> the <b>details</b> of the selected <b>Salesperson</b>.
+2. <u><b>Add</b></u>, set the initial information related to an new <b>Salesperson</b>.
 3. <u><b>Confirm changes</b></u> made to the informations of the Salesperso and return to the <b>"Manage employee"</b> view (screenshot 6)
 4. <u><b>Cancel changes</b></u> made to the informations of the Salesperson and return to the <b>"Manage employee"</b> view (screenshot 6)
 
@@ -81,7 +81,12 @@ From here the manager can:
 
 <img src="./images/Profile_products.png" alt="Profile_products" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown when the manager selects to update or add a product, which is available in the <b>"Manage inventory"</b> view (screenshot 8). The creation of a new product will automatically assign an <b>ID number</b> to the entry which will be confirmed when changes are confirmed
+From here the manager can:
+1. <u><b>Update</b></u> the <b>details</b> of the selected <b>Product</b>.
+2. <u><b>Add</b></u>, set the initial information related to an new <b>Product</b>.
+3. <u><b>Confirm changes</b></u> made to the details of the product and return to the <b>"Manage inventory"</b> view (screenshot 8)
+4. <u><b>Cancel changes</b></u> made to the details of the product and return to the <b>"Manage inventory"</b> view (screenshot 8)
 
 ## Screenshot 10
 
