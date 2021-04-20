@@ -607,16 +607,40 @@ pp   .>   scan :extends
 
 ##### Scenario 9.1 
 
-| Scenario |  Void a receipt |
+| Scenario |  Print accounting report |
 | ------------- |:-------------:| 
-|  Precondition     | Receipt has been generated and must be included in accounting |
-|  Post condition     | Receipt is void and does not count in accounting |
+|  Precondition     | Accounting report AR is available |
+|  Post condition     | The Accounting report AR has been printed |
 |  Step#        | Description  |
-|  1    |  Sales Person generates a receipt |
-|  2    |  Sales Person tag's the receipt as "to_be_void" |
-|  3    |  Manager accesses receipts with tag "to_be_void" |
-|  5    |  Manager makes receipt void |
-|  6    |  Receipt is indicated as void |
+|  1    |  Manager selects the dates he/she is interested to print the AR for |
+|  2    |  The system prints an overview of the AR  |
+|  3    |  The Manager selects to print the AR|
+
+
+##### Scenario 9.2 
+
+| Scenario |  Save accounting report |
+| ------------- |:-------------:| 
+|  Precondition     | Accounting report AR is available |
+|  Post condition     | The Accounting report AR has been saved on the manager's computer |
+|  Step#        | Description  |
+|  1    |  Manager selects the dates he/she is interested to print the AR for |
+|  2    |  The system prints an overview of the AR  |
+|  3    |  The Manager selects to save the AR |
+
+
+##### Scenario 9.3
+
+| Scenario |  Send accounting report |
+| ------------- |:-------------:| 
+|  Precondition     | Accounting report AR is available |
+|  Post condition     | The Accounting report AR has been sent via email to the receiver |
+|  Step#        | Description  |
+|  1    |  Manager selects the dates he/she is interested to print the AR for |
+|  2    |  The system prints an overview of the AR  |
+|  3    |  The Manager selects to send via email the AR |
+|  4    |  The Manager selects the destination for the email |
+|  5    |  The Manager sends the email |
 
 
 ##### Scenario 10.1 
