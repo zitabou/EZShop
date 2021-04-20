@@ -46,10 +46,10 @@ Version:
 
 This view is available onfly for the manager. It is shown when the manager selects from the vertical menu on the left the "manage employee" button.
 From here the manager can:
-1. <u><b>Add</b></u> a new <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>"(screenshot 8).
-2. <u><b>Update</b></u> the information related to an existing <b>Salesperson</b> by <b>"double clicking"</b> the desired entry in the table. This action will take us to <b>"Profile_employee"</b>(screenshot 8).
+1. <u><b>Add</b></u> a new <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>"(screenshot 7).
+2. <u><b>Update</b></u> the information related to an existing <b>Salesperson</b> by <b>"double clicking"</b> the desired entry in the table. This action will take us to <b>"Profile_employee"</b>(screenshot 7).
 3. <u><b>Search</b></u> for a <b>Salesperson</b> by using the search bar. This action will make the content of the table to change real time. The search can happen by ID or Name.
-4. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 9), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
+4. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
 
 
 ## Screenshot 7
