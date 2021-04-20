@@ -132,11 +132,15 @@ From here the manager can:
 
 {info}
 
-## Screenshot 15
+## Screenshot 15 - Checkout
 
 <img src="./images/checkout.png" alt="checkout" width="800"/>
 
-{info}
+This view is available to the cashier. It is shown when purchase has been completed and all items barcode scanned. It is shown when a cashier click on the button <b>"Checkout"</b> which is availbe in the view (screenshot 11).
+
+1. <u><b>Back </b></u> button return you to the view  (screenshot 11) for <b>add</b> or <b>update</b> purchase list.
+2. <b>Sopping card</b> it is a complete overview of all scanned items and total amount of money.
+3. <u><b>Payment method</b></u> , customer can choose between two type of payment <b>cash</b> or <b>credit cart</b>.
 
 
 # Example of the GUI in the web interface
