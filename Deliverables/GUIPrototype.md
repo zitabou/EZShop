@@ -145,7 +145,11 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 # Storyboards
 
-## Manager create/update salesperson details
+## Manager add/update salesperson
 
-<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1000"/>
+<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1200"/>
 
+
+## Manager add/update product
+
+<img src="./images/Storyboards/edit_add product.png" alt="edit_add employee" width="1200"/>
