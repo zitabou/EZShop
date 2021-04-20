@@ -210,5 +210,5 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 ## Salesperson go to checkout
 
-<img src="./images/Storyboards/checkout.png" alt="go to checkout" width="1000"/>
+<img src="./images/Storyboards/Checkout.png" alt="go to checkout" width="1000"/>
 
