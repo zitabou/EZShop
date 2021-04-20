@@ -197,6 +197,10 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 <img src="./images/Storyboards/send_print ACreport.png" alt="send_print ACreport" width="1000"/>
 
+## Manager create order list
+
+<img src="./images/Storyboards/CreateOrderList.png" alt="Create order list" width="1000"/>
+
 
 ## Salesperson login and start scanning
 
