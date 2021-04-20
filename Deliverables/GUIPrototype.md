@@ -41,7 +41,7 @@ This view is available only to the manager. It is shown when the manager selects
 3. Whenever order compeleted you can click on <u><b>confirm order</b></u>.
 
 
-## Screenshot 5
+## Screenshot 5 - Add/Update supplier
 
 <img src="./images/Supplier.png" alt="Supplier" width="800"/>
 
