@@ -112,29 +112,38 @@ From here the manager can:
 
 <img src="./images/Salesperson_Main.png" alt="Salesperson_Main" width="800"/>
 
-This is the main view for the <b>sales person</b>. In this screen the sales person will be able to visualize the list of products that have been readed already by the QR reader. <b>Every time the QR reader process a new product, this list will be updated.</b> This list shows the products, their identifiers, unitary prices, quantities and the subtotal for each product. Additionally, the total ammount is calculated as the sum of subtotals and displayed at the bottom. In case that the sales person wants to confirm that a product has already been registered by the QR reader, he/she can use the search field in the upper left area to search for the product.
+This is the main view for the <b>sales person</b>. In this screen the sales person will be able to visualize the list of products that have been read already by the QR reader. <b>Every time the QR reader process a new product, this list will be updated.</b> This list shows the products, their identifiers, unitary prices, quantities and the subtotal for each product. Additionally, the total ammount is calculated as the sum of subtotals and displayed at the bottom. In case that the sales person wants to confirm that a product has already been registered by the QR reader, he/she can use the search field in the upper left area to search for the product.
 Three action buttons are available in this screen:
-1. <u><b>Fidelity Card.-</b></u> In case the client has one fidelity card and wants to use it or, also, whether the client wants to get a new fidelity card.
-2. <u><b>Checkout.-</b></u> After all the client's products have been processed by the QR reader, this button takes the sales person to the checkout screen where the sales person will be able to select the payment method and perform the transaction.
-3. <u><b>Add Item.-</b></u> Allows the sales person to add one additional product manually, by inserting the code of this product. This option is used in case the QR reader can't read the code of the product.
+1. <u><b>Fidelity Card</u>.-</b> In case the client has one fidelity card and wants to use it or, also, whether the client wants to get a new fidelity card.
+2. <u><b>Checkout</u>.-</b> After all the client's products have been processed by the QR reader, this button takes the sales person to the checkout screen where the sales person will be able to select the payment method and perform the transaction.
+3. <u><b>Add Item</u>.-</b> Allows the sales person to add one additional product manually, by inserting the code of this product. This option is used in case the QR reader can't read the code of the product.
 
 ## Screenshot 12
 
 <img src="./images/Salesperson_AddItemManually.png" alt="Salesperson_AddItemManually" width="800"/>
 
-{info}
-
+The sales person arrives at this screen after clicking on the "Add Item" button. This screen shows the list of products available on the store, so the sales person can click on the product manually to select it, after that the sales person can click on the confirm button. The store may have hundreds of products, so there is a search field in the upper left area. After writing the information of the product, the list on the screen will be updated, making it easier to select the desired product. Also, it is possible to select the quantity of the items to add through the bottom left field. If no quantity is specified, the default is one.
+Two action buttons are present in this screen:
+1. <u><b>Confirm</u>.-</b> Confirms the selection and adds the product to the client's list.
+2. <u><b>Cancel</u>.-</b> Cancels the addition of the product and returns to the previous screen without making any changes.
+ 
 ## Screenshot 13
 
 <img src="./images/Salesperson_ListFidelityCard.png" alt="Salesperson_ListFidelityCard" width="800"/>
 
-{info}
+The sales person arrives at this screen after clicking on the "Fidelity Card" button. This screen shows the <b>list of fidelity cards</b> registered on the system and their respective owners. In case the client has a fidelity card, the sales person should search for the client's fidelity card using the search field located on the upper left corner and click on the the client's cards. If no card is found, this means that the client does not have a fidelity card, therefore if the client agrees then the sales person can create a fidelity card for him.
+There are two action buttons pressent on this screen:
+1. <u><b>Create Card</u>.-</b> This action takes the sales person to a new screen where it is possible to create a new fidelity card using the client's data.
+2. <u><b>Return</u>.- </b> In case the client doesn't want to use a fidelity card or get one, the screen retuns to the main view of the sales person.
 
 ## Screenshot 14
 
 <img src="./images/Salesperson_CreateFidelityCard.png" alt="Salesperson_CreateFidelityCard" width="800"/>
 
-{info}
+This view is available to the sales person after clicking on the Create Card button. On this screen, the sales person can <b>introduce the client's information</b> and generate a new fidelity card in the system for him. The fields to fill are name, ID, ID type, email and genre. After that data has been introduced the sales person can proceed to click on the Confirm button. The client may change his mind in the process so there is a Cancel button available.
+Two action buttons are available on this screen:
+1. <u><b>Confirm</u>.-</b> This button confirms the creation of the fidelity card and automatically selects it for its use in the client's order.
+2. <u><b>Cancel</u>.-</b> This button cancels the creation of the fidelity card and returns to the previous screen.
 
 ## Screenshot 15 - Checkout
 
