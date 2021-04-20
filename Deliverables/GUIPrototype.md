@@ -143,6 +143,9 @@ This view is available to the cashier. It is shown when purchase has been comple
 3. <u><b>Payment method</b></u> , customer can choose between two type of payment <b>cash</b> or <b>credit cart</b>.
 
 
-# Example of the GUI in the web interface
+# Storyboards
 
-# Example of the GUI in a POS environment
+## Manager create/update salesperson details
+
+<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1000"/>
+
