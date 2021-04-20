@@ -106,3 +106,7 @@ From here the manager can:
 
 {info}
 
+
+# Example of the GUI in the web interface
+
+# Example of the GUI in a POS environment
