@@ -44,25 +44,38 @@ Version:
 
 <img src="./images/manage_employee.png" alt="manage_employee" width="800"/>
 
-This view is available onfly for the manager. It is shown when the manager selects from the vertical menu on the left the "manage employee" button.
+This view is available only to the manager. It is shown when the manager selects from the vertical menu on the left the "manage employee" button.
 From here the manager can:
-1. <u><b>Add</b></u> a new <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>"(screenshot 7).
+1. <u><b>Add</b></u> a new <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>" view (screenshot 7).
 2. <u><b>Update</b></u> the information related to an existing <b>Salesperson</b> by <b>"double clicking"</b> the desired entry in the table. This action will take us to <b>"Profile_employee"</b>(screenshot 7).
 3. <u><b>Search</b></u> for a <b>Salesperson</b> by using the search bar. This action will make the content of the table to change real time. The search can happen by ID or Name.
-4. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
+4. <u><b>Change table preferencies</b></u> so that we can manage how many employees and what information about them will be displayed 
+5. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
 
 
 ## Screenshot 7
 
 <img src="./images/Profile_employee.png" alt="Profile_employee" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown when the manager selects to update or add an employee, which is available in the <b>"Manage employee"</b> view (screenshot 6). The creation of an emlpoyee will automatically assign an <b>ID number</b> to the entry which will be confirmed when changes are confirmed
+From here the manager can:
+1. <u><b>Update</b></u> the <b>details</b> of the selected <b>Salesperson</b>. This is done through the <b>"+"</b> button. This action will take us to "<b>Profile_employee</b>" view (screenshot 7).
+2. <u><b>Add</b></u> information related to an new <b>Salesperson</b>.
+3. <u><b>Confirm changes</b></u> made to the informations of the Salesperso and return to the <b>"Manage employee"</b> view (screenshot 6)
+4. <u><b>Cancel changes</b></u> made to the informations of the Salesperson and return to the <b>"Manage employee"</b> view (screenshot 6)
 
 ## Screenshot 8
 
 <img src="./images/Manage_inventory.png" alt="Manage_inventory" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown when the manager selects from the vertical menu on the left the "manage inventory" button. 
+From here the manager can:
+1. <u><b>Add</b></u> a new <b>Product</b> to the inventory. This is done through the <b>"+"</b> button. This action will take us to "<b>Product</b>"(screenshot 9).
+2. <u><b>Update</b></u> the information related to an existing <b>product</b> by <b>"double clicking"</b> the desired entry in the table. This action will take us to <b>"Product"</b> view (screenshot 9).
+3. <u><b>Search</b></u> for a <b>product</b> by using the search bar. This action will make the content of the table to change real time. The search can happen by ID or product name.
+4. <u><b>Change table preferencies</b></u> so that we can manage how many products and what information will be displayed 
+5. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
+
 
 ## Screenshot 9
 
