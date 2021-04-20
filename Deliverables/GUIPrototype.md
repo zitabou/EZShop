@@ -54,65 +54,53 @@ From here the manager can:
 
 ## Screenshot 7
 
-<img src="./images/Manage_inventory_popup_preferencies.png" alt="Manage_inventory_popup_preferencies" width="800"/>
+<img src="./images/Profile_employee.png" alt="Profile_employee" width="800"/>
 
 {info}
 
 ## Screenshot 8
 
-<img src="./images/Profile_employee.png" alt="Profile_employee" width="800"/>
+<img src="./images/Manage_inventory.png" alt="Manage_inventory" width="800"/>
 
 {info}
 
 ## Screenshot 9
 
-<img src="./images/Manage_inventory.png" alt="Manage_inventory" width="800"/>
+<img src="./images/Profile_products.png" alt="Profile_products" width="800"/>
 
 {info}
 
 ## Screenshot 10
 
-<img src="./images/Manage_inventory_popup_preferencies.png" alt="Manage_inventory_popup_preferencies" width="800"/>
+<img src="./images/Login Cashier.png" alt="Login Cashier" width="800"/>
 
 {info}
 
 ## Screenshot 11
 
-<img src="./images/Profile_products.png" alt="Profile_products" width="800"/>
+<img src="./images/Salesperson_Main.png" alt="Salesperson_Main" width="800"/>
 
 {info}
 
 ## Screenshot 12
 
-<img src="./images/Login Cashier.png" alt="Login Cashier" width="800"/>
+<img src="./images/Salesperson_AddItemManually.png" alt="Salesperson_AddItemManually" width="800"/>
 
 {info}
 
 ## Screenshot 13
 
-<img src="./images/Salesperson_Main.png" alt="Salesperson_Main" width="800"/>
+<img src="./images/Salesperson_ListFidelityCard.png" alt="Salesperson_ListFidelityCard" width="800"/>
 
 {info}
 
 ## Screenshot 14
 
-<img src="./images/Salesperson_AddItemManually.png" alt="Salesperson_AddItemManually" width="800"/>
-
-{info}
-
-## Screenshot 15
-
-<img src="./images/Salesperson_ListFidelityCard.png" alt="Salesperson_ListFidelityCard" width="800"/>
-
-{info}
-
-## Screenshot 16
-
 <img src="./images/Salesperson_CreateFidelityCard.png" alt="Salesperson_CreateFidelityCard" width="800"/>
 
 {info}
 
-## Screenshot 17
+## Screenshot 15
 
 <img src="./images/checkout.png" alt="checkout" width="800"/>
 
