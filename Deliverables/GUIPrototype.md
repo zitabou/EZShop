@@ -147,9 +147,14 @@ This view is available to the cashier. It is shown when purchase has been comple
 
 ## Manager add/update salesperson
 
-<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1200"/>
+<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1000"/>
 
 
 ## Manager add/update product
 
-<img src="./images/Storyboards/edit_add product.png" alt="edit_add employee" width="1200"/>
+<img src="./images/Storyboards/edit_add product.png" alt="edit_add employee" width="1000"/>
+
+
+## Manager send/print accounting report
+
+<img src="./images/Storyboards/send_print ACreport.png" alt="send_print ACreport" width="1000"/>
