@@ -41,7 +41,7 @@ This view is available only to the manager. It is shown when the manager selects
 3. Whenever order compeleted you can click on <u><b>confirm order</b></u>.
 
 
-## Screenshot 5
+## Screenshot 5 - Add/Update supplier
 
 <img src="./images/Supplier.png" alt="Supplier" width="800"/>
 
@@ -132,15 +132,17 @@ From here the manager can:
 
 {info}
 
-## Screenshot 15
+## Screenshot 15 - Checkout
 
 <img src="./images/checkout.png" alt="checkout" width="800"/>
 
-{info}
+This view is available to the cashier. It is shown when purchase has been completed and all items barcode scanned. It is shown when a cashier click on the button <b>"Checkout"</b> which is availbe in the view (screenshot 11).
+
+1. <u><b>Back </b></u> button return you to the view  (screenshot 11) for <b>add</b> or <b>update</b> purchase list.
+2. <b>Sopping card</b> it is a complete overview of all scanned items and total amount of money.
+3. <u><b>Payment method</b></u> , customer can choose between two type of payment <b>cash</b> or <b>credit cart</b>.
 
 
-# Storyboards
+# Example of the GUI in the web interface
 
-## Manager create/update salesperson details
-
-<img src="./images/Storyboards/edit_add employee.png" alt="edit_add employee" width="1000"/>
+# Example of the GUI in a POS environment
