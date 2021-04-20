@@ -33,7 +33,7 @@ Version:
 <img src="./images/make order.png" alt="make order" width="800"/>
 
 
-this screen shown when a user(manager of system) click on a make order tab.
+This view is available only to the manager. It is shown when the manager selects from the vertical menu on the left the "make order" button.
 
 1. A <u><b>data gride</b></u> at the top of page show products, Items with fewer quantity have more priority.
     for making order easier manager can also click on <u><b>reorder</b></u> link to order previous order again.
