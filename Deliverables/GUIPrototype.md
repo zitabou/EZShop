@@ -45,7 +45,12 @@ This view is available only to the manager. It is shown when the manager selects
 
 <img src="./images/Supplier.png" alt="Supplier" width="800"/>
 
-{info}
+This view is available only to the manager. It is shown when the manager selects to "Add new supplier", which is available in the "Make Order" view (screenshot 4). 
+
+1. <u><b>Update</b></u> the <b>details</b> of the selected <b>Supplier</b>.
+2. <u><b>Add</b></u>, set the initial information related to an new <b>Supplier</b>.
+3. <u><b>Confirm changes</b></u> made to the informations of the Supplier and return to the <b>"Make Order"</b> view (screenshot 4)
+4. <u><b>Cancel changes</b></u> made to the informations of the Supplier and return to the <b>"Make Order"</b> view (screenshot 4)
 
 ## Screenshot 6
 
