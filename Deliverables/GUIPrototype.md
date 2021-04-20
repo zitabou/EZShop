@@ -112,7 +112,11 @@ From here the manager can:
 
 <img src="./images/Salesperson_Main.png" alt="Salesperson_Main" width="800"/>
 
-{info}
+This is the main view for the <b>sales person</b>. In this screen the sales person will be able to visualize the list of products that have been readed already by the QR reader. <b>Every time the QR reader process a new product, this list will be updated.</b> This list shows the products, their identifiers, unitary prices, quantities and the subtotal for each product. Additionally, the total ammount is calculated as the sum of subtotals and displayed at the bottom. In case that the sales person wants to confirm that a product has already been registered by the QR reader, he/she can use the search field in the upper left area to search for the product.
+Three action buttons are available in this screen:
+1. <u><b>Fidelity Card.-</b></u> In case the client has one fidelity card and wants to use it or, also, whether the client wants to get a new fidelity card.
+2. <u><b>Checkout.-</b></u> After all the client's products have been processed by the QR reader, this button takes the sales person to the checkout screen where the sales person will be able to select the payment method and perform the transaction.
+3. <u><b>Add Item.-</b></u> Allows the sales person to add one additional product manually, by inserting the code of this product. This option is used in case the QR reader can't read the code of the product.
 
 ## Screenshot 12
 
