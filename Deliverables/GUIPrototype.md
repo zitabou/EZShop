@@ -35,10 +35,10 @@ Version:
 
 this screen shown when a user(manager of system) click on a make order tab.
 
-1. A data gride at the top of page show products, Items with fewer quantity have more priority.
-    for making order easier manager can also click on reorder link to order previous order again.
-2. In box of order you can see the list of selected order and also changing supplier is          possible there is also a link for adding supplier.
-3. Whenever order compeleted you can confirm your order.
+1. A <u><b>data gride</b></u> at the top of page show products, Items with fewer quantity have more priority.
+    for making order easier manager can also click on <u><b>reorder</b></u> link to order previous order again.
+2. In box of <u><b>order</b></u> you can see the list of selected order and also <u><b>changing supplier</b></u> is          possible there is also a link for <u><b>adding new supplier</b></u>.
+3. Whenever order compeleted you can click on <u><b>confirm order</b></u>.
 
 
 ## Screenshot 5
