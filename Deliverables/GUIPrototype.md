@@ -120,7 +120,13 @@ From here the manager can:
 
 <img src="./images/Login Cashier.png" alt="Login Cashier" width="800"/>
 
-{info}
+This is the entry point of the mobile application for the <b>sales person</b>.
+
+1. A <u><b>form</b></u> asks the sails person for his account username and password
+2. The login <u><b>button</b></u> is pressed to login with the inserted credentials
+3. The <u><b>On/Off Switch</b></u> enables the automatic login at the next access of the application
+4. A <u><b>dropdown menu</b></u> on the bottom left allows the user to change the language.
+
 
 ## Screenshot 11
 
