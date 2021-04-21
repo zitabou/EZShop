@@ -9,7 +9,7 @@ Version: #1
 
 # Screenshots
 
-## Screenshot 1
+## Screenshot 1 - Manger Log-in
 
 <img src="./images/Login Manager.png" alt="Login Manager" width="800"/>
 
@@ -19,7 +19,7 @@ This view is available only to the manager. It is the first page shown. If the m
 2. The login <u><b>button</b></u> is pressed to login with the inserted credentials
 3. A <u><b>dropdown menu</b></u> on the bottom left allows the user to change the language.
 
-## Screenshot 2
+## Screenshot 2 - Manager main screen
 
 <img src="./images/main menu.png" alt="main menu" width="800"/>
 
@@ -30,7 +30,7 @@ This view is available only to the manager. It is shown right after the login.
 3. A <u><b>calendar</b></u> on the right can be used to select another period of time and update the chart accordingly
 
 
-## Screenshot 3
+## Screenshot 3 - Accounting
 
 <img src="./images/Accounting Section.png" alt="Accounting Section" width="800"/>
 
@@ -55,7 +55,7 @@ This view is available only to the manager. It is shown when the manager selects
 3. Whenever order compeleted you can click on <u><b>confirm order</b></u>.
 
 
-## Screenshot 5 - Add/Update supplier
+## Screenshot 5 - Supplier details
 
 <img src="./images/Supplier.png" alt="Supplier" width="800"/>
 
@@ -66,7 +66,7 @@ This view is available only to the manager. It is shown when the manager selects
 3. <u><b>Confirm changes</b></u> made to the informations of the Supplier and return to the <b>"Make Order"</b> view (screenshot 4)
 4. <u><b>Cancel changes</b></u> made to the informations of the Supplier and return to the <b>"Make Order"</b> view (screenshot 4)
 
-## Screenshot 6
+## Screenshot 6 - Employee management
 
 <img src="./images/manage_employee.png" alt="manage_employee" width="800"/>
 
@@ -79,7 +79,7 @@ From here the manager can:
 5. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
 
 
-## Screenshot 7
+## Screenshot 7 - Employee details
 
 <img src="./images/Profile_employee.png" alt="Profile_employee" width="800"/>
 
@@ -90,7 +90,7 @@ From here the manager can:
 3. <u><b>Confirm changes</b></u> made to the informations of the Salesperso and return to the <b>"Manage employee"</b> view (screenshot 6)
 4. <u><b>Cancel changes</b></u> made to the informations of the Salesperson and return to the <b>"Manage employee"</b> view (screenshot 6)
 
-## Screenshot 8
+## Screenshot 8 - Inventory management
 
 <img src="./images/Manage_inventory.png" alt="Manage_inventory" width="800"/>
 
@@ -105,7 +105,7 @@ From here the manager can:
 7. <u><b>Change to another view</b></u> from the left side menu. From there we can move directly to the <u><b>"Main menu"</b></u>(screenshot 2), <u><b>"Manage Inventory"</b></u>(screenshot 8), <u><b>"Make order"</b></u>(screenshot 4), <u><b>"Manage accounting"</b></u>(screenshot 3).
 
 
-## Screenshot 9
+## Screenshot 9 - Product details
 
 <img src="./images/Profile_products.png" alt="Profile_products" width="800"/>
 
@@ -116,7 +116,7 @@ From here the manager can:
 3. <u><b>Confirm changes</b></u> made to the details of the product and return to the <b>"Manage inventory"</b> view (screenshot 8)
 4. <u><b>Cancel changes</b></u> made to the details of the product and return to the <b>"Manage inventory"</b> view (screenshot 8)
 
-## Screenshot 10
+## Screenshot 10 - Salesperson Log-in
 
 <img src="./images/Login Cashier.png" alt="Login Cashier" width="800"/>
 
@@ -128,7 +128,7 @@ This is the entry point of the mobile application for the <b>sales person</b>.
 4. A <u><b>dropdown menu</b></u> on the bottom left allows the user to change the language.
 
 
-## Screenshot 11
+## Screenshot 11 - Salesperson main screen
 
 <img src="./images/Salesperson_Main.png" alt="Salesperson_Main" width="800"/>
 
@@ -138,7 +138,7 @@ Three action buttons are available in this screen:
 2. <u><b>Checkout</u>.-</b> After all the client's products have been processed by the QR reader, this button takes the sales person to the checkout screen where the sales person will be able to select the payment method and perform the transaction.
 3. <u><b>Add Item</u>.-</b> Allows the sales person to add one additional product manually, by inserting the code of this product. This option is used in case the QR reader can't read the code of the product.
 
-## Screenshot 12
+## Screenshot 12 - Add item manually
 
 <img src="./images/Salesperson_AddItemManually.png" alt="Salesperson_AddItemManually" width="800"/>
 
@@ -147,7 +147,7 @@ Two action buttons are present in this screen:
 1. <u><b>Confirm</u>.-</b> Confirms the selection and adds the product to the client's list.
 2. <u><b>Cancel</u>.-</b> Cancels the addition of the product and returns to the previous screen without making any changes.
  
-## Screenshot 13
+## Screenshot 13 - Fidelity card selection
 
 <img src="./images/Salesperson_ListFidelityCard.png" alt="Salesperson_ListFidelityCard" width="800"/>
 
@@ -156,7 +156,7 @@ There are two action buttons pressent on this screen:
 1. <u><b>Create Card</u>.-</b> This action takes the sales person to a new screen where it is possible to create a new fidelity card using the client's data.
 2. <u><b>Return</u>.- </b> In case the client doesn't want to use a fidelity card or get one, the screen retuns to the main view of the sales person.
 
-## Screenshot 14
+## Screenshot 14 - Create fidelity card
 
 <img src="./images/Salesperson_CreateFidelityCard.png" alt="Salesperson_CreateFidelityCard" width="800"/>
 
