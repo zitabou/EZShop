@@ -75,7 +75,7 @@ Scanner -up-> EZ
 
 | Actor | Logical Interface | Physical Interface  |
 | ------------- |:-------------|:-----|
-| Manager | Application GUI or Web interface | Screen keyboard on PC  |
+| Manager | Web interface | Screen keyboard on PC  |
 | SalesPerson | Application GUI | Touch screen on POS|
 | Credit Card System| Payment gateway API | Dedicated console |
 | Scanner | Scanner API | Scanning device |
