@@ -83,13 +83,13 @@ Scanner -up-> EZ
 
 The following personas and stories are meant to cover different profiles of the Salesperson
 
-Rebecca is 35, works as a sales person. She has a child and she is not married. When going to work she doesn't need to have more trouble due to the software she will have to use during her shift. She doesn't care about advanced or complicated operations and wants to perform what is necessary fast and without any problems and the least interaction with the clients as possible. 
+Rebecca is 35, works as a sales person. She has a child and she is not married. When going to work she doesn't want to complicate her life further with the tools she will have to use during her shift. She is not interested in advanced or complicated operations and the only thing she wants is to perform what is necessary in a fast way and without any problems and with the least interaction with the clients as possible. 
 
-David is 62, works at the counter of a shop and has two children and one grandchild. He doesn't like technology and the most high tech device in his home is the TV and an old PC. He doesn't have a smartphone or use email by choice. If it was for him he would use an old cash register instead of computer. 
+David is 62, works at the counter of the ezshop and has two children and one grandchild. He doesn't like technology and the most high tech device he has in his home is a TV and an old PC. He doesn't have a smartphone or use email by choice. If it was for him he would use an old cash register instead of computer. 
 
-Elena is 20, and is a student at the Polytechnic of Turin. She is single and works part time to pay for daily expenses. She is very familira with technology and has no problem with exploring new technology and services.
+Elena is 20, and she is a student at the Polytechnic of Turin. She is single and works part time to pay for daily expenses. She is very familiar with technology and she has no problem exploring new technologies and services.
 
-Emma is 36, and works as at the counter. She is not married and leaves alone with hers five cats. She is very active against animal cruelty and mistreatment. She is very social and likes to interact with clients and have a quick chat while performing hers job.
+Emma is 36, and works as at the counter. She is not married and leaves by herself with hers five cats. She is very active against animal cruelty and mistreatment. She is very social and likes to interact with clients and have a quick chat while doing her job.
 
 
 # Functional and non functional requirements
