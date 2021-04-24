@@ -41,7 +41,7 @@ GUI ..> MC
 
 MC package:
 
-TODO: FR1, FR7, FR8
+TODO: FR1, FR7, FR8, FR6.7, FR6.8, FR6.11, FR6.13, FR6.9 (Ticket class)
 
 ```plantuml
 left to right direction
@@ -50,6 +50,7 @@ left to right direction
 class Shop{
     accountBalance
     productTypes
+    saleTransactions
     'FR3
     Integer : createProductType()
     boolean : updateProduct()
@@ -65,10 +66,22 @@ class Shop{
     boolean : payOrder()
     boolean : recordOrderArrival()
     List : getAllOrders()
-
+    'FR6
+    Integer  : startSaleTransaction() '1
+    boolean   : addProductToSale() '2
+    boolean   : deleteProductFromSale() '3
+    boolean   : applyDiscountRateToSale() '4
+    boolean   : applyDiscountRateToProduct() '5 
+    int  : computePointsForSale() '6
+    Ticket   : getTicketByNumber() '9
+    boolean   : closeSaleTransaction() '10
+    Integer   : startReturnTransaction() '12
+    boolean   : endReturnTransaction() '14
+    boolean   : deleteReturnTransaction() '15
 
 
 }
+
 class AccountBook 
 AccountBook - Shop
 class FinancialTransaction {
@@ -122,9 +135,12 @@ class SaleTransaction {
     String : createCard()  ' returns card code
     boolean : attachCardToCustomer()
     Integer  : modifyPointsOnCard()
-    
+    'FR6
+    boolean   : addProduct() '2
+    boolean   : deleteProduct() '3
 
 }
+Shop --"*" SaleTransaction
 SaleTransaction - "*" ProductType
 
 class Quantity {
