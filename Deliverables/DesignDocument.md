@@ -212,7 +212,15 @@ N3 .. SaleTransaction
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-
+||Shop|Account<br/>Book|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Order|Sale|Return|Product<br/>Type|Sale<br/>Transaction|Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Return<br/>Transaction |
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------|-----|----|
+| FR.1 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.3 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.4 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.5 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.6 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.7 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.8 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
 
 
 
