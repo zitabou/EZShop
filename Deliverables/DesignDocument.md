@@ -41,7 +41,7 @@ GUI ..> MC
 
 MC package:
 
-TODO: FR1, FR7, FR8, FR6.7, ~~FR6.8~~, FR6.11, FR6.13, FR6.9 (Ticket class)
+TODO: FR1, FR7, FR8, FR6.7, ~~FR6.8~~, FR6.11, FR6.13, ~~FR6.9~~ (Ticket class)
 
 ```plantuml
 left to right direction
@@ -147,7 +147,7 @@ class SaleTransaction {
     boolean   : returnProduct()
     boolean   : endReturnTransaction()
     boolean   : deleteReturnTransaction()
-
+    boolean   : printSaleTicket
     boolean   : deleteSaleTicket()
     ticket    : getSaleTicket()
     Ticket    : getTicketByNumber()
