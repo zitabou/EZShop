@@ -39,11 +39,37 @@ GUI ..> MC
 
 <for each package, report class diagram>
 
+MC package:
+
+TODO: FR1, FR5, FR6, FR7, FR8
+
+DOING: FR3 , FR4 
 ```plantuml
 left to right direction
 
 
-class Shop
+class Shop{
+    accountBalance
+    productTypes
+    'FR3
+    Integer : createProductType()
+    boolean : updateProduct()
+    boolean : deleteProductType()
+    List : getAllProductTypes()
+    ProductType : getProductTypeByBarCode()
+    List : getProductTypesByDescription()
+    'FR4
+    boolean : updateQuantity()
+    boolean : updatePosition()
+    Integer : issueReorder()
+    Integer : payOrderFor()
+    boolean : payOrder()
+    boolean : recordOrderArrival()
+    List : getAllOrders()
+
+
+
+}
 class AccountBook 
 AccountBook - Shop
 class FinancialTransaction {
