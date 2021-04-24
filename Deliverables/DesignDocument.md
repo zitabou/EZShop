@@ -41,9 +41,8 @@ GUI ..> MC
 
 MC package:
 
-TODO: FR1, FR5, FR6, FR7, FR8
+TODO: FR1, FR7, FR8
 
-DOING: FR3 , FR4 
 ```plantuml
 left to right direction
 
@@ -112,6 +111,19 @@ class SaleTransaction {
     cost
     paymentType
     discount rate
+    loyalityCardCodes
+    customerIds
+    'FR5
+    Integer : defineCustomer() ' returns customer id
+    boolean : modifyCustomer()
+    boolean : deleteCustomer()
+    Customer : getCustomer()
+    List : getAllCustomers()
+    String : createCard()  ' returns card code
+    boolean : attachCardToCustomer()
+    Integer  : modifyPointsOnCard()
+    
+
 }
 SaleTransaction - "*" ProductType
 
