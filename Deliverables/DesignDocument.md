@@ -143,15 +143,24 @@ class SaleTransaction {
     boolean   : applyDiscountRateToSale()
     int       : computePointsForSale()
     boolean   : closeSaleTransaction()
-    boolean   : deleteSaleTicket()
     Integer   : startReturnTransaction()
     boolean   : returnProduct()
     boolean   : endReturnTransaction()
-    boolean   : deleteReturnTransaction(
+    boolean   : deleteReturnTransaction()
+
+    boolean   : deleteSaleTicket()
+    ticket    : getSaleTicket()
+    Ticket    : getTicketByNumber()
+
 
 }
 Shop --"*" SaleTransaction
 SaleTransaction - "*" ProductType
+
+class SaleTicket{
+    ticketNumber
+}
+SaleTransaction -- SaleTicket
 
 class Quantity {
     quantity
