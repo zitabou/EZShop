@@ -1,11 +1,11 @@
 # Design Document 
 
 
-Authors: 
+Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras 
 
-Date:
+Date: 28 april 2021
 
-Version:
+Version: #1
 
 
 # Contents
@@ -21,11 +21,17 @@ The design must satisfy the Official Requirements document, notably functional a
 
 # High level design 
 
-<discuss architectural styles used, if any>
+The <u><b>MVC</b></u> Design Pattern is used to perform separation of concers between the GUI and the model
+
+The <u><b>3 tier</b></u> architecture is used to better separate the GUI from the Application Logic and the DB data (i.e. the Presentation should never interact directly with the DB but only throught the application logic in the middle.)
 <report package diagram>
-
-
-
+```plantuml
+@startuml
+left to right direction
+package GUI
+package Model_and_Application_Logic as MC
+GUI ..> MC
+```
 
 
 
@@ -33,7 +39,114 @@ The design must satisfy the Official Requirements document, notably functional a
 
 <for each package, report class diagram>
 
+```plantuml
+left to right direction
 
+
+class Shop
+class AccountBook 
+AccountBook - Shop
+class FinancialTransaction {
+ description
+ amount
+ date
+}
+AccountBook -- "*" FinancialTransaction
+
+class Credit 
+class Debit
+
+Credit --|> FinancialTransaction
+Debit --|> FinancialTransaction
+
+class Order
+class Sale
+class Return
+
+Order --|> Debit
+Sale --|> Credit
+Return --|> Debit
+
+
+class ProductType{
+    barCode
+    description
+    sellPrice
+    quantity
+    discountRate
+    notes
+}
+
+Shop - "*" ProductType
+
+class SaleTransaction {
+    ID 
+    date
+    time
+    cost
+    paymentType
+    discount rate
+}
+SaleTransaction - "*" ProductType
+
+class Quantity {
+    quantity
+}
+(SaleTransaction, ProductType)  .. Quantity
+
+class LoyaltyCard {
+    ID
+    points
+}
+
+class Customer {
+    name
+    surname
+}
+
+LoyaltyCard "0..1" - Customer
+
+SaleTransaction "*" -- "0..1" LoyaltyCard
+
+class Product {
+    
+}
+
+class Position {
+    aisleID
+    rackID
+    levelID
+}
+
+ProductType - "0..1" Position
+
+ProductType -- "*" Product : describes
+
+class Order {
+  supplier
+  pricePerUnit
+  quantity
+  status
+}
+
+Order "*" - ProductType
+
+class ReturnTransaction {
+  quantity
+  returnedValue
+}
+
+ReturnTransaction "*" - SaleTransaction
+ReturnTransaction "*" - ProductType
+
+note "ID is a number on 10 digits " as N1  
+N1 .. LoyaltyCard
+note "bar code is a number on 12 to 14  digits, compliant to GTIN specifications, see  https://www.gs1.org/services/how-calculate-check-digit-manually " as N2  
+N2 .. ProductType
+note "ID is a unique identifier of a transaction,  printed on the receipt (ticket number) " as N3
+N3 .. SaleTransaction
+
+```
 
 
 
