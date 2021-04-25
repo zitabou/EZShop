@@ -70,13 +70,14 @@ class Shop{
     boolean : recordOrderArrival()
     List : getAllOrders()
     ()_FR6
-    Integer  : startSaleTransaction() '1 <creates instance>
+    Integer   : startSaleTransaction() '1 <creates instance>
     boolean   : addProductToSale() '2
     boolean   : deleteProductFromSale() '3
     boolean   : applyDiscountRateToSale() '4
     boolean   : applyDiscountRateToProduct() '5 
     int       : computePointsForSale() '6
-    boolean   : printSaleTicket() '8
+    -product   : searchProductViaBarCode() '7
+    -boolean   : printSaleTicket() '8
     Ticket    : getTicketByNumber() '9
     boolean   : closeSaleTransaction() '10
     Integer   : startReturnTransaction() '12
@@ -146,12 +147,12 @@ class SaleTransaction {
     loyalityCardCodes
     customerIds
     ()_FR5
-    Integer : defineCustomer() ' returns customer id
-    -boolean : modifyCustomer()
+    Integer : defineCustomer() ' <returns customer id>
+    boolean : modifyCustomer()
     boolean : deleteCustomer()
     Customer : getCustomer()
     List : getAllCustomers()
-    String : createCard()  ' returns card code
+    String : createCard()  ' <returns card code>
     boolean : attachCardToCustomer()
     Integer  : modifyPointsOnCard()
 
