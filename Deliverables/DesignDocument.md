@@ -41,7 +41,9 @@ GUI ..> MC
 
 MC package:
 
-TODO: FR1, ~~FR7~~, <b>FR8</b>, FR6.7, ~~FR6.8~~, FR6.11, FR6.13, ~~FR6.9~~ (Ticket class)
+TODO: FR1, ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, FR8,  (Ticket class)
+
+<u><b>FR6</b></u>:  ~~FR6.1~~, ~~FR6.2~~, ~~FR6.3~~, ~~FR6.4~~, ~~FR6.5~~, ~~FR6.6~~, FR6.7,  ~~FR6.8~~, ~~FR6.9~~, ~~FR6.10~~, ~~FR6.11~~, ~~FR6.12~~, ~~FR6.13~~, ~~FR6.14~~, ~~FR6.15~~
 
 ```plantuml
 left to right direction
@@ -51,43 +53,60 @@ class Shop{
     accountBalance
     productTypes
     saleTransactions
-    'FR3
+    
+    ()_FR3
     Integer : createProductType()
     boolean : updateProduct()
     boolean : deleteProductType()
     List : getAllProductTypes()
     ProductType : getProductTypeByBarCode()
     List : getProductTypesByDescription()
-    'FR4
-    boolean : updateQuantity()
-    boolean : updatePosition()
+    ()_FR4
+    boolean : updateQuantity() <of product in store>
+    boolean : updatePosition() <of product in store>
     Integer : issueReorder()
     Integer : payOrderFor()
     boolean : payOrder()
     boolean : recordOrderArrival()
     List : getAllOrders()
-    'FR6
-    Integer  : startSaleTransaction() '1
+    ()_FR6
+    Integer  : startSaleTransaction() '1 <creates instance>
     boolean   : addProductToSale() '2
     boolean   : deleteProductFromSale() '3
     boolean   : applyDiscountRateToSale() '4
     boolean   : applyDiscountRateToProduct() '5 
-    int  : computePointsForSale() '6
-    Ticket   : getTicketByNumber() '9
+    int       : computePointsForSale() '6
+    boolean   : printSaleTicket() '8
+    Ticket    : getTicketByNumber() '9
     boolean   : closeSaleTransaction() '10
     Integer   : startReturnTransaction() '12
+    boolean   : returnProduct() '13
     boolean   : endReturnTransaction() '14
     boolean   : deleteReturnTransaction() '15
-
+    boolean   : deleteSaleTicket()
+    ticket    : getSaleTicket()
+    int       : computePointsForSale()
+    boolean   : closeSaleTransaction()
+    ()_FR7
+    double  : receiveCashPayment()
+    boolean : receiveCreditCardPayment()
+    double  : returnCashPayment()
+    double  : returnCreditCardPayment()
 
 }
 
-class AccountBook 
+class AccountBook{
+    ()_FR8
+    boolean: recordBalanceUpdate() '1,'2
+    List: getCreditsAndDebits() '3
+    double: computeBalance() '4
+}
 AccountBook - Shop
+
 class FinancialTransaction {
- description
- amount
- date
+    description
+    amount
+    date
 }
 AccountBook -- "*" FinancialTransaction
 
@@ -98,14 +117,8 @@ Credit --|> FinancialTransaction
 Debit --|> FinancialTransaction
 
 class Order
-class Sale{
-double  : receiveCashPayment()
-boolean : receiveCreditCardPayment()
-}
-class Return{
-double  : returnCashPayment()
-double  : returnCreditCardPayment()
-}
+class Sale
+class Return
 
 Order --|> Debit
 Sale --|> Credit
@@ -132,31 +145,16 @@ class SaleTransaction {
     discount rate
     loyalityCardCodes
     customerIds
-    'FR5
+    ()_FR5
     Integer : defineCustomer() ' returns customer id
-    boolean : modifyCustomer()
+    -boolean : modifyCustomer()
     boolean : deleteCustomer()
     Customer : getCustomer()
     List : getAllCustomers()
     String : createCard()  ' returns card code
     boolean : attachCardToCustomer()
     Integer  : modifyPointsOnCard()
-    'FR6
-    boolean   : addProduct() '2
-    boolean   : deleteProduct() '3
-    Integer   : startSaleTransaction()
-    boolean   : applyDiscountRateToProduct()
-    boolean   : applyDiscountRateToSale()
-    int       : computePointsForSale()
-    boolean   : closeSaleTransaction()
-    Integer   : startReturnTransaction()
-    boolean   : returnProduct()
-    boolean   : endReturnTransaction()
-    boolean   : deleteReturnTransaction()
-    boolean   : printSaleTicket
-    boolean   : deleteSaleTicket()
-    ticket    : getSaleTicket()
-    Ticket    : getTicketByNumber()
+
 
 
 }
