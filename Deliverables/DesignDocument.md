@@ -41,7 +41,7 @@ GUI ..> MC
 
 MC package:
 
-TODO: FR1, ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, FR8,  (Ticket class)
+TODO: ~~FR1~~ (maybe user class), ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, FR8,  (Ticket class)
 
 <u><b>FR6</b></u>:  ~~FR6.1~~, ~~FR6.2~~, ~~FR6.3~~, ~~FR6.4~~, ~~FR6.5~~, ~~FR6.6~~, FR6.7,  ~~FR6.8~~, ~~FR6.9~~, ~~FR6.10~~, ~~FR6.11~~, ~~FR6.12~~, ~~FR6.13~~, ~~FR6.14~~, ~~FR6.15~~
 
@@ -53,7 +53,13 @@ class Shop{
     accountBalance
     productTypes
     saleTransactions
-    
+    ()_FR1
+    -boolean : defineUser()
+    -boolean : UpdateUser()
+    -boolean : DeleteUser()
+    -List    : getAllUser()
+    -User    : getUser()
+    -boolean : setRights(UserID,right)
     ()_FR3
     Integer : createProductType()
     boolean : updateProduct()
@@ -236,15 +242,15 @@ N3 .. SaleTransaction
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-||Shop|Account<br/>Book|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Order|Sale|Return|Product<br/>Type|Sale<br/>Transaction|Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Return<br/>Transaction |
-|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------|-----|----|
-| FR.1 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.3 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.4 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.5 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.6 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.7 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.8 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+||Shop|Account<br/>Book|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Order|Sale|Return|Product<br/>Type|Sale<br/>Transaction|Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Return<br/>Transaction | Sale<br/>Ticket
+|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------|-----|----|----|
+| FR.1 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.3 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.4 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.5 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.6 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.7 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| FR.8 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
 
 
 
