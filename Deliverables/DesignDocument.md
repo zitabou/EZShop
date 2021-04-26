@@ -75,20 +75,22 @@ class Shop{
     boolean : payOrder()
     boolean : recordOrderArrival()
     List : getAllOrders()
+    ()_FR5
+    Integer : defineCustomer() ' <returns customer id>
+    boolean : modifyCustomer()
+    boolean : deleteCustomer()
+    Customer : getCustomer()
+    List : getAllCustomers()
+    String : createCard()  ' <returns card code>
+    boolean : attachCardToCustomer()
+    Integer  : modifyPointsOnCard()
     ()_FR6
     Integer   : startSaleTransaction() '1 <creates instance>
-    boolean   : addProductToSale() '2
-    boolean   : deleteProductFromSale() '3
-    boolean   : applyDiscountRateToSale() '4
-    boolean   : applyDiscountRateToProduct() '5 
-    int       : computePointsForSale() '6
     -product   : searchProductViaBarCode() '7
-    -boolean   : printSaleTicket() '8
     Ticket    : getTicketByNumber() '9
     boolean   : closeSaleTransaction() '10
     Integer   : startReturnTransaction() '12
     boolean   : returnProduct() '13
-    boolean   : endReturnTransaction() '14
     boolean   : deleteReturnTransaction() '15
     boolean   : deleteSaleTicket()
     ticket    : getSaleTicket()
@@ -152,15 +154,13 @@ class SaleTransaction {
     discount rate
     loyalityCardCodes
     customerIds
-    ()_FR5
-    Integer : defineCustomer() ' <returns customer id>
-    boolean : modifyCustomer()
-    boolean : deleteCustomer()
-    Customer : getCustomer()
-    List : getAllCustomers()
-    String : createCard()  ' <returns card code>
-    boolean : attachCardToCustomer()
-    Integer  : modifyPointsOnCard()
+    ()_FR6
+    boolean   : addProductToSale() '2
+    boolean   : deleteProductFromSale() '3
+    boolean   : applyDiscountRateToSale() '4
+    boolean   : applyDiscountRateToProduct() '5 
+    int       : computePointsForSale() '6
+    
 
 
 
@@ -170,6 +170,8 @@ SaleTransaction - "*" ProductType
 
 class SaleTicket{
     ticketNumber
+    ()_FR6
+    -boolean   : printSaleTicket() '8
 }
 SaleTransaction -- SaleTicket
 
@@ -181,6 +183,8 @@ class Quantity {
 class LoyaltyCard {
     ID
     points
+    ()_FR5
+    boolean :attachCustomer() '6
 }
 
 class Customer {
@@ -218,6 +222,8 @@ Order "*" - ProductType
 class ReturnTransaction {
   quantity
   returnedValue
+  ()_FR6
+  boolean   : endReturnTransaction() '14
 }
 
 ReturnTransaction "*" - SaleTransaction
@@ -242,15 +248,16 @@ N3 .. SaleTransaction
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-||Shop|Account<br/>Book|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Order|Sale|Return|Product<br/>Type|Sale<br/>Transaction|Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Return<br/>Transaction | Sale<br/>Ticket
-|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|-------|------|-----|----|----|
-| FR.1 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.3 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.4 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.5 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.6 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.7 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
-| FR.8 | X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |X |
+| |Shop|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Sale|Return|Product<br/>Type|Sale<br/>Transaction| Return<br/>Transaction |Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Sale<br/>Ticket
+|:-------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
+| FR.1 | X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| FR.3 | X |  |  |  |  |  |  |X |  |  |  |  |  |X |  |  |  |
+| FR.4 | X |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |  |
+| FR.5 | X |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |  |
+| FR.6 | X |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |X |
+| FR.7 | X |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |  |
+| FR.8 | X |X | |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+||
 
 
 
