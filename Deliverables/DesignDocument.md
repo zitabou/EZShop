@@ -65,7 +65,7 @@ class Shop{
     boolean : updateProduct()
     boolean : deleteProductType()
     List : getAllProductTypes()
-    ProductType : getProductTypeByBarCode()
+    ProductType : getProductTypeByBarCode() FR6.7
     List : getProductTypesByDescription()
     ()_FR4
     boolean : updateQuantity() <of product in store>
@@ -86,7 +86,6 @@ class Shop{
     Integer  : modifyPointsOnCard()
     ()_FR6
     Integer   : startSaleTransaction() '1 <creates instance>
-    -product   : searchProductViaBarCode() '7
     Ticket    : getTicketByNumber() '9
     boolean   : closeSaleTransaction() '10
     Integer   : startReturnTransaction() '12
@@ -305,7 +304,7 @@ Product_type -> Product_type: setBarCode()
 Product_type -> Product_type: setUnitPrice()
 Product_type -> Product_type: setNotes()
 Product_type -> Product_type: setPosition()
-
+Product_type --> Shop: productID
 ```
 
 
@@ -321,5 +320,27 @@ Product_type -> Product_type: setBarCode()
 Product_type -> Product_type: setUnitPrice()
 Product_type -> Product_type: setNotes()
 Product_type -> Product_type: setPosition()
+Product_type --> Shop: productID
+```
+  sca
+
+```plantuml
+
+title
+scenario: Modify product type location
+end title
+
+actor User
+Boundary View
+User -> View: search product by Barcode
+View->Shop: getProductTypeByBarCode(barCode)
+Shop -> Product_type: getProductTypeByBarCode()
+Product_type --> Shop: return product
+Shop --> View: Show product
+User -> View: change product position
+View->Shop: updatePosition(productId, newPos)
+Shop -> Product_type: updatePosition()
+Product_type -> Product_type: setPosition()
+Product_type --> Shop: return
 
 ```
