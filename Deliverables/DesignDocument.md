@@ -103,6 +103,25 @@ class Shop{
     double  : returnCreditCardPayment()
 
 }
+class User{
+    ID
+    Name
+    Surname
+    Date of birth
+    Address
+    Password
+    username
+}
+User -l Shop
+
+class Administrator
+Administrator -|> User
+class ShopManager
+ShopManager -|> User
+class Cashier
+Cashier -|> User
+
+
 
 class AccountBook{
     ()_FR8
@@ -248,15 +267,15 @@ N3 .. SaleTransaction
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-| |Shop|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Sale|Return|Product<br/>Type|Sale<br/>Transaction| Return<br/>Transaction |Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Sale<br/>Ticket
-|:-------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
-| FR.1 | X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| FR.3 | X |  |  |  |  |  |  |X |  |  |  |  |  |X |  |  |  |
-| FR.4 | X |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |  |
-| FR.5 | X |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |  |
-| FR.6 | X |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |X |
-| FR.7 | X |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |  |
-| FR.8 | X |X | |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| |Shop|User|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Sale|Return|Product<br/>Type|Sale<br/>Transaction| Return<br/>Transaction |Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Sale<br/>Ticket
+|:-------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
+| FR.1 | X |X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| FR.3 | X |  |  |  |  |  |  |  |X |  |  |  |  |  |X |X |  |  |
+| FR.4 | X |  |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |  |
+| FR.5 | X |  |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |  |
+| FR.6 | X |  |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |X |
+| FR.7 | X |  |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |  |
+| FR.8 | X |X |  | |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
 ||
 
 
@@ -270,3 +289,17 @@ N3 .. SaleTransaction
 # Verification sequence diagrams 
 \<select key scenarios from the requirement document. For each of them define a sequence diagram showing that the scenario can be implemented by the classes and methods in the design>
 
+```plantuml
+
+title
+scenario: Create product type X
+end title
+
+Shop -> Product_type: createProductType() 
+Product_type -> Product_type: setDescription()
+Product_type -> Product_type: setBarCode()
+Product_type -> Product_type: setUnitPrice()
+Product_type -> Product_type: setNotes()
+Product_type -> Product_type: setPosition()
+
+```
