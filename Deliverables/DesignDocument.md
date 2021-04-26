@@ -292,7 +292,27 @@ N3 .. SaleTransaction
 ```plantuml
 
 title
-scenario: Create product type X
+scenario: Create product type X  (1)
+end title
+
+actor User
+Boundary View
+User -> View: create product
+View->Shop: createProductType(description,productCode, pricePerUnit, note)
+Shop -> Product_type: createProduct()
+Product_type -> Product_type: setDescription()
+Product_type -> Product_type: setBarCode()
+Product_type -> Product_type: setUnitPrice()
+Product_type -> Product_type: setNotes()
+Product_type -> Product_type: setPosition()
+
+```
+
+
+```plantuml
+
+title
+scenario: Create product type X  2
 end title
 
 Shop -> Product_type: createProductType() 
