@@ -322,7 +322,7 @@ Product_type -> Product_type: setNotes()
 Product_type -> Product_type: setPosition()
 Product_type --> Shop: productID
 ```
-  sca
+
 
 ```plantuml
 
@@ -344,3 +344,44 @@ Product_type -> Product_type: setPosition()
 Product_type --> Shop: return
 
 ```
+
+```plantuml
+
+title
+**scenario 13.1** : Scan products in cart with scanner
+end title
+
+actor Scanner
+Boundary View
+Scanner -> Shop: getProductTypeByBarCode(barCode) 
+Shop --> Scanner: return
+Shop -> SaleTransaction: StartSaleTransaction()
+SaleTransaction --> Shop: return
+Shop -> SaleTransaction: AddProductToSale(,,)
+SaleTransaction--> Shop: return
+Shop --> View: Update cart
+```
+
+```plantuml
+
+title
+**scenario 13.2** : Scan products in cart by search
+end title
+
+Actor User
+Boundary CartView
+Boundary AddProductView
+User -> CartView: Add Product Button
+CartView -> Shop: Redirect to "Add Product View"
+Shop --> AddProductView: Render view
+User -> AddProductView: Search
+AddProductView -> Shop: getProductTypeByDescription(description)
+Shop --> AddProductView: Return list of products
+User -> AddProductView: Select Product
+User -> AddProductView: Set quantity
+AddProductView -> Shop: getProductTypeByBarCode(barCode)
+Shop -> SaleTransaction: AddProductToSale(,,)
+SaleTransaction--> Shop: return
+Shop --> CartView: Update cart
+```
+
