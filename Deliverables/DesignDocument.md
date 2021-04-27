@@ -318,13 +318,7 @@ User -> View: change product position
 View->Shop: updatePosition(productId, newPos)
 Shop -> Product_type: updatePosition()
 Product_type -> Product_type: setPosition()
-<<<<<<< HEAD
 Product_type --> Shop: return
-=======
-Product_type --> Shop: productID
-```
-
->>>>>>> b704cd0c055b44919e00a8e263f3e43841b4697c
 
 ```
 ```plantuml
