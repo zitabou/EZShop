@@ -318,7 +318,13 @@ User -> View: change product position
 View->Shop: updatePosition(productId, newPos)
 Shop -> Product_type: updatePosition()
 Product_type -> Product_type: setPosition()
+<<<<<<< HEAD
 Product_type --> Shop: return
+=======
+Product_type --> Shop: productID
+```
+
+>>>>>>> b704cd0c055b44919e00a8e263f3e43841b4697c
 
 ```
 ```plantuml
@@ -398,3 +404,44 @@ Shop -> User_record: setRights()
 User_record --> Shop: outcome
 
 ```
+
+```plantuml
+
+title
+**scenario 13.1** : Scan products in cart with scanner
+end title
+
+actor Scanner
+Boundary View
+Scanner -> Shop: getProductTypeByBarCode(barCode) 
+Shop --> Scanner: return
+Shop -> SaleTransaction: StartSaleTransaction()
+SaleTransaction --> Shop: return
+Shop -> SaleTransaction: AddProductToSale(,,)
+SaleTransaction--> Shop: return
+Shop --> View: Update cart
+```
+
+```plantuml
+
+title
+**scenario 13.2** : Scan products in cart by search
+end title
+
+Actor User
+Boundary CartView
+Boundary AddProductView
+User -> CartView: Add Product Button
+CartView -> Shop: Redirect to "Add Product View"
+Shop --> AddProductView: Render view
+User -> AddProductView: Search
+AddProductView -> Shop: getProductTypeByDescription(description)
+Shop --> AddProductView: Return list of products
+User -> AddProductView: Select Product
+User -> AddProductView: Set quantity
+AddProductView -> Shop: getProductTypeByBarCode(barCode)
+Shop -> SaleTransaction: AddProductToSale(,,)
+SaleTransaction--> Shop: return
+Shop --> CartView: Update cart
+```
+
