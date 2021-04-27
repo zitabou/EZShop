@@ -109,16 +109,10 @@ class User{
     Date of birth
     Address
     Password
-    username
+    Username
+    Type
 }
-User -l Shop
-
-class Administrator
-Administrator -|> User
-class ShopManager
-ShopManager -|> User
-class Cashier
-Cashier -|> User
+User "*"-l Shop
 
 
 
