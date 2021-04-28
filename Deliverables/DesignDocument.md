@@ -464,11 +464,11 @@ title
 end title
 
 actor User
-Boundary UserView
-User -> UserView: ask CU personal date
-UserView -> Shop: fill customer data
+Boundary View
+User -> View: ask CU personal date
+View -> Shop: fill customer data
 Shop -> user: defineCustomer()
-user -> UserView: returns customer id
+user -> View: returns customer id
 
 ```
 
@@ -476,6 +476,22 @@ user -> UserView: returns customer id
 ```plantuml
 
 
+title 
+**Scenario 4.2** : Attach Loyalty card to customer record
+end title
+
+actor User
+Boundary View
+User -> Shop: CreateCard()
+Shop -> View: returns card code 
+Shop -> Loyalty_card: attachCardToCustomer()
+Loyalty_card -> Customer: attachCustomer()
+
+
+```
+
+
+```plantuml
 
 
 title
