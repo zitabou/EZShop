@@ -69,6 +69,7 @@ class Shop{
     boolean : deleteProductType()
     List : getAllProductTypes()
     ProductType : getProductTypeByBarCode() FR6.7
+    -ProductType : getProductTypeByProductCode()
     List : getProductTypesByDescription()
     ()_FR4
     boolean : updateQuantity() <of product in store>
@@ -78,6 +79,8 @@ class Shop{
     boolean : payOrder()
     boolean : recordOrderArrival()
     List : getAllOrders()
+    -double: getOrderCost()
+    -boolean: updateOrderStatus()
     ()_FR5
     Integer : defineCustomer() ' <returns customer id>
     boolean : modifyCustomer()
@@ -120,6 +123,7 @@ User "*"-l Shop
 
 
 class AccountBook{
+    Balance
     ()_FR8
     boolean: recordBalanceUpdate() '1,'2
     List: getCreditsAndDebits() '3
@@ -140,7 +144,6 @@ abstract class Debit
 Credit --|> FinancialTransaction
 Debit --|> FinancialTransaction
 
-class Order
 class Sale
 class Return
 
@@ -230,8 +233,9 @@ class Order {
   pricePerUnit
   quantity
   status
+  -double: computeCost()
 }
-
+Order "*" -- Shop
 Order "*" - ProductType
 
 class ReturnTransaction {
@@ -408,6 +412,51 @@ Shop -> User_record: setRights()
 User_record --> Shop: outcome
 
 ```
+
+```plantuml
+
+title
+scenario 3-1: Order of product type X issued
+end title
+
+actor ShopManager
+Boundary Order_View
+ShopManager -> Order_View: Create order for X
+ShopManager -> Order_View: input quantity, procePerUnit
+Order_View->Shop: issueReorder(productCode,quantity,pricePerUnit)
+Shop -> Product_type: getProductTypeProductCode()
+Product_type->Order: createOrder(quantity,pricePerUnit)
+Order->Order: setStatus(issued) 
+Order --> Product_type: Order_Code
+Product_type -->Shop: Order_code
+Shop-->Order_View: Order_code 
+
+```
+
+```plantuml
+
+title
+scenario 3-2: Order of product X payed
+end title
+
+actor ShopManager
+Boundary Order_View
+ShopManager -> Order_View: pay order O for product X
+Order_View->Shop: payOrder(orderId)
+Shop->Shop: payOrder()
+Shop->Order: getOrderCost()
+Order->Order: computeCost()
+Order-->Shop: Amount_to_be_payed
+Shop->AccountBook: recordBalanceUpdate(Amount_to_be_payed)
+AccountBook-->Shop: positive_outcome
+Shop->Order: updateOrderStatus()
+Order->Order: setStatus(payed) 
+Order --> Shop: outome
+Shop-->Order_View: payment_outcome 
+
+```
+
+
 ```plantuml
 
 title
