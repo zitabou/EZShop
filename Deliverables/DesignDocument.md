@@ -51,14 +51,16 @@ left to right direction
 
 class Shop{
     accountBalance
+    Users
     productTypes
     saleTransactions
     ()_FR1
     -boolean : defineUser()
-    -boolean : UpdateUser()
-    -boolean : DeleteUser()
-    -List    : getAllUser()
+    -boolean : updateUser()
+    -boolean : deleteUser()
+    -List    : getAllUsers()
     -User    : getUser()
+    -User : validateUser()  <returns User if found, null if not found>
     -boolean : setRights(UserID,right)
     ()_FR3
     Integer : createProductType()
@@ -109,16 +111,10 @@ class User{
     Date of birth
     Address
     Password
-    username
+    Username
+    Role
 }
-User -l Shop
-
-class Administrator
-Administrator -|> User
-class ShopManager
-ShopManager -|> User
-class Cashier
-Cashier -|> User
+User "*"-l Shop
 
 
 
@@ -291,7 +287,7 @@ N3 .. SaleTransaction
 ```plantuml
 
 title
-scenario: Create product type X  (1)
+scenario 1-1: Create product type X
 end title
 
 actor User
@@ -306,42 +302,100 @@ Product_type -> Product_type: setNotes()
 Product_type -> Product_type: setPosition()
 Product_type --> Shop: productID
 ```
-
-
 ```plantuml
 
 title
-scenario: Create product type X  2
-end title
-
-Shop -> Product_type: createProductType() 
-Product_type -> Product_type: setDescription()
-Product_type -> Product_type: setBarCode()
-Product_type -> Product_type: setUnitPrice()
-Product_type -> Product_type: setNotes()
-Product_type -> Product_type: setPosition()
-Product_type --> Shop: productID
-```
-
-
-```plantuml
-
-title
-scenario: Modify product type location
+scenario 1-2: Modify product type location
 end title
 
 actor User
 Boundary View
 User -> View: search product by Barcode
 View->Shop: getProductTypeByBarCode(barCode)
-Shop -> Product_type: getProductTypeByBarCode()
-Product_type --> Shop: return product
+Shop -> Shop: getProductTypeByBarCode()
 Shop --> View: Show product
 User -> View: change product position
 View->Shop: updatePosition(productId, newPos)
 Shop -> Product_type: updatePosition()
 Product_type -> Product_type: setPosition()
 Product_type --> Shop: return
+
+```
+```plantuml
+
+title
+scenario 1-3: Modify product type price per unit
+end title
+
+actor User
+Boundary View
+User -> View: search product by Barcode
+View->Shop: getProductTypeByBarCode(barCode)
+Shop -> Shop: getProductTypeByBarCode()
+Shop --> View: Show product
+User -> View: change price
+View->Shop: updateProduct(id,newDescription,newCode, newPrice, newNote)
+Shop -> Product_type: updateProduct()
+Product_type -> Product_type: setPrice()
+Product_type --> Shop: outcome
+
+```
+```plantuml
+
+title
+scenario 2-1: Create user and define rights
+end title
+
+actor User
+Boundary View
+User -> View: give credentials and role of new user 
+View->Shop: createUser(username, password, role)
+Shop -> Shop: defineUser()
+
+```
+```plantuml
+
+title
+scenario: Log-in, Log out
+end title
+
+actor User
+Boundary View
+User -> View: log-in
+View->Shop: log_in(username, password)
+Shop -> Shop: validateUser()
+Shop --> View: User view
+
+User -> View: log-out
+View->Shop: log_out()
+Shop --> View: log-out view
+
+```
+```plantuml
+
+title
+scenario 2-2: Delete user
+end title
+
+actor User
+Boundary View
+User -> View: delete user 
+View->Shop: deleteUser(id) 
+Shop -> Shop: deleteUser() 
+
+```
+```plantuml
+
+title
+scenario 2-3: Modify user rights
+end title
+
+actor User
+Boundary View
+User -> View: give new right to user 
+View->Shop: updateUserRights(id, role)
+Shop -> User_record: setRights()
+User_record --> Shop: outcome
 
 ```
 ```plantuml
