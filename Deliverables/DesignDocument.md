@@ -492,8 +492,8 @@ Boundary listView
 Manager -> listView: select start date 
 Manager -> listView: select end date 
 Manager -> listView: confirm
-listView -> Shop: getSaleTransaction()
-Shop-> listView: return filtered list
+listView -> AccountBook: getCreditsAndDebits()
+AccountBook-> listView: return filtered list
 ```
 
 ```plantuml
