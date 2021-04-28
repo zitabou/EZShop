@@ -28,18 +28,19 @@ The <u><b>3 tier</b></u> architecture is used to better separate the GUI from th
 ```plantuml
 @startuml
 left to right direction
-package GUI
-package Model_and_Application_Logic as MC
-GUI ..> MC
+package data as GUI
+package model as Model_and_app_logic
+package exceptions as EX
+GUI ..> Model_and_app_logic
+GUI ..> EX
+Model_and_app_logic ..> EX
 ```
 
 
 
 # Low level design
 
-<for each package, report class diagram>
-
-MC package:
+model package:
 
 TODO: ~~FR1~~ (maybe user class), ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, FR8,  (Ticket class)
 
@@ -126,15 +127,15 @@ class AccountBook{
 }
 AccountBook - Shop
 
-class FinancialTransaction {
+interface FinancialTransaction {
     description
     amount
     date
 }
 AccountBook -- "*" FinancialTransaction
 
-class Credit 
-class Debit
+abstract class Credit 
+abstract class Debit
 
 Credit --|> FinancialTransaction
 Debit --|> FinancialTransaction
@@ -250,9 +251,18 @@ N2 .. ProductType
 note "ID is a unique identifier of a transaction,  printed on the receipt (ticket number) " as N3
 N3 .. SaleTransaction
 
+note "stored on DB" as S1
+S1 .. LoyaltyCard
+
+note "stored on DB" as S2
+S2 .. Customer
+
+note "stored on DB" as S3
+S3 .. ProductType
+
+note "stored on DB" as S4
+S4 .. User
 ```
-
-
 
 
 
