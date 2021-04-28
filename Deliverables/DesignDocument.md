@@ -344,44 +344,428 @@ Product_type -> Product_type: setPosition()
 Product_type --> Shop: return
 
 ```
-
 ```plantuml
 
 title
-**scenario 13.1** : Scan products in cart with scanner
+**Scenario 6.1** : Sale of product type X is completed
 end title
 
-actor Scanner
-Boundary View
-Scanner -> Shop: getProductTypeByBarCode(barCode) 
-Shop --> Scanner: return
-Shop -> SaleTransaction: StartSaleTransaction()
-SaleTransaction --> Shop: return
-Shop -> SaleTransaction: AddProductToSale(,,)
-SaleTransaction--> Shop: return
-Shop --> View: Update cart
-```
-
-```plantuml
-
-title
-**scenario 13.2** : Scan products in cart by search
-end title
-
-Actor User
+actor Cashier
 Boundary CartView
-Boundary AddProductView
-User -> CartView: Add Product Button
-CartView -> Shop: Redirect to "Add Product View"
-Shop --> AddProductView: Render view
-User -> AddProductView: Search
-AddProductView -> Shop: getProductTypeByDescription(description)
-Shop --> AddProductView: Return list of products
-User -> AddProductView: Select Product
-User -> AddProductView: Set quantity
-AddProductView -> Shop: getProductTypeByBarCode(barCode)
-Shop -> SaleTransaction: AddProductToSale(,,)
-SaleTransaction--> Shop: return
-Shop --> CartView: Update cart
+boundary PaymentView
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update View
+
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Manage Payment (UC7)
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView : return payment successfulness
+Cashier -> PaymentView: Confirm Sale
+PaymentView -> Shop: getSaleTicket()
+Shop -> SaleTicket: printSaleTicket()
+SaleTicket --> Shop: return
+Shop -> AccountBook: UpdateBalance()
+AccountBook --> Shop: return
+
 ```
 
+
+
+
+
+```plantuml
+
+title
+**Scenario 6.2** : Sale of product type X with product discount
+end title
+
+actor Cashier
+Boundary CartView
+boundary PaymentView
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update view
+
+Cashier -> CartView: Apply discount to Product
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: applyDiscountRateToProduct(,,)
+SaleTransaction --> Shop: return successfulness
+Shop --> CartView: Update view
+
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Manage Payment (UC7)
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView : return payment successfulness
+Cashier -> PaymentView: Confirm Sale
+PaymentView -> Shop: getSaleTicket()
+Shop -> SaleTicket: printSaleTicket()
+SaleTicket --> Shop: return
+Shop -> AccountBook: UpdateBalance()
+AccountBook --> Shop: return
+```
+
+
+```plantuml
+
+title
+**Scenario 6.3** : Sale of product type X with sale discount
+end title
+
+actor Cashier
+Boundary CartView
+boundary PaymentView
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update view
+
+Cashier -> CartView: Apply discount to sale
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: applyDiscountRateToSale(,)
+SaleTransaction --> Shop: return successfulness
+Shop --> CartView: Update view
+
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Manage Payment (UC7)
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView : return payment successfulness
+Cashier -> PaymentView: Confirm Sale
+PaymentView -> Shop: getSaleTicket()
+Shop -> SaleTicket: printSaleTicket()
+SaleTicket --> Shop: return
+Shop -> AccountBook: UpdateBalance()
+AccountBook --> Shop: return
+```
+
+
+```plantuml
+
+title
+**scenario 6.4** : Sale of product type X with Loyalty Card Update
+end title
+
+'Actors
+actor Cashier
+'Boundaries
+Boundary CartView
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+'Start sale transaction
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+'Set amount and Add product
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update view
+
+'Close transaction
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+'Payment
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Select payment type
+'Add points to Loyalty card
+Cashier -> PaymentView: Read Loyalty card
+PaymentView -> Shop: computePointsForSale(transactionID)
+Shop --> PaymentView : Update View
+
+'Manage credit card payment UC3
+Cashier -> PaymentView: Manage credit card payment (UC3)
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView : return payment successfulness
+
+'Update card points
+Shop -> LoyaltyCard: modifyPointsOnCard(card,points)
+LoyaltyCard --> Shop: return
+
+'Confirm Sale
+Cashier -> PaymentView: Confirm Sale
+PaymentView -> Shop: getSaleTicket()
+'Print ticket
+Shop -> SaleTicket: printSaleTicket()
+SaleTicket --> Shop: return
+'Update balance
+Shop -> AccountBook: UpdateBalance()
+AccountBook --> Shop: return
+```
+
+```plantuml
+
+title
+**Scenario 6.5** : Sale of product type X cancelled
+end title
+
+'Actors
+actor Cashier
+'Boundaries
+Boundary CartView
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+'Start sale transaction
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+'Set amount and Add product
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update view
+
+'Close transaction
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+'Payment
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Select payment type
+
+'Cancel the payment
+Cashier -> PaymentView: Cancel sale transaction
+PaymentView -> Shop: deleteSaleTicket(ticketNumber)
+Shop --> CartView: Render CartView
+
+```
+
+```plantuml
+
+title
+**Scenario 6.6** : Sale of product type X completed (cash)
+end title
+
+'Actors
+actor Cashier
+'Boundaries
+Boundary CartView
+boundary PaymentView
+boundary SaleReview
+
+''''
+'Sequence
+'''''
+'Start sale transaction
+Cashier -> CartView: Start sale transaction
+CartView -> Shop: StartSaleTransaction()
+Shop --> CartView: return transaction ID
+Cashier -> CartView: Use scanner
+CartView ->  Shop: getProductTypeByBarCode(barCode) 
+Shop --> CartView: return Product Type
+
+'Set amount and Add product
+Cashier -> CartView: Set amount
+Cashier -> CartView: Add to Sale Transaction
+CartView -> Shop: MISSINGFUNCTION
+Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
+SaleTransaction --> Shop: return
+Shop --> CartView: Update view
+
+'Close transaction
+Cashier -> CartView: Close transaction
+CartView -> Shop: closeSaleTransaction(id)
+Shop --> Shop: return successfulness
+
+'Sell review
+Shop --> SaleReview: Render SaleReview
+Cashier -> SaleReview: Confirm sale
+SaleReview -> Shop: MISSINGFUNCTION
+'Payment
+Shop --> PaymentView: Render PaymentView
+Cashier -> PaymentView: Select payment type
+
+'Manage cash payment UC7
+Cashier -> PaymentView: Manage cash payment (UC7)
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView :
+PaymentView -> Shop :
+Shop --> PaymentView : return payment successfulness
+
+'Confirm Sale
+Cashier -> PaymentView: Confirm Sale
+PaymentView -> Shop: getSaleTicket()
+'Print ticket
+Shop -> SaleTicket: printSaleTicket()
+SaleTicket --> Shop: return
+'Update balance
+Shop -> AccountBook: UpdateBalance()
+AccountBook --> Shop: return
+
+```
+
+```plantuml
+
+title
+**Scenario 7.1** : Manage payment by valid credit card
+end title
+
+'Actors
+actor CreditCardCircuit
+'Boundaries
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+'Read credit card number
+CreditCardCircuit -> PaymentView: Read CC number
+PaymentView -> Shop : MISSINGFUNCTION
+'MISSINGFUNCTION validateCreditCard()
+Shop -> Shop: validateCreditCard()'
+Shop -> SaleTransaction: getCost()
+SaleTransaction --> Shop: return
+Shop -> Shop: receiveCreditCardPayment(SaleTicketID,ccn)
+Shop --> PaymentView: Update View
+
+```
+
+```plantuml
+
+title
+**Scenario 7.2** : Manage payment by invalid credit card
+end title
+
+'Actors
+actor CreditCardCircuit
+'Boundaries
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+'Read credit card number
+CreditCardCircuit -> PaymentView: Read CC number
+'MISSINGFUNCTION readCreditCard()
+PaymentView -> Shop : MISSINGFUNCTION
+'MISSINGFUNCTION validateCreditCard()
+Shop -> Shop: validateCreditCard()
+Shop --> PaymentView: Update View WARNING: Invalid Card
+
+```
+
+```plantuml
+
+title
+**Scenario 7.3** : Manage credit card payment with not enough credit
+end title
+
+'Actors
+actor CreditCardCircuit
+'Boundaries
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+'Read credit card number
+CreditCardCircuit -> PaymentView: Read CC number
+'MISSINGFUNCTION readCreditCard()
+PaymentView -> Shop : MISSINGFUNCTION
+'MISSINGFUNCTION validateCreditCard()
+Shop -> Shop: validateCreditCard()
+Shop -> SaleTransaction: getCost()
+SaleTransaction --> Shop: return
+'MISSINGFUNCTION validateCCBalance()
+Shop -> Shop : validateCCBalance()
+Shop --> PaymentView: Update View WARNING: Balance insufficient
+
+```
+
+```plantuml
+
+title
+**Scenario 7.4** : Manage cash payment
+end title
+
+'Actors
+actor Cashier
+'Boundaries
+boundary PaymentView
+
+''''
+'Sequence
+'''''
+Cashier -> PaymentView: Collect coins
+'MISSINGFUNCTION
+PaymentView -> Shop: computeCashQuantity()
+'receveCashPayment includes the recording of the payment and the computation of the change
+Shop -> Shop: receiveCashPayment(ticketnumber, cash)
+Shop --> Shop: return Change
+Shop --> PaymentView: Update View
+
+```
