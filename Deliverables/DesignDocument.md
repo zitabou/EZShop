@@ -502,8 +502,26 @@ Boundary View
 User -> Shop: getCustomer()
 Shop --> View: returns customer account
 Shop -> Loyalty_card: modifyPointsOnCard()
+Loyalty_card --> Shop: return
+Shop --> View: Update
+
+
+```
+
+
+```plantuml
+
+title 
+**Scenario 4.4** : Update customer record
+end title
+
+actor User
+Boundary View
+User -> Shop: getCustomer()
+Shop --> View: returns customer account
 Shop -> Customer: ModifyCustomer()
-Customer --> View: Update
+Customer --> Shop: return 
+Shop --> View: Update 
 
 
 ```
