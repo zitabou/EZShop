@@ -459,6 +459,21 @@ Shop-->Order_View: payment_outcome
 
 ```plantuml
 
+title 
+**Scenario 4.1** : Create customer record
+end title
+
+actor User
+Boundary UserView
+User -> UserView: ask CU personal date
+UserView -> Shop: defineCustomer()
+Shop -> UserView: returns customer id
+
+```
+
+
+```plantuml
+
 title
 **Scenario 6.1** : Sale of product type X is completed
 end title
@@ -566,7 +581,7 @@ Cashier -> CartView: Start sale transaction
 CartView -> Shop: StartSaleTransaction()
 Shop --> CartView: return transaction ID
 Cashier -> CartView: Use scanner
-CartView ->  Shop: getProductTypeByBarCode(barCode) 
+CartView ->  Shop: F(barCode) 
 Shop --> CartView: return Product Type
 
 Cashier -> CartView: Set amount
@@ -738,7 +753,7 @@ Shop --> CartView: return transaction ID
 Cashier -> CartView: Use scanner
 CartView ->  Shop: getProductTypeByBarCode(barCode) 
 Shop --> CartView: return Product Type
-
+ 
 'Set amount and Add product
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
