@@ -465,10 +465,10 @@ end title
 
 actor User
 Boundary View
-User -> View: ask CU personal date
+User -> View: ask customer personal data
 View -> Shop: fill customer data
 Shop -> user: defineCustomer()
-user -> View: returns customer id
+user --> View: returns customer id
 
 ```
 
@@ -483,9 +483,27 @@ end title
 actor User
 Boundary View
 User -> Shop: CreateCard()
-Shop -> View: returns card code 
+Shop --> View: returns card code 
 Shop -> Loyalty_card: attachCardToCustomer()
 Loyalty_card -> Customer: attachCustomer()
+
+
+```
+
+
+```plantuml
+
+title 
+**Scenario 4.3** : Detach Loyalty card from customer record
+end title
+
+actor User
+Boundary View
+User -> Shop: getCustomer()
+Shop --> View: returns customer account
+Shop -> Loyalty_card: modifyPointsOnCard()
+Shop -> Customer: ModifyCustomer()
+Customer --> View: Update
 
 
 ```
