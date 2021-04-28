@@ -439,3 +439,86 @@ SaleTransaction--> Shop: return
 Shop --> CartView: Update cart
 ```
 
+
+```plantuml
+
+title
+**scenario 8.1** : Return transaction of product type X completed, credit card
+end title
+
+Actor Cashier
+Boundary returnView
+Cashier -> Shop: Insert ticket number
+Shop -> ReturnTransaction: startReturnTransasction()
+ReturnTransaction --> cashierView: ask for product
+Cashier -> Shop: read barcode of product
+Cashier -> Shop: insert number of units to return
+Shop -> ProductType: setQuantity()
+Shop -> Shop: manage credit card return (UC10)
+Cashier -> Shop: confirm return transaction
+Shop -> ReturnTransaction: endReturnTransaction()
+Shop -> AccountBook: recordBalanceUpdate()
+```
+
+```plantuml
+
+title
+**scenario 8.2** : Return transaction of product type X completed, cash
+end title
+
+Actor Cashier
+Boundary returnView
+Cashier -> Shop: Insert ticket number
+Shop -> ReturnTransaction: startReturnTransasction()
+ReturnTransaction --> cashierView: ask for product
+Cashier -> Shop: read barcode of product
+Cashier -> Shop: insert number of units to return
+Shop -> ProductType: setQuantity()
+Shop -> Shop: manage cash return (UC10)
+Cashier -> Shop: confirm return transaction
+Shop -> ReturnTransaction: endReturnTransaction()
+Shop -> AccountBook: recordBalanceUpdate()
+```
+ 
+ 
+```plantuml
+
+title
+**scenario 9.1** : List credits and debits
+end title
+
+Actor Manager
+Boundary listView
+Manager -> listView: select start date 
+Manager -> listView: select end date 
+Manager -> listView: confirm
+listView -> Shop: getSaleTransaction()
+Shop-> listView: return filtered list
+```
+
+```plantuml
+
+title
+**scenario 10.1** : Return payment by  credit card
+end title
+
+Actor Employee
+Boundary returnView
+Employee -> Shop: input Credit card number
+Shop -> returnView: validate number
+Employee -> Shop: input amount to return
+Shop -> Employee: return amount
+```
+
+```plantuml
+
+title
+**scenario 10.2** : return  cash payment
+end title
+
+Actor Employee
+
+Boundary returnView
+Employee ->Employee: collects money
+Employee -> Shop: record cash return
+```
