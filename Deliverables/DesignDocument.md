@@ -466,13 +466,17 @@ end title
 actor User
 Boundary UserView
 User -> UserView: ask CU personal date
-UserView -> Shop: defineCustomer()
-Shop -> UserView: returns customer id
+UserView -> Shop: fill customer data
+Shop -> user: defineCustomer()
+user -> UserView: returns customer id
 
 ```
 
 
 ```plantuml
+
+
+
 
 title
 **Scenario 6.1** : Sale of product type X is completed
