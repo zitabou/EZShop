@@ -530,6 +530,45 @@ Shop --> View: Update
 ```plantuml
 
 
+title 
+**Scenario 5.1** : Login
+end title
+
+actor User
+Boundary View
+User -> Shop: getCustomer()
+Shop --> View: returns customer account
+Shop -> Customer: ModifyCustomer()
+Customer --> Shop: return 
+Shop --> View: Update 
+
+
+```
+
+
+```plantuml
+
+title 
+**Scenario 5.2** : Logout
+end title
+
+actor User
+Boundary View
+User -> View: Enter username
+User -> View: Enter password
+View -> Shop:getUser(username,password)
+Shop -> user: getUser()
+user -> user: validateUser()
+user --> Shop: return user
+Shop --> View: User view
+
+
+```
+
+
+```plantuml
+
+
 title
 **Scenario 6.1** : Sale of product type X is completed
 end title
