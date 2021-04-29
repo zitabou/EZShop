@@ -168,8 +168,6 @@ Shop - "*" ProductType
 
 class SaleTransaction {
     ID 
-    date
-    time
     cost
     paymentType
     discount rate
