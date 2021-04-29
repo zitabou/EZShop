@@ -42,9 +42,9 @@ Model_and_app_logic ..> EX
 
 model package:
 
-TODO: ~~FR1~~ (maybe user class), ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, FR8,  (Ticket class)
+TODO: ~~FR1~~ (maybe user class), ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, ~~FR8~~
 
-<u><b>FR6</b></u>:  ~~FR6.1~~, ~~FR6.2~~, ~~FR6.3~~, ~~FR6.4~~, ~~FR6.5~~, ~~FR6.6~~, FR6.7,  ~~FR6.8~~, ~~FR6.9~~, ~~FR6.10~~, ~~FR6.11~~, ~~FR6.12~~, ~~FR6.13~~, ~~FR6.14~~, ~~FR6.15~~
+<u><b>FR6</b></u>:  ~~FR6.1~~, ~~FR6.2~~, ~~FR6.3~~, ~~FR6.4~~, ~~FR6.5~~, ~~FR6.6~~, ~~FR6.7~~,  ~~FR6.8~~, ~~FR6.9~~, ~~FR6.10~~, ~~FR6.11~~, ~~FR6.12~~, ~~FR6.13~~, ~~FR6.14~~, ~~FR6.15~~
 
 ```plantuml
 left to right direction
@@ -74,7 +74,7 @@ class Shop{
     ()_FR4
     boolean : updateQuantity() <of product in store>
     boolean : updatePosition() <of product in store>
-    Integer : issueReorder()
+    Integer : IssueOrder()
     Integer : payOrderFor()
     boolean : payOrder()
     boolean : recordOrderArrival()
@@ -95,15 +95,14 @@ class Shop{
     -boolean  : callAddProductToSale()
     -boolean  : callApplyDiscount()
     -boolean  : confirmSale()
-    Ticket    : getTicketByNumber() '9
-    boolean   : closeSaleTransaction() '10
+    boolean   : endSaleTransaction() '10
     Integer   : startReturnTransaction() '12
     boolean   : returnProduct() '13
     boolean   : deleteReturnTransaction() '15
-    boolean   : deleteSaleTicket()
-    ticket    : getSaleTicket()
+    boolean   : deleteSaleTransaction()
+    Transaction    : getSaleTransaction()
     int       : computePointsForSale()
-    boolean   : closeSaleTransaction()
+    boolean   : endSaleTransaction()
     ()_FR7
     -boolean : readCreditCard()
     -boolean : validateCreditCard()
@@ -138,25 +137,22 @@ class AccountBook{
 }
 AccountBook - Shop
 
-interface FinancialTransaction {
+interface BalanceOperation {
     description
     amount
     date
 }
-AccountBook -- "*" FinancialTransaction
+AccountBook -- "*" BalanceOperation
 
 abstract class Credit 
 abstract class Debit
 
-Credit --|> FinancialTransaction
-Debit --|> FinancialTransaction
-
-class Sale
-class Return
+Credit --|> BalanceOperation
+Debit --|> BalanceOperation
 
 Order --|> Debit
-Sale --|> Credit
-Return --|> Debit
+SaleTransaction --|> Credit
+ReturnTransaction --|> Debit
 
 
 class ProductType{
@@ -185,6 +181,7 @@ class SaleTransaction {
     boolean   : applyDiscountRateToSale() '4
     boolean   : applyDiscountRateToProduct() '5 
     int       : computePointsForSale() '6
+    -boolean   : printSaleReceipt() '8
     
 
 
@@ -193,12 +190,8 @@ class SaleTransaction {
 Shop --"*" SaleTransaction
 SaleTransaction - "*" ProductType
 
-class SaleTicket{
-    ticketNumber
-    ()_FR6
-    -boolean   : printSaleTicket() '8
-}
-SaleTransaction -- SaleTicket
+
+
 
 class Quantity {
     quantity
@@ -259,7 +252,7 @@ note "ID is a number on 10 digits " as N1
 N1 .. LoyaltyCard
 note "bar code is a number on 12 to 14  digits, compliant to GTIN specifications, see  https://www.gs1.org/services/how-calculate-check-digit-manually " as N2  
 N2 .. ProductType
-note "ID is a unique identifier of a transaction,  printed on the receipt (ticket number) " as N3
+note "ID is a unique identifier of a transaction,  printed on the receipt (transaction number) " as N3
 N3 .. SaleTransaction
 
 note "stored on DB" as S1
@@ -283,15 +276,15 @@ S4 .. User
 
 \<for each functional requirement from the requirement document, list which classes concur to implement it>
 
-| |Shop|User|Account<br/>Book|Financial<br/>Transaction|Credit|Debit|Sale|Return|Product<br/>Type|Sale<br/>Transaction| Return<br/>Transaction |Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order | Sale<br/>Ticket
-|:-------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
-| FR.1 | X |X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
-| FR.3 | X |  |  |  |  |  |  |  |X |  |  |  |  |  |X |X |  |  |
-| FR.4 | X |  |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |  |
-| FR.5 | X |  |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |  |
-| FR.6 | X |  |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |X |
-| FR.7 | X |  |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |  |
-| FR.8 | X |X |  | |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| |Shop|User|Account<br/>Book|Balance<br/>Operation|Credit|Debit|Sale|Return|Product<br/>Type|Sale<br/>Transaction| Return<br/>Transaction |Quantity|Loyalty<br/>Card|Customer| Product | Position  | Order 
+|:-------|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|:-------:|
+| FR.1 | X |X |  |  |  |  |  |  |  |  |  |  |  |  |  |  |  |
+| FR.3 | X |  |  |  |  |  |  |  |X |  |  |  |  |  |X |X |  |
+| FR.4 | X |  |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |
+| FR.5 | X |  |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |
+| FR.6 | X |  |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |
+| FR.7 | X |  |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |
+| FR.8 | X |X |  | |  |  |  |  |  |  |  |  |  |  |  |  |  |
 ||
 
 
@@ -412,7 +405,7 @@ actor ShopManager
 Boundary Order_View
 ShopManager -> Order_View: Create order for X
 ShopManager -> Order_View: input quantity, procePerUnit
-Order_View->Shop: issueReorder(productCode,quantity,pricePerUnit)
+Order_View->Shop: IssueOrder(productCode,quantity,pricePerUnit)
 Shop -> Product_type: getProductTypeProductCode()
 Product_type->Order: createOrder(quantity,pricePerUnit)
 Order->Order: setStatus(issued) 
@@ -578,7 +571,7 @@ SaleTransaction --> Shop: return
 Shop --> CartView: Update View
 
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 Shop --> PaymentView: Render PaymentView
 Cashier -> PaymentView: Manage Payment (UC7)
@@ -589,9 +582,9 @@ Shop --> PaymentView :
 PaymentView -> Shop :
 Shop --> PaymentView : return payment successfulness
 Cashier -> PaymentView: Confirm Sale
-PaymentView -> Shop: getSaleTicket()
-Shop -> SaleTicket: printSaleTicket()
-SaleTicket --> Shop: return
+PaymentView -> Shop: getSaleTransaction()
+Shop -> SaleTransaction: printSaleReceipt()
+SaleTransaction --> Shop: return
 Shop -> AccountBook: UpdateBalance()
 AccountBook --> Shop: return
 
@@ -631,7 +624,7 @@ SaleTransaction --> Shop: return successfulness
 Shop --> CartView: Update view
 
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 Shop --> PaymentView: Render PaymentView
 Cashier -> PaymentView: Manage Payment (UC7)
@@ -642,9 +635,9 @@ Shop --> PaymentView :
 PaymentView -> Shop :
 Shop --> PaymentView : return payment successfulness
 Cashier -> PaymentView: Confirm Sale
-PaymentView -> Shop: getSaleTicket()
-Shop -> SaleTicket: printSaleTicket()
-SaleTicket --> Shop: return
+PaymentView -> Shop: getSaleTransaction()
+Shop -> SaleTransaction: printSaleReceipt()
+SaleTransaction --> Shop: return
 Shop -> AccountBook: UpdateBalance()
 AccountBook --> Shop: return
 ```
@@ -680,7 +673,7 @@ SaleTransaction --> Shop: return successfulness
 Shop --> CartView: Update view
 
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 Shop --> PaymentView: Render PaymentView
 Cashier -> PaymentView: Manage Payment (UC7)
@@ -691,9 +684,9 @@ Shop --> PaymentView :
 PaymentView -> Shop :
 Shop --> PaymentView : return payment successfulness
 Cashier -> PaymentView: Confirm Sale
-PaymentView -> Shop: getSaleTicket()
-Shop -> SaleTicket: printSaleTicket()
-SaleTicket --> Shop: return
+PaymentView -> Shop: getSaleTransaction()
+Shop -> SaleTransaction: printSaleReceipt()
+SaleTransaction --> Shop: return
 Shop -> AccountBook: UpdateBalance()
 AccountBook --> Shop: return
 ```
@@ -732,7 +725,7 @@ Shop --> CartView: Update view
 
 'Close transaction
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 'Payment
 Shop --> PaymentView: Render PaymentView
@@ -757,10 +750,10 @@ LoyaltyCard --> Shop: return
 
 'Confirm Sale
 Cashier -> PaymentView: Confirm Sale
-PaymentView -> Shop: getSaleTicket()
-'Print ticket
-Shop -> SaleTicket: printSaleTicket()
-SaleTicket --> Shop: return
+PaymentView -> Shop: getSaleTransaction()
+'Print receipt
+Shop -> SaleTransaction: printSaleReceipt()
+SaleTransaction --> Shop: return
 'Update balance
 Shop -> AccountBook: UpdateBalance()
 AccountBook --> Shop: return
@@ -799,7 +792,7 @@ Shop --> CartView: Update view
 
 'Close transaction
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 'Payment
 Shop --> PaymentView: Render PaymentView
@@ -807,7 +800,7 @@ Cashier -> PaymentView: Select payment type
 
 'Cancel the payment
 Cashier -> PaymentView: Cancel sale transaction
-PaymentView -> Shop: deleteSaleTicket(ticketNumber)
+PaymentView -> Shop: deleteSaleTransaction(transactionNumber)
 Shop --> CartView: Render CartView
 
 ```
@@ -846,7 +839,7 @@ Shop --> CartView: Update view
 
 'Close transaction
 Cashier -> CartView: Close transaction
-CartView -> Shop: closeSaleTransaction(id)
+CartView -> Shop: endSaleTransaction(id)
 Shop --> Shop: return successfulness
 
 'Sell review
@@ -868,10 +861,10 @@ Shop --> PaymentView : return payment successfulness
 
 'Confirm Sale
 Cashier -> PaymentView: Confirm Sale
-PaymentView -> Shop: getSaleTicket()
-'Print ticket
-Shop -> SaleTicket: printSaleTicket()
-SaleTicket --> Shop: return
+PaymentView -> Shop: getSaleTransaction()
+'Print receipt
+Shop -> SaleTransaction: printSaleReceipt()
+SaleTransaction --> Shop: return
 'Update balance
 Shop -> AccountBook: UpdateBalance()
 AccountBook --> Shop: return
@@ -900,7 +893,7 @@ PaymentView -> Shop : readCreditCard()
 Shop -> Shop: validateCreditCard()'
 Shop -> SaleTransaction: getCost()
 SaleTransaction --> Shop: return
-Shop -> Shop: receiveCreditCardPayment(SaleTicketID,ccn)
+Shop -> Shop: receiveCreditCardPayment(SaleTransactionID,ccn)
 Shop --> PaymentView: Update View
 
 ```
@@ -970,7 +963,7 @@ Cashier -> PaymentView: Collect coins
 'MISSINGFUNCTION
 PaymentView -> Shop: computeCashQuantity()
 'receveCashPayment includes the recording of the payment and the computation of the change
-Shop -> Shop: receiveCashPayment(ticketnumber, cash)
+Shop -> Shop: receiveCashPayment(transactioNumber, cash)
 Shop --> Shop: return Change
 Shop --> PaymentView: Update View
 
@@ -984,7 +977,7 @@ end title
 
 Actor Cashier
 Boundary returnView
-Cashier -> Shop: Insert ticket number
+Cashier -> Shop: Insert transaction number
 Shop -> ReturnTransaction: startReturnTransasction()
 ReturnTransaction --> cashierView: ask for product
 Cashier -> Shop: read barcode of product
@@ -1005,7 +998,7 @@ end title
 
 Actor Cashier
 Boundary returnView
-Cashier -> Shop: Insert ticket number
+Cashier -> Shop: Insert transaction number
 Shop -> ReturnTransaction: startReturnTransasction()
 ReturnTransaction --> cashierView: ask for product
 Cashier -> Shop: read barcode of product
