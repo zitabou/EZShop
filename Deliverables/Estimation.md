@@ -82,12 +82,17 @@ Version: #1
 
 
 ``` plantuml
-@startuml Gantt
-[Requirements] lasts 1 days
-then [Design] lasts 1 days
-then [Coding] lasts 5 days
-then [Unit Testing] lasts 1 days
-then [System Testing] lasts 2 days
+@startuml
+header Software Engineering
+footer Group 28
+printscale weekly
+title Project Schedule
+Project starts the 10th of march 2021
+[Requirements] lasts 2 week
+then [Design] lasts 2 week
+then [Coding] lasts 8 weeks
+then [Unit Testing] lasts 2 weeks
+then [System Testing] lasts 4 weeks
 @enduml
 ```
 ###
