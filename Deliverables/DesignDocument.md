@@ -92,6 +92,9 @@ class Shop{
     Integer  : modifyPointsOnCard()
     ()_FR6
     Integer   : startSaleTransaction() '1 <creates instance>
+    -boolean  : callAddProductToSale()
+    -boolean  : callApplyDiscount()
+    -boolean  : confirmSale()
     Ticket    : getTicketByNumber() '9
     boolean   : closeSaleTransaction() '10
     Integer   : startReturnTransaction() '12
@@ -102,6 +105,10 @@ class Shop{
     int       : computePointsForSale()
     boolean   : closeSaleTransaction()
     ()_FR7
+    -boolean : readCreditCard()
+    -boolean : validateCreditCard()
+    -boolean : validateCCBalance()
+    double  : computeCashQuantity()
     double  : receiveCashPayment()
     boolean : receiveCreditCardPayment()
     double  : returnCashPayment()
@@ -565,7 +572,7 @@ Shop --> CartView: return Product Type
 
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update View
@@ -612,13 +619,13 @@ Shop --> CartView: return Product Type
 
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale()
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update view
 
 Cashier -> CartView: Apply discount to Product
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callApplyDiscount()
 Shop -> SaleTransaction: applyDiscountRateToProduct(,,)
 SaleTransaction --> Shop: return successfulness
 Shop --> CartView: Update view
@@ -661,13 +668,13 @@ Shop --> CartView: return Product Type
 
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale()
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update view
 
 Cashier -> CartView: Apply discount to sale
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callApplyDiscount()
 Shop -> SaleTransaction: applyDiscountRateToSale(,)
 SaleTransaction --> Shop: return successfulness
 Shop --> CartView: Update view
@@ -718,7 +725,7 @@ Shop --> CartView: return Product Type
 'Set amount and Add product
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale()
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update view
@@ -785,7 +792,7 @@ Shop --> CartView: return Product Type
 'Set amount and Add product
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale()
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update view
@@ -832,7 +839,7 @@ Shop --> CartView: return Product Type
 'Set amount and Add product
 Cashier -> CartView: Set amount
 Cashier -> CartView: Add to Sale Transaction
-CartView -> Shop: MISSINGFUNCTION
+CartView -> Shop: callAddProductToSale()
 Shop -> SaleTransaction: AddProductToSale(transactionID,productCode,amount)
 SaleTransaction --> Shop: return
 Shop --> CartView: Update view
@@ -845,7 +852,7 @@ Shop --> Shop: return successfulness
 'Sell review
 Shop --> SaleReview: Render SaleReview
 Cashier -> SaleReview: Confirm sale
-SaleReview -> Shop: MISSINGFUNCTION
+SaleReview -> Shop: confirmSale()
 'Payment
 Shop --> PaymentView: Render PaymentView
 Cashier -> PaymentView: Select payment type
@@ -888,7 +895,7 @@ boundary PaymentView
 '''''
 'Read credit card number
 CreditCardCircuit -> PaymentView: Read CC number
-PaymentView -> Shop : MISSINGFUNCTION
+PaymentView -> Shop : readCreditCard()
 'MISSINGFUNCTION validateCreditCard()
 Shop -> Shop: validateCreditCard()'
 Shop -> SaleTransaction: getCost()
@@ -913,7 +920,7 @@ boundary PaymentView
 'Read credit card number
 CreditCardCircuit -> PaymentView: Read CC number
 'MISSINGFUNCTION readCreditCard()
-PaymentView -> Shop : MISSINGFUNCTION
+PaymentView -> Shop : readCreditCard()
 'MISSINGFUNCTION validateCreditCard()
 Shop -> Shop: validateCreditCard()
 Shop --> PaymentView: Update View WARNING: Invalid Card
@@ -935,7 +942,7 @@ boundary PaymentView
 'Read credit card number
 CreditCardCircuit -> PaymentView: Read CC number
 'MISSINGFUNCTION readCreditCard()
-PaymentView -> Shop : MISSINGFUNCTION
+PaymentView -> Shop : readCreditCard
 'MISSINGFUNCTION validateCreditCard()
 Shop -> Shop: validateCreditCard()
 Shop -> SaleTransaction: getCost()
