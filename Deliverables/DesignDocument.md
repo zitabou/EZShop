@@ -370,24 +370,6 @@ Shop -> Shop: defineUser()
 ```plantuml
 
 title
-scenario: Log-in, Log out
-end title
-
-actor User
-Boundary View
-User -> View: log-in
-View->Shop: log_in(username, password)
-Shop -> Shop: validateUser()
-Shop --> View: User view
-
-User -> View: log-out
-View->Shop: log_out()
-Shop --> View: log-out view
-
-```
-```plantuml
-
-title
 scenario 2-2: Delete user
 end title
 
