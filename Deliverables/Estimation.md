@@ -63,16 +63,31 @@ Version: #1
 ### 
 |             | Estimate                        |             
 | ----------- | ------------------------------- |  
-| NC =  Estimated number of classes to be developed   |                             |             
-|  A = Estimated average size per class, in LOC       |                            | 
-| S = Estimated size of project, in LOC (= NC * A) | |
-| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)  |                                      |   
-| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro) | | 
-| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |                    |               
+| NC =  Estimated number of classes to be developed   |         15                    |             
+|  A = Estimated average size per class, in LOC       |           100                 | 
+| S = Estimated size of project, in LOC (= NC * A) |1500 |
+| E = Estimated effort, in person hours (here use productivity 10 LOC per person hour)  |      150                                |   
+| C = Estimated cost, in euro (here use 1 person hour cost = 30 euro) |4500 | 
+| Estimated calendar time, in calendar weeks (Assume team of 4 people, 8 hours per day, 5 days per week ) |           1         |               
 # Estimate by activity decomposition
 ### 
 |         Activity name    | Estimated effort (person hours)   |             
 | ----------- | ------------------------------- | 
-| | |
+| Requirements | 20 |
+| Design | 30  |
+| Coding | 150 |
+| Unit Testing | 20 |
+| System Testing | 50 |
 ###
-Insert here Gantt chart with above activities
+
+
+``` plantuml
+@startuml Gantt
+[Requirements] lasts 1 days
+then [Design] lasts 1 days
+then [Coding] lasts 5 days
+then [Unit Testing] lasts 1 days
+then [System Testing] lasts 2 days
+@enduml
+```
+###
