@@ -102,7 +102,8 @@ class Shop{
     boolean : receiveCreditCardPayment()
     double  : returnCashPayment()
     double  : returnCreditCardPayment()
-
+    boolean : validateCreditOrDebitCard()
+    boolean : returnAmount()
 }
 class User{
     ID
@@ -980,16 +981,19 @@ end title
 
 Actor Cashier
 Boundary returnView
+Boundary cashierView
 Cashier -> Shop: Insert transaction number
 Shop -> ReturnTransaction: startReturnTransasction()
 ReturnTransaction --> cashierView: ask for product
-Cashier -> Shop: read barcode of product
-Cashier -> Shop: insert number of units to return
+Cashier -> cashierView: read barcode of product
+Cashier -> cashierView: insert number of units to return
+cashierView -> Shop: getProductType()
 Shop -> ProductType: setQuantity()
 Shop -> Shop: manage credit card return (UC10)
-Cashier -> Shop: confirm return transaction
-Shop -> ReturnTransaction: endReturnTransaction()
-Shop -> AccountBook: recordBalanceUpdate()
+Shop -> cashierView: ask for confirmation
+Cashier -> cashierView: confirm return transaction
+cashierView -> ReturnTransaction: endReturnTransaction()
+cashierView -> AccountBook: recordBalanceUpdate()
 ```
 
 
@@ -1001,16 +1005,19 @@ end title
 
 Actor Cashier
 Boundary returnView
+Boundary cashierView
 Cashier -> Shop: Insert transaction number
 Shop -> ReturnTransaction: startReturnTransasction()
 ReturnTransaction --> cashierView: ask for product
-Cashier -> Shop: read barcode of product
-Cashier -> Shop: insert number of units to return
+Cashier -> cashierView: read barcode of product
+Cashier -> cashierView: insert number of units to return
+cashierView -> Shop: getProductType()
 Shop -> ProductType: setQuantity()
 Shop -> Shop: manage cash return (UC10)
-Cashier -> Shop: confirm return transaction
-Shop -> ReturnTransaction: endReturnTransaction()
-Shop -> AccountBook: recordBalanceUpdate()
+Shop -> cashierView: ask for confirmation
+Cashier -> cashierView: confirm return transaction
+cashierView -> ReturnTransaction: endReturnTransaction()
+cashierView -> AccountBook: recordBalanceUpdate()
 ```
  
  
@@ -1040,10 +1047,11 @@ end title
 
 Actor Employee
 Boundary returnView
-Employee -> Shop: input Credit card number
-Shop -> returnView: validate number
-Employee -> Shop: input amount to return
-Shop -> Employee: return amount
+Employee -> returnView: input Credit card number
+returnView -> Shop: validateCreditOrDebitCard()
+Shop -> returnView: ask for amount to return
+Employee -> returnView: input amount to return
+returnView -> Shop: returnAmount()
 
 ```
 
@@ -1059,8 +1067,8 @@ Actor Employee
 
 Boundary returnView
 Employee ->Employee: collects money
-Employee -> Shop: record cash return
-
+Employee -> returnView: input amount returned
+returnView -> Shop: recordCashReturn()
 ```
 
 
