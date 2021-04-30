@@ -437,9 +437,9 @@ title
 **scenario 3-3**: Record payed order of product type X arrival
 end title
 
-actor Administrator/ShopManager
+actor Administrator_ShopManager
 Boundary Order_View
-Administrator/ShopManager -> Order_View: Record order arrival
+Administrator_ShopManager -> Order_View: Record order arrival
 Order_View->Shop: recordOrderArrival(orderId)
 Shop->Order: productFromOrder()
 Order-->Shop: productID
