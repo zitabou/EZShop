@@ -51,58 +51,52 @@ class Shop{
     Users
     productTypes
     saleTransactions
-    ()_FR1
-    -boolean : defineUser()
-    -boolean : updateUser()
-    -boolean : deleteUser()
-    -List    : getAllUsers()
-    -User    : getUser()
-    -User : validateUser()  <returns User if found, null if not found>
-    -boolean : setRights(UserID,right)
-    ()_FR3
+    boolean : defineUser()
+    boolean : updateUser()
+    boolean : deleteUser()
+    List    : getAllUsers()
+    User    : getUser()
+    User : validateUser()
+    boolean : setRights(UserID,right)
     Integer : createProductType()
     boolean : updateProduct()
     boolean : deleteProductType()
     List : getAllProductTypes()
-    ProductType : getProductTypeByBarCode() FR6.7
-    -ProductType : getProductTypeByProductCode()
+    ProductType : getProductTypeByBarCode()
+    ProductType : getProductTypeByProductCode()
     List : getProductTypesByDescription()
-    ()_FR4
-    boolean : updateQuantity() <of product in store>
-    boolean : updatePosition() <of product in store>
+    boolean : updateQuantity()
+    boolean : updatePosition()
     Integer : IssueOrder()
     Integer : payOrderFor()
     boolean : payOrder()
     boolean : recordOrderArrival()
     List : getAllOrders()
-    -double: getOrderCost()
-    -boolean: updateOrderStatus()
-    ()_FR5
-    Integer : defineCustomer() ' <returns customer id>
+    double: getOrderCost()
+    boolean: updateOrderStatus()
+    Integer : defineCustomer()
     boolean : modifyCustomer()
     boolean : deleteCustomer()
     Customer : getCustomer()
     List : getAllCustomers()
-    String : createCard()  ' <returns card code>
+    String : createCard()
     boolean : attachCardToCustomer()
     Integer  : modifyPointsOnCard()
-    ()_FR6
-    Integer   : startSaleTransaction() '1 <creates instance>
-    -boolean  : callAddProductToSale()
-    -boolean  : callApplyDiscount()
-    -boolean  : confirmSale()
-    boolean   : endSaleTransaction() '10
-    Integer   : startReturnTransaction() '12
-    boolean   : returnProduct() '13
-    boolean   : deleteReturnTransaction() '15
+    Integer   : startSaleTransaction()
+    boolean  : callAddProductToSale()
+    boolean  : callApplyDiscount()
+    boolean  : confirmSale()
+    boolean   : endSaleTransaction()
+    Integer   : startReturnTransaction()
+    boolean   : returnProduct()
+    boolean   : deleteReturnTransaction()
     boolean   : deleteSaleTransaction()
     Transaction    : getSaleTransaction()
     int       : computePointsForSale()
     boolean   : endSaleTransaction()
-    ()_FR7
-    -boolean : readCreditCard()
-    -boolean : validateCreditCard()
-    -boolean : validateCCBalance()
+    boolean : readCreditCard()
+    boolean : validateCreditCard()
+    boolean : validateCCBalance()
     double  : computeCashQuantity()
     double  : receiveCashPayment()
     boolean : receiveCreditCardPayment()
@@ -126,10 +120,9 @@ User "*"-l Shop
 
 class AccountBook{
     Balance
-    ()_FR8
-    boolean: recordBalanceUpdate() '1,'2
-    List: getCreditsAndDebits() '3
-    double: computeBalance() '4
+    boolean: recordBalanceUpdate()
+    List: getCreditsAndDebits()
+    double: computeBalance()
 }
 AccountBook - Shop
 
@@ -169,13 +162,12 @@ class SaleTransaction {
     discount rate
     loyalityCardCodes
     customerIds
-    ()_FR6
-    boolean   : addProductToSale() '2
-    boolean   : deleteProductFromSale() '3
-    boolean   : applyDiscountRateToSale() '4
-    boolean   : applyDiscountRateToProduct() '5 
-    int       : computePointsForSale() '6
-    -boolean   : printSaleReceipt() '8
+    boolean   : addProductToSale()
+    boolean   : deleteProductFromSale()
+    boolean   : applyDiscountRateToSale()
+    boolean   : applyDiscountRateToProduct()
+    int       : computePointsForSale()
+    boolean   : printSaleReceipt()
     
 
 
@@ -195,8 +187,7 @@ class Quantity {
 class LoyaltyCard {
     ID
     points
-    ()_FR5
-    boolean :attachCustomer() '6
+    boolean :attachCustomer()
 }
 
 class Customer {
@@ -227,7 +218,7 @@ class Order {
   pricePerUnit
   quantity
   status
-  -double: computeCost()
+  double: computeCost()
 }
 Order "*" -- Shop
 Order "*" - ProductType
@@ -235,8 +226,7 @@ Order "*" - ProductType
 class ReturnTransaction {
   quantity
   returnedValue
-  ()_FR6
-  boolean   : endReturnTransaction() '14
+  boolean   : endReturnTransaction()
 }
 
 ReturnTransaction "*" - SaleTransaction
