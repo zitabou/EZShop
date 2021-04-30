@@ -257,6 +257,19 @@ S4 .. User
 
 
 
+
+# Low level design
+
+<for each package, report class diagram>
+
+
+
+
+
+
+
+
+
 # Verification traceability matrix
 
 
@@ -270,6 +283,8 @@ S4 .. User
 | FR.7 | X |  |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |
 | FR.8 | X |X |  | |  |  |  |  |  |  |  |  |  |  |  |  |  |
 ||
+
+
 
 
 
