@@ -42,10 +42,6 @@ Model_and_app_logic ..> EX
 
 model package:
 
-TODO: ~~FR1~~ (maybe user class), ~~FR3~~, ~~FR4~~, ~~FR5~~, <b>FR6</b>, ~~FR7~~, ~~FR8~~
-
-<u><b>FR6</b></u>:  ~~FR6.1~~, ~~FR6.2~~, ~~FR6.3~~, ~~FR6.4~~, ~~FR6.5~~, ~~FR6.6~~, ~~FR6.7~~,  ~~FR6.8~~, ~~FR6.9~~, ~~FR6.10~~, ~~FR6.11~~, ~~FR6.12~~, ~~FR6.13~~, ~~FR6.14~~, ~~FR6.15~~
-
 ```plantuml
 left to right direction
 
@@ -280,7 +276,7 @@ S4 .. User
 | FR.3 | X |  |  |  |  |  |  |  |X |  |  |  |  |  |X |X |  |
 | FR.4 | X |  |  |  |  |  |X |  |X |  |  |X |  |  |  |X |X |
 | FR.5 | X |  |  |  |  |  |  |  |  |  |  |  |X |X |  |  |  |
-| FR.6 | X |  |  |  |  |  |(X)|X|X |X |X |X |  |  |X |  |  |
+| FR.6 | X |  |  |  |  |  |X|X|X |X |X |X |  |  |X |  |  |
 | FR.7 | X |  |  |X |X |X |X |X |  |  |  |  |  |  |  |  |  |
 | FR.8 | X |X |  | |  |  |  |  |  |  |  |  |  |  |  |  |  |
 ||
@@ -299,7 +295,7 @@ S4 .. User
 ```plantuml
 
 title
-scenario 1-1: Create product type X
+**scenario 1-1**: Create product type X
 end title
 
 actor User
@@ -317,7 +313,7 @@ Product_type --> Shop: productID
 ```plantuml
 
 title
-scenario 1-2: Modify product type location
+**scenario 1-2**: Modify product type location
 end title
 
 actor User
@@ -336,7 +332,7 @@ Product_type --> Shop: return
 ```plantuml
 
 title
-scenario 1-3: Modify product type price per unit
+**scenario 1-3**: Modify product type price per unit
 end title
 
 actor User
@@ -355,7 +351,7 @@ Product_type --> Shop: outcome
 ```plantuml
 
 title
-scenario 2-1: Create user and define rights
+**scenario 2-1**: Create user and define rights
 end title
 
 actor User
@@ -368,7 +364,7 @@ Shop -> Shop: defineUser()
 ```plantuml
 
 title
-scenario 2-2: Delete user
+**scenario 2-2**: Delete user
 end title
 
 actor User
@@ -381,7 +377,7 @@ Shop -> Shop: deleteUser()
 ```plantuml
 
 title
-scenario 2-3: Modify user rights
+**scenario 2-3**: Modify user rights
 end title
 
 actor User
@@ -396,7 +392,7 @@ User_record --> Shop: outcome
 ```plantuml
 
 title
-scenario 3-1: Order of product type X issued
+**scenario 3-1**: Order of product type X issued
 end title
 
 actor ShopManager
@@ -416,7 +412,7 @@ Shop-->Order_View: Order_code
 ```plantuml
 
 title
-scenario 3-2: Order of product X payed
+**scenario 3-2**: Order of product X payed
 end title
 
 actor ShopManager
@@ -429,10 +425,29 @@ Order->Order: computeCost()
 Order-->Shop: Amount_to_be_payed
 Shop->AccountBook: recordBalanceUpdate(Amount_to_be_payed)
 AccountBook-->Shop: positive_outcome
-Shop->Order: updateOrderStatus()
-Order->Order: setStatus(payed) 
+Shop->Order: updateOrderStatus(Order,PAYED) 
 Order --> Shop: outome
 Shop-->Order_View: payment_outcome 
+
+```
+
+```plantuml
+
+title
+**scenario 3-3**: Record payed order of product type X arrival
+end title
+
+actor Administrator/ShopManager
+Boundary Order_View
+Administrator/ShopManager -> Order_View: Record order arrival
+Order_View->Shop: recordOrderArrival(orderId)
+Shop->Order: productFromOrder()
+Order-->Shop: productID
+Shop->ProductType: updateQuantity()
+ProductType-->Shop: outcome
+Shop->Order: updateOrderStatus(Order,COMPLETE)
+Order-->Shop: outcome
+Shop-->Order_View: recording_outcome
 
 ```
 
