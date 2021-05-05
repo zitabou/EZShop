@@ -5,17 +5,15 @@ import interfaces.*;
 public class Customer implements Customer_interface{
 
 	public Customer() {
-		this.customerCard = "N/A";
-		this.customerName = "N/A"; 
-		this.id = 0; 
-		this.points = 0; 
+		customerName = "N/A";
+		id = 0;
+		card = null;
 	}
 	
-	public Customer(String customerName, String customerCard, Integer id, Integer points) {
-		this.customerCard = customerCard;
-		this.customerName = customerName; 
-		this.id = id; 
-		this.points = points; 	
+	public Customer(String customerName, Integer id, String customerCard, Integer points) {
+		this.customerName = customerName;
+		this.id = id;
+		card = new LoyaltyCard(customerCard, points);
 	}
 	
 	
@@ -23,23 +21,22 @@ public class Customer implements Customer_interface{
 
     public void setCustomerName(String customerName) {this.customerName = customerName;}
 
-    public String getCustomerCard() {return customerCard;}
+    public String getCustomerCard() {return card.getcardID();}
 
-    public void setCustomerCard(String customerCard) {this.customerCard = customerCard;}
+    public void setCustomerCard(String customerCard) {this.card.setcardID(customerCard);}
 
     public Integer getId() {return id;}
 
     public void setId(Integer id) {this.id = id;}
 
-    public Integer getPoints() {return points;}
+    public Integer getPoints() {return this.card.getPoints();}
 
-    public void setPoints(Integer points) {this.points = points;}
+    public void setPoints(Integer points) {this.card.setPoints(points);}
     
     
     private String customerName;
-    private String customerCard;
     private Integer id;
-    private Integer points;
+    private LoyaltyCard card;
     
 	
 }

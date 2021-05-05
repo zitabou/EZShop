@@ -15,7 +15,7 @@ public class ProductType implements ProdType_interface{
 		pricePerUnit = 0.0;
 		id = 0;
 		
-		position = null;;
+		//setPosition(null);;
 		
 	}
 	
@@ -28,7 +28,7 @@ public class ProductType implements ProdType_interface{
 		this.pricePerUnit = pricePerUnit;
 		this.id = id;
 		
-		this.position = null;
+		//this.setPosition(null);
 	}
 	
 	
@@ -65,7 +65,11 @@ public class ProductType implements ProdType_interface{
 	
 	// additional methods 
 	
-	
+	//public Position getPosition() {return position;}
+
+	//public void setPosition(Position position) {this.position = position;}
+
+
 
 	private Integer quantity;
 	private String location;
@@ -75,6 +79,6 @@ public class ProductType implements ProdType_interface{
 	private Double pricePerUnit;
 	private Integer id;
 	
-	private Position position;
+	//private Position position;
 	
 }

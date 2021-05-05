@@ -9,26 +9,28 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 	
 	
 	public SaleTransaction() {
-		balanceId = 0;
+		setSaleID(0);
 		date = LocalDate.now();
 		money = 0.0;
 		type = "N/A";
 		discountRate = 0.0;
 		price = 0.0;
 		
+		customer = new Customer();
 		quantityPerProduct = new ArrayList<>();
 		products = new ArrayList<ProductType>();
 		
 	}
 	
-	public SaleTransaction(int balanceId, LocalDate date, double money, String type, double discountRate, double price) {
-		this.balanceId = balanceId;
+	public SaleTransaction(int saleId, LocalDate date, double money, String type, double discountRate, double price) {
+		this.setSaleID(balanceId);
 		this.date = date;
 		this.money = money;
 		this.type = type;
 		this.discountRate = discountRate;
 		this.price = price;
 		
+		customer = new Customer();
 		quantityPerProduct = new ArrayList<>();
 		products = new ArrayList<ProductType>();
 	}
@@ -72,14 +74,18 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
     
     //additional methods
     
-    
+	
+
+	public int getSaleID() {return saleID;}
+
+	public void setSaleID(int saleID) {this.saleID = saleID;}
+	
     public Customer getCustomer() {return customer;}
     
 	public void setCustomer(Customer customer) {this.customer = customer;}
 	
 	public List<Integer> getAllQuantities() {return quantityPerProduct;}
 
-	// maybe it could be done through the object and prevent the loop
 	public boolean updateQuantityPerProduct(ProductType product, Integer quantity) {
 		int prodId = product.getId();
 		for(int i =0; i<products.size(); i++) {
@@ -91,6 +97,7 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 		}
 		return false; // product was not found
 	}
+	
 
 	public List<ProductType> getAllProducts() {return products;}
 
@@ -100,7 +107,6 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 		return true;
 	}
 	
-	// maybe it could be done through the object and prevent the loop
 	public boolean deleteProductFromSale(ProductType product) {
 		int prodId = product.getId();
 		for(int i =0; i<products.size(); i++) {
@@ -112,6 +118,7 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 		}
 		return false; // product was not found
 	}
+	
 	
 	//points are calculated based on the cost of the price. one point per 10 money
 	public int computePointsForSale() {
@@ -125,6 +132,9 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 	public String getPaymentType() {return paymentType;}
 	
 	//boolean printSaleReceipt() {}
+
+	
+	
 	
 
 	private int balanceId;
@@ -134,6 +144,7 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
     private double discountRate;
     private double price;
     
+    private int saleID;
     private String paymentType;
     private Customer customer;
     private List<Integer> quantityPerProduct;
