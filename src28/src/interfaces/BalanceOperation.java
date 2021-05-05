@@ -6,7 +6,7 @@ public interface BalanceOperation {
 	
     Integer getBalanceId();
 
-    void setBalanceId(int balanceId);
+    void setBalanceId(Integer balanceId);
 
     LocalDate getDate();
 
