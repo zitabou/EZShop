@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.*;
 
 import interfaces.*;
-import model.Quantity;
-import model.ProductType;
 
 public class SaleTransaction extends Credit implements SaleTrans_interface{
 	
@@ -18,7 +16,7 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 		discountRate = 0.0;
 		price = 0.0;
 		
-		qunatityPerProduct = new ArrayList<Quantity>();
+		quantityPerProduct = new ArrayList<>();
 		products = new ArrayList<ProductType>();
 		
 	}
@@ -31,7 +29,7 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 		this.discountRate = discountRate;
 		this.price = price;
 		
-		qunatityPerProduct = new ArrayList<Quantity>();
+		quantityPerProduct = new ArrayList<>();
 		products = new ArrayList<ProductType>();
 	}
 	
@@ -55,12 +53,13 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
 	
 	//implements
     
-    //--the following methods use ticket that is not present.
-    public Integer getTicketNumber() {return 0;}
-    public void setTicketNumber(Integer ticketNumber) {}
-    //List<TicketEntry> getEntries();
-    //void setEntries(List<TicketEntry> entries);
-    //
+    public Integer getReceiptNumber() {return receipt.getReceiptNumber();}
+    
+    public void setReceiptNumber(Integer receiptNumber) { receipt.setReceiptNumber(receiptNumber);}
+    
+  //--the following methods use ticket that is not present.
+    //List<ReceiptEntry> getEntries();
+    //void setEntries(List<ReceiptEntry> entries);
     
     public double getDiscountRate() {return discountRate;}
 
@@ -71,14 +70,74 @@ public class SaleTransaction extends Credit implements SaleTrans_interface{
     public void setPrice(double price) {}
     
     
-    private int balanceId;
+    //additional methods
+    
+    
+    public Customer getCustomer() {return customer;}
+    
+	public void setCustomer(Customer customer) {this.customer = customer;}
+	
+	public List<Integer> getAllQuantities() {return quantityPerProduct;}
+
+	// maybe it could be done through the object and prevent the loop
+	public boolean updateQuantityPerProduct(ProductType product, Integer quantity) {
+		int prodId = product.getId();
+		for(int i =0; i<products.size(); i++) {
+			if(prodId == products.get(i).getId()) {
+				price = price + products.get(i).getPricePerUnit()*(quantity - quantityPerProduct.get(i));
+				quantityPerProduct.set(i, quantity);
+				return true;
+			}
+		}
+		return false; // product was not found
+	}
+
+	public List<ProductType> getAllProducts() {return products;}
+
+	public boolean addProductToSale(ProductType product, Integer quantity) {
+		products.add(product);
+		quantityPerProduct.add(quantity);
+		return true;
+	}
+	
+	// maybe it could be done through the object and prevent the loop
+	public boolean deleteProductFromSale(ProductType product) {
+		int prodId = product.getId();
+		for(int i =0; i<products.size(); i++) {
+			if(prodId == products.get(i).getId()) {
+				price = price - products.get(i).getPricePerUnit()*quantityPerProduct.get(i);
+				products.remove(i);
+				return true;
+			}
+		}
+		return false; // product was not found
+	}
+	
+	//points are calculated based on the cost of the price. one point per 10 money
+	public int computePointsForSale() {
+		int points = (int) (price/10);
+		if(points > 0) 
+			return points;
+		return 0;
+	}
+	
+	public void selectPaymentType(String payType) {paymentType = payType;}
+	public String getPaymentType() {return paymentType;}
+	
+	//boolean printSaleReceipt() {}
+	
+
+	private int balanceId;
     private LocalDate date;
-    private double money;
+    private double money; //?
     private String type;
     private double discountRate;
     private double price;
     
-    private List<Quantity> qunatityPerProduct;
+    private String paymentType;
+    private Customer customer;
+    private List<Integer> quantityPerProduct;
     private List<ProductType> products;
+    private Receipt receipt;
 	
 }
