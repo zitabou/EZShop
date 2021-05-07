@@ -2,6 +2,8 @@ package it.polito.ezshop.classes;
 
 import java.time.LocalDate;
 
+import it.polito.ezshop.data.ProductType;
+
 // returns product of a completed saleTransaction
 public class ReturnTransaction extends Debit{
 	

@@ -1,12 +1,14 @@
-package it.polito.ezshop.data;
+package it.polito.ezshop.classes;
 
 import it.polito.ezshop.exceptions.*;
+import it.polito.ezshop.data.*;
+import it.polito.ezshop.classes.*;
 
 import java.time.LocalDate;
 import java.util.List;
 
 
-public class EZShop implements EZShopInterface {
+public class Shop implements EZShopInterface {
 
 
     @Override
@@ -254,3 +256,4 @@ public class EZShop implements EZShopInterface {
         return 0;
     }
 }
+

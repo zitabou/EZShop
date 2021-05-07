@@ -4,13 +4,13 @@ import java.util.List;
 
 public interface SaleTransaction {
 
-    Integer getTicketNumber();
+    Integer getReceiptNumber();
 
-    void setTicketNumber(Integer ticketNumber);
+    void setReceiptNumber(Integer receiptNumber);
 
-    List<TicketEntry> getEntries();
+    //List<ReceiptEntry> getEntries();
 
-    void setEntries(List<TicketEntry> entries);
+    //void setEntries(List<ReceiptEntry> entries);
 
     double getDiscountRate();
 
