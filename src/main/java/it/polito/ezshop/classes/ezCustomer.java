@@ -1,8 +1,18 @@
 package it.polito.ezshop.classes;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import it.polito.ezshop.data.*;
 import it.polito.ezshop.exceptions.*;
 
+
+
+@Entity
+@Table(name = "Customer")
 public class ezCustomer implements Customer{
 
 	public ezCustomer() {
@@ -35,8 +45,14 @@ public class ezCustomer implements Customer{
     public void setPoints(Integer points) {this.card.setPoints(points);}
     
     
+    @Column(name="Name")
     private String customerName;
+    
+    @Id
+    @Column(name="CustomerID")
     private Integer id;
+    
+    @Transient
     private LoyaltyCard card;
     
 	
