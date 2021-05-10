@@ -81,7 +81,7 @@ public class EZShop implements EZShopInterface {
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         
     	for (User u : users) {
-    		if(u.getUsername() == username && u.getPassword()==password)
+    		if(u.getUsername().equalsIgnoreCase(username) && u.getPassword().equalsIgnoreCase(password))
     				return u; 
     	}
     	
@@ -90,7 +90,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean logout() {
-        return false;
+        return true;
     }
 
     @Override
