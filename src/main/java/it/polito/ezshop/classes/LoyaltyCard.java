@@ -1,5 +1,12 @@
 package it.polito.ezshop.classes;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name="LoyaltyCard")
 public class LoyaltyCard {
 	
 	public LoyaltyCard() {
@@ -20,7 +27,15 @@ public class LoyaltyCard {
 	
 	public void setPoints(Integer points) {this.points = points;}
 
-	
+	@Id
+	@Column(name="cardID")
 	private String cardID;
+	
+	@Column(name="points")
 	private Integer points;
+
+	public boolean getInUse() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
