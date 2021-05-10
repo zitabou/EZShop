@@ -16,15 +16,17 @@ import org.hibernate.cfg.Configuration;
 
 public class EZShop implements EZShopInterface {
 
-	//to become private
-	public List<User> users;
-	public List<ProductType> products;
-	public List<SaleTransaction> sales;
-	public List<Customer> customers;
+	private List<User> users;
+	private List<ProductType> products;
+	private List<SaleTransaction> sales;
+	private List<Customer> customers;
+	private List<LoyaltyCard> cards;
 	
-	private Integer user_id = -1;
-	private Integer prod_id = -1;
-	private Integer cust_id = -1;
+	private Integer user_id = 1;
+	private Integer prod_id = 0;
+	private Integer cust_id = 0;
+	private Integer card_id = 0;
+	private Integer sale_id = 0;
 	
 	public EZShop() {
 		
@@ -33,11 +35,7 @@ public class EZShop implements EZShopInterface {
 		sales = new ArrayList<>();
 		customers = new ArrayList<>();
 		
-		user_id++;
-		users.add(new ezUser(user_id,"admin","admin","Administrator"));	
-		
-		
-		
+		users.add(new ezUser(0, "admin", "admin", "Administrator"));
 	}
 	
 	
@@ -93,7 +91,7 @@ public class EZShop implements EZShopInterface {
         return true;
     }
 
-    @Override
+ @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
     	prod_id++;
     	products.add(new ezProductType(prod_id, description, productCode, pricePerUnit, note));		
@@ -176,7 +174,7 @@ public class EZShop implements EZShopInterface {
     public Integer defineCustomer(String customerName) throws InvalidCustomerNameException, UnauthorizedException {
     	if(customerName == null)
     		throw new InvalidCustomerNameException("customer name is null ");
-    	if(customerName == "")
+    	if(customerName.equals(""))
     		throw new InvalidCustomerNameException("customer name is empty ");
     	/*
     	 if(if there is no logged user or if it has not the rights to perform the operation)
@@ -217,7 +215,25 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        
+    	if(newCustomerName == null)
+    		throw new InvalidCustomerNameException("customer name is null ");
+    	if(newCustomerName.equals(""))
+    		throw new InvalidCustomerNameException("customer name is empty ");
+    	if(id == null)
+    		throw new InvalidCustomerIdException("customer id is null");
+    	if(id <=0)
+    		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
+    	if(newCustomerCard == null)
+    		throw new InvalidCustomerCardException("customer card is null");
+    	if(newCustomerCard.equals(""))
+    		throw new InvalidCustomerCardException("customer card is empty");
+    	if(newCustomerCard.length() > 10)
+    		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	
     	for (Customer c : customers) {
     		if(c.getId() == id) {
     			c.setCustomerName(newCustomerName);
@@ -225,47 +241,146 @@ public class EZShop implements EZShopInterface {
     			return true; 
     		}
     	}
-    	return false;
+    	return false;  //not found
     }
 
     @Override
     public boolean deleteCustomer(Integer id) throws InvalidCustomerIdException, UnauthorizedException {
+
+    	if(id == null)
+    		throw new InvalidCustomerIdException("customer id is null");
+    	if(id <=0)
+    		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	
+    	
+    	for (Customer c : customers) {
+    		if(c.getId() == id) {
+    			customers.remove(c);
+    			return true; 
+    		}
+    	}    	
         return false;
     }
 
     @Override
     public Customer getCustomer(Integer id) throws InvalidCustomerIdException, UnauthorizedException {
-        return null;
+    	if(id == null)
+    		throw new InvalidCustomerIdException("customer id is null");
+    	if(id <=0)
+    		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	for (Customer c : customers) {
+    		if(c.getId() == id) {
+    			return c; 
+    		}
+    	}    	
+    	return null;
     }
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-        return null;
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	
+    	return customers;
     }
 
     @Override
     public String createCard() throws UnauthorizedException {
-        return null;
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	card_id++;
+    	cards.add(new LoyaltyCard("card_"+card_id, 0));
+    	
+    	/*
+    	 if DB is unreachable return empty string
+    	 */
+        return cards.get(cards.size()-1).getcardID();
     }
 
     @Override
     public boolean attachCardToCustomer(String customerCard, Integer customerId) throws InvalidCustomerIdException, InvalidCustomerCardException, UnauthorizedException {
-        return false;
+    	if(customerId == null)
+    		throw new InvalidCustomerIdException("customer id is null");
+    	if(customerId <=0)
+    		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
+    	if(customerCard == null)
+    		throw new InvalidCustomerCardException("customer card is null");
+    	if(customerCard.equals(""))
+    		throw new InvalidCustomerCardException("customer card is empty");
+    	if(customerCard.length() > 10)
+    		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	
+    	int index = -1;
+    	for(Customer c : customers)                 				 			//get the customer
+    		if(c.getId() == customerId)
+    			index = customers.indexOf(c);
+    	if(index > 0)															//if the customer exists search for card availability
+    		for(LoyaltyCard lc : cards)
+    			if(lc.getcardID().equals(customerCard) && lc.getInUse() == false) {  //if card exists and it is available assign it to customer and exit successfully
+    				customers.get(index).setCustomerCard(customerCard);
+    				return true;												
+    			}    	
+    	/*
+   	 	if DB is unreachable return false
+    	 */
+    	return false;
     }
 
     @Override
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
-        return false;
+    	if(customerCard == null)
+    		throw new InvalidCustomerCardException("customer card is null");
+    	if(customerCard.equals(""))
+    		throw new InvalidCustomerCardException("customer card is empty");
+    	if(customerCard.length() > 10)
+    		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
+    	/*
+   	 	if(if there is no logged user or if it has not the rights to perform the operation)
+   	 		throw new UnauthorizedException();
+    	 */
+    	for(LoyaltyCard lc : cards)						
+			if(lc.getcardID().equals(customerCard)) {		 					   //get the card
+				if(pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) {  //check that the points are positive and if they are negative check that the card points are not less
+					lc.setPoints(pointsToBeAdded);
+					return true;
+				}
+		}  
+    	
+    	/*
+   	 	if DB is unreachable return false
+    	 */
+    	return false;
     }
 
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
-        return null;
+    	sale_id++;
+    	sales.add(new ezSaleTransaction(sale_id,0.0,0.0,0.0));
+        return sale_id;
     }
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        return false;
+    	
+    	
+    	
+    	return false;
     }
 
     @Override
