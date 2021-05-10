@@ -1,12 +1,12 @@
 package it.polito.ezshop.data;
 
-import it.polito.ezshop.classes.AccountBook;
 import it.polito.ezshop.exceptions.*;
 import it.polito.ezshop.classes.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*used only with DB impl*/
 import org.hibernate.Session;
@@ -22,6 +22,7 @@ public class EZShop implements EZShopInterface {
 	private List<SaleTransaction> sales;
 	private List<Customer> customers;
 	private List<LoyaltyCard> cards;
+	private List<ReturnTransaction> returns;
 	private AccountBook accountBook;
 	
 	private Integer user_id = 1;
@@ -29,6 +30,7 @@ public class EZShop implements EZShopInterface {
 	private Integer cust_id = 0;
 	private Integer card_id = 0;
 	private Integer sale_id = 0;
+	private Integer ret_id = 0;
 	
 	public EZShop() {
 		
@@ -37,6 +39,7 @@ public class EZShop implements EZShopInterface {
 		products = new ArrayList<>();
 		sales = new ArrayList<>();
 		customers = new ArrayList<>();
+		returns = new ArrayList<>();
 		
 		users.add(new ezUser(0, "admin", "admin", "Administrator"));
 	}
@@ -431,17 +434,101 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
-        return null;
+    	if(saleNumber <= 0 || saleNumber == null)
+    		throw new InvalidTransactionIdException();
+    	//TODO throw exception if user has no rights
+    	ret_id++;
+        ReturnTransaction ret = new ReturnTransaction();
+        ret.setBalanceId(ret_id);
+        returns.add(ret);
+        ret.setSaleReference(saleNumber);
+        SaleTransaction referingSale = getSaleTransaction(saleNumber);
+        //referingSale.add(ReturnTransaction);
+        return ret_id;
     }
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        return false;
+        
+    	int i=0;
+    	
+    	try {
+    		//retrieve return transaction and refering sale transaction
+	    	ReturnTransaction ret = returns.stream().filter( 
+	        		r -> r.getBalanceId() == returnId 
+	        		)
+	        		.collect(Collectors.toList()).get(0);
+	    	
+	    	SaleTrans referingSale = (SaleTrans) sales.stream().filter( 
+	        		s -> s.getReceiptNumber() == ret.getSaleReference() 
+	        		)
+	        		.collect(Collectors.toList()).get(0);
+	    	
+	    	//return false if amount to be returned > amount bought
+	    	List<ezProductType> saleProducts = referingSale.getAllProducts();
+	    	List<Integer> saleQuantities = referingSale.getAllQuantities();
+	    	for (i=0; i<saleProducts.size(); i++) {
+	    		if(saleProducts.get(i).getBarCode().equals(productCode)) {
+	    			if (amount > saleQuantities.get(i))
+	    				return false;
+	    		}
+	    	}
+	        ret.setAmount(amount);
+	        ret.setProdId(productCode);
+    	}catch(Exception e) {
+    		//return false if the transaction do not exist
+    		return false;
+    	}
+        
+        return true;
     }
+    
+    
 
     @Override
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-        return false;
+    	if(returnId <= 0 || returnId == null)
+    		throw new InvalidTransactionIdException();
+    	//TODO throw exception if user has no rights
+    	int i;
+    	try {
+    	
+	    	ReturnTransaction ret = returns.stream().filter( 
+	        		r -> r.getBalanceId() == returnId 
+	        		)
+	        		.collect(Collectors.toList()).get(0);
+	    	
+	    	SaleTrans referingSale = (SaleTrans) sales.stream().filter( 
+	        		s -> s.getReceiptNumber() == ret.getSaleReference() 
+	        		)
+	        		.collect(Collectors.toList()).get(0);
+	    	
+	    	if(commit) {
+	    		//increase quantity available
+	    		ProductType prodType = products.stream().filter(
+	    				p -> p.getBarCode().equals(ret.getProdId())
+	    				).collect(Collectors.toList()).get(0);
+	    		
+	    		prodType.setQuantity(prodType.getQuantity() + ret.getAmount());
+	    		
+	    		//decrease amount spent on the Sale
+	    		referingSale.setPrice(referingSale.getPrice() - ret.getMoney());
+	    		
+	    		List<ezProductType> saleProducts = referingSale.getAllProducts();
+		    	List<Integer> saleQuantities = referingSale.getAllQuantities();
+		    	for (i=0; i<saleProducts.size(); i++) {
+		    		if(saleProducts.get(i).getBarCode().equals(ret.getProdId())) {
+		    			//TODO update quantità
+		    			//saleQuantities.get(i) -= ret.getAmount();
+		    		}
+		    	}
+	    	}
+    	}catch(Exception e) {
+    		//return false if the returnTransaction is not found or if problem with DB
+    		return false;
+    	}
+    	
+    	return true;
     }
 
     @Override
@@ -481,6 +568,6 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public double computeBalance() throws UnauthorizedException {
-        return 0;
+        return accountBook.computeBalance();
     }
 }

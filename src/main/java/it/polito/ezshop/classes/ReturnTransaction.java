@@ -76,5 +76,15 @@ public class ReturnTransaction extends Debit{
     private int amount;
     private Double returnedValue;
     private Integer saleID;
+    private String prodId;
+    
+	public String getProdId() {
+		return prodId;
+	}
+
+	public void setProdId(String prodId) {
+		this.prodId = prodId;
+	}
+
 
 }
