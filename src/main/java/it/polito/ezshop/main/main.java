@@ -27,8 +27,8 @@ public class main {
 				shop.defineCustomer("Mostafa");
 				shop.defineCustomer("Marcelo");
 				shop.defineCustomer("Tommaso");
-				for(Customer c : shop.customers)
-					System.out.println("p_"+c.getId()+" -> "+c.getCustomerName());
+				/*for(Customer c : shop.customers)
+					System.out.println("p_"+c.getId()+" -> "+c.getCustomerName());*/
 				
 				
 				
