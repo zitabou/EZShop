@@ -1,5 +1,6 @@
 package it.polito.ezshop.data;
 
+import it.polito.ezshop.classes.AccountBook;
 import it.polito.ezshop.exceptions.*;
 
 import java.time.LocalDate;
@@ -7,8 +8,12 @@ import java.util.List;
 
 
 public class EZShop implements EZShopInterface {
+	private AccountBook accountBook;
 
-
+	public EZShop() {
+		accountBook = new AccountBook();
+	}
+	
     @Override
     public void reset() {
 
@@ -240,13 +245,13 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    public boolean recordBalanceUpdate(double toBeAdded) throws UnauthorizedException {
-        return false;
+    public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
+        return accountBook.recordBalanceUpdate(qty);
     }
 
     @Override
     public List<BalanceOperation> getCreditsAndDebits(LocalDate from, LocalDate to) throws UnauthorizedException {
-        return null;
+        return accountBook.getCreditsAndDebits();
     }
 
     @Override
