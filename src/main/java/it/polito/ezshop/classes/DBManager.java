@@ -22,7 +22,7 @@ public class DBManager {
 	
 	public static void closeDB() {
 		//if factory exists and no sessions are open then close
-		if(factory != null && factory.getCurrentSession() != null) {
+		if(factory != null) {
 			factory.close();
 			factory = null;
 		}
