@@ -36,11 +36,15 @@ public class ezCustomer implements Customer{
 
     public void setId(Integer id) {this.id = id;}
 
-    public String getCustomerCard() {return card;}
+    public String getCustomerCardId() {return card;}
     
-    public void setCustomerCard(String customerCard) {
-    	this.card = customerCard;
-    	this.lCard.setcardID(customerCard);
+    public void setCustomerCard(String customerCard) {this.card = customerCard;}
+    
+    public LoyaltyCard getLoyaltyCard() {return lCard;}
+    
+    public void setLoyaltyCard(LoyaltyCard lCard) {
+    	this.lCard = lCard;
+    	this.card = lCard.getcardID();
     }
 
     public Integer getPoints() {return this.lCard.getPoints();}
@@ -60,6 +64,14 @@ public class ezCustomer implements Customer{
     
     @Transient
     private LoyaltyCard lCard;
+
+	@Override
+	public String getCustomerCard() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	
     
 	
 }

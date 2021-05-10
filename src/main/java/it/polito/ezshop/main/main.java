@@ -19,62 +19,7 @@ public class main {
 	public static void main(String[] args) {
 		
 		EZShop shop = new EZShop();
-	
-			
-			try {
-				
-				shop.defineCustomer("Zissis");
-				shop.defineCustomer("Mostafa");
-				shop.defineCustomer("Marcelo");
-				shop.defineCustomer("Tommaso");
-				for(Customer c : shop.customers)
-					System.out.println("p_"+c.getId()+" -> "+c.getCustomerName());
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-				
-			} catch (InvalidCustomerNameException | UnauthorizedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
+
 			
 	
 

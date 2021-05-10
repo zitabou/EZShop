@@ -2,8 +2,6 @@ package it.polito.ezshop.classes;
 
 import java.time.LocalDate;
 
-import it.polito.ezshop.data.ProductType;
-
 // returns product of a completed saleTransaction
 public class ReturnTransaction extends Debit{
 	
@@ -60,7 +58,7 @@ public class ReturnTransaction extends Debit{
 
 	public void setSaleID(Integer saleID) {this.saleID = saleID;}
     
-    public boolean returnProduct(ProductType product, int amount) {
+    public boolean returnProduct(ezProductType product, int amount) {
     	setReturnedValue(product.getPricePerUnit() * amount);
     	this.setAmount(amount);
     	return true;

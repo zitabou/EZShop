@@ -62,7 +62,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
-        return null;
+        return users;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class EZShop implements EZShopInterface {
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         
     	for (User u : users) {
-    		if(u.getUsername().equalsIgnoreCase(username) && u.getPassword().equalsIgnoreCase(password))
+    		if(u.getUsername().equals(username) && u.getPassword().equals(password))
     				return u; 
     	}
     	
@@ -91,7 +91,7 @@ public class EZShop implements EZShopInterface {
         return true;
     }
 
- @Override
+    @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
     	prod_id++;
     	products.add(new ezProductType(prod_id, description, productCode, pricePerUnit, note));		
@@ -378,6 +378,11 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
     	
+    	for(ProductType prod : products)
+    		if(prod.getBarCode().equals(productCode)) {
+    			if(pro.)
+    			prod.setQuantity(prod.getQuantity()-amount);
+    		
     	
     	
     	return false;
