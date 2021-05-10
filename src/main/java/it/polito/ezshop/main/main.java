@@ -19,6 +19,7 @@ public class main {
 	public static void main(String[] args) {
 		
 		EZShop shop = new EZShop();
+
 	
 			
 			try {
@@ -71,10 +72,7 @@ public class main {
 			
 			
 			
-			
-			
-			
-			
+
 			
 	
 

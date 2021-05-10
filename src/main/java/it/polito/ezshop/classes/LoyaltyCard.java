@@ -12,10 +12,12 @@ public class LoyaltyCard {
 	public LoyaltyCard() {
 		cardID = "N/A";
 		points = 0;
+		inUse = false;
 	}
 	public LoyaltyCard(String cardID, Integer points) {
 		this.cardID = cardID;
 		this.points = points;
+		inUse = false;
 	}
 	
 	
@@ -26,6 +28,11 @@ public class LoyaltyCard {
 	public Integer getPoints() {return points;}
 	
 	public void setPoints(Integer points) {this.points = points;}
+	
+	//public boolean getInUse() {return this.inUse;}
+	
+	public void setInUse(boolean inuse) {this.inUse = inuse;}
+	
 
 	@Id
 	@Column(name="cardID")
@@ -34,8 +41,12 @@ public class LoyaltyCard {
 	@Column(name="points")
 	private Integer points;
 
+
 	public boolean getInUse() {
 		// TODO Auto-generated method stub
 		return false;
 	}
+	
+	@Column(name="points")
+	private boolean inUse;
 }

@@ -12,7 +12,7 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 		setSaleID(0);
 		date = LocalDate.now();
 		money = 0.0;
-		type = "N/A";
+		BalaceType = "Credit";
 		discountRate = 0.0;
 		price = 0.0;
 		
@@ -22,11 +22,11 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 		
 	}
 	
-	public ezSaleTransaction(int saleId, LocalDate date, double money, String type, double discountRate, double price) {
+	public ezSaleTransaction(int saleId, double money, double discountRate, double price) {
 		this.setSaleID(balanceId);
-		this.date = date;
+		this.date = LocalDate.now();;
 		this.money = money;
-		this.type = type;
+		this.BalaceType = "Credit";
 		this.discountRate = discountRate;
 		this.price = price;
 		
@@ -49,9 +49,9 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 
     public void setMoney(double money) {this.money = money;}
 
-    public String getType() {return type;}
+    public String getType() {return BalaceType;}
 
-    public void setType(String type) {this.type = type;}
+    public void setType(String BalaceType) {this.BalaceType = BalaceType;}
 	
 	//implements
     
@@ -59,7 +59,7 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
     
     public void setReceiptNumber(Integer receiptNumber) { receipt.setReceiptNumber(receiptNumber);}
     
-  //--the following methods use ticket that is not present.
+    //--the following methods use ticket that is not present.
     //List<ReceiptEntry> getEntries(){}
     //void setEntries(List<ReceiptEntry> entries) {}
     
@@ -140,7 +140,7 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 	private int balanceId;
     private LocalDate date;
     private double money; //?
-    private String type;
+    private String BalaceType;
     private double discountRate;
     private double price;
     
