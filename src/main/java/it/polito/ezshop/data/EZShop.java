@@ -1,14 +1,46 @@
 package it.polito.ezshop.data;
 
 import it.polito.ezshop.exceptions.*;
+import it.polito.ezshop.classes.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+/*used only with DB impl*/
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
 
 
 public class EZShop implements EZShopInterface {
 
-
+	//to become private
+	public List<User> users;
+	public List<ProductType> products;
+	public List<SaleTransaction> sales;
+	public List<Customer> customers;
+	
+	private Integer user_id = -1;
+	private Integer prod_id = -1;
+	private Integer cust_id = -1;
+	
+	public EZShop() {
+		
+		users = new ArrayList<>();
+		products = new ArrayList<>();
+		sales = new ArrayList<>();
+		customers = new ArrayList<>();
+		
+		user_id++;
+		users.add(new ezUser(user_id,"admin","admin","Administrator"));	
+		
+		
+		
+	}
+	
+	
     @Override
     public void reset() {
 
@@ -16,7 +48,13 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-        return null;
+    	user_id++;
+    	users.add(new ezUser(user_id, username, password, role));
+    	for (User u : users) {
+    		System.out.println("User: " + u.getId() + ", " + u.getUsername()+ ", "+ u.getRole() + ", "+ u.getPassword());
+    	}
+    	
+    	return 1;
     }
 
     @Override
@@ -41,7 +79,13 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        return null;
+        
+    	for (User u : users) {
+    		if(u.getUsername() == username && u.getPassword()==password)
+    				return u; 
+    	}
+    	
+    	return null;
     }
 
     @Override
@@ -51,12 +95,25 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        return null;
+    	prod_id++;
+    	products.add(new ezProductType(prod_id, description, productCode, pricePerUnit, note));		
+    	return prod_id;
     }
 
     @Override
     public boolean updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote) throws InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        return false;
+    	for (ProductType p : products) {
+    		if(p.getId() == id) {
+    			p.setProductDescription(newDescription);
+    			p.setBarCode(newNote);
+    			p.setPricePerUnit(newPrice);
+    			p.setNote(newNote);
+    			return true; 
+    		}
+    	}
+    	
+    	
+    	return false;
     }
 
     @Override
@@ -66,7 +123,8 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
-        return null;
+    	
+        return products;
     }
 
     @Override
@@ -116,12 +174,58 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer defineCustomer(String customerName) throws InvalidCustomerNameException, UnauthorizedException {
-        return null;
+    	if(customerName == null)
+    		throw new InvalidCustomerNameException("customer name is null ");
+    	if(customerName == "")
+    		throw new InvalidCustomerNameException("customer name is empty ");
+    	/*
+    	 if(if there is no logged user or if it has not the rights to perform the operation)
+    	 	throw new UnauthorizedException();
+    	 */
+    	cust_id++;
+    	customers.add(new ezCustomer(customerName, cust_id, "N/A", 0));
+
+    	
+    	
+    	
+    	
+  /*impl with DB*/ 
+    	/*
+    	 * 
+    	Transaction tx = null;
+    	Session s = null;
+    	try {
+    		s = DBManager.getSession();  //it opens a session
+    		tx = s.beginTransaction();
+	
+    		s.save(new ezCustomer(customerName, cust_id, "N/A", 0));
+		
+    		tx.commit();
+    		
+    		System.out.println("session -<"+DBManager.factory.getCurrentSession()+">");
+    	}catch(Exception ex) {
+    		ex.printStackTrace();
+    		tx.rollback();
+    	}
+    	finally {s.close();}
+        
+        *
+        */
+ /**/       
+    	return cust_id;
     }
 
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        return false;
+        
+    	for (Customer c : customers) {
+    		if(c.getId() == id) {
+    			c.setCustomerName(newCustomerName);
+    			c.setCustomerCard(newCustomerCard);
+    			return true; 
+    		}
+    	}
+    	return false;
     }
 
     @Override

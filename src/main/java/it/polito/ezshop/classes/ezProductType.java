@@ -19,9 +19,9 @@ public class ezProductType implements ProductType{
 		
 	}
 	
-	public ezProductType(Integer quantity, String location, String note, String productDescription, String barCode, Double pricePerUnit, Integer id) {
-		this.quantity = quantity;
-		this.location = location;
+	public ezProductType(Integer id, String productDescription, String barCode, Double pricePerUnit, String note) {
+		this.quantity = 0;
+		this.location = null;
 		this.note = note;
 		this.productDescription = productDescription;
 		this.barCode = barCode;

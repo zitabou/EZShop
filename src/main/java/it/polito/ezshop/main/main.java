@@ -1,13 +1,12 @@
 package it.polito.ezshop.main;
 
 import it.polito.ezshop.classes.*;
+import it.polito.ezshop.data.*;
 import it.polito.ezshop.exceptions.*;
 
-
+import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -18,27 +17,68 @@ import org.hibernate.query.Query;
 public class main {
 
 	public static void main(String[] args) {
+		
+		EZShop shop = new EZShop();
+	
+			
+			try {
+				
+				shop.defineCustomer("Zissis");
+				shop.defineCustomer("Mostafa");
+				shop.defineCustomer("Marcelo");
+				shop.defineCustomer("Tommaso");
+				for(Customer c : shop.customers)
+					System.out.println("p_"+c.getId()+" -> "+c.getCustomerName());
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+				
+			} catch (InvalidCustomerNameException | UnauthorizedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+	
 
-		
-		/*  H2
-		LoyaltyCard card = new LoyaltyCard("card1", 10);
-		SessionFactory sessionFactory = buildSessionFactory(LoyaltyCard.class);
-		
-		Session session = sessionFactory.openSession();
-		session.save(card);
-		LoyaltyCard readCard = session.get(LoyaltyCard.class, "card1");
-		
-		System.out.println("----------------");
-		System.out.println("-> " + readCard.getcardID() + "- -" + readCard.getPoints() + "\n");
-		System.out.println("----------------");
-		System.out.println("----------------");
-		
-		session.close();
-		sessionFactory.close();
-		
-		*/
-
-        
+/*        
         SessionFactory factory = new Configuration()
         						.configure()
         						.addAnnotatedClass(LoyaltyCard.class)
@@ -87,15 +127,10 @@ public class main {
     		session.close();
         	
         } finally {
-        	//factory.close();
+        	factory.close();
         }
         
-        
-	}
-	
-	
-	private static SessionFactory buildSessionFactory(Class clazz) {
-		return new Configuration().configure().addAnnotatedClass(clazz).buildSessionFactory();
+  */      
 	}
 
 }
