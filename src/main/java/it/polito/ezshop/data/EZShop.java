@@ -5,7 +5,9 @@ import it.polito.ezshop.classes.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /*used only with DB impl*/
@@ -23,6 +25,7 @@ public class EZShop implements EZShopInterface {
 	private List<Customer> customers;
 	private List<LoyaltyCard> cards;
 	private List<ReturnTransaction> returns;
+	private Map<Integer, Order> orders;
 	private AccountBook accountBook;
 	
 	private Integer user_id = 1;
@@ -40,6 +43,7 @@ public class EZShop implements EZShopInterface {
 		sales = new ArrayList<>();
 		customers = new ArrayList<>();
 		returns = new ArrayList<>();
+		orders = new HashMap<>();
 		
 		users.add(new ezUser(0, "admin", "admin", "Administrator"));
 	}
@@ -154,27 +158,101 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer issueOrder(String productCode, int quantity, double pricePerUnit) throws InvalidProductCodeException, InvalidQuantityException, InvalidPricePerUnitException, UnauthorizedException {
-        return null;
+        if(productCode == null || productCode.equals("") || !validBarCode(productCode))    	throw new InvalidProductCodeException();
+        if( quantity <= 0) throw new InvalidQuantityException();
+        if (pricePerUnit <= 0) throw new InvalidPricePerUnitException();
+        //TODO unauthorized user
+        	
+        //product does not exist
+      	if(products.stream().filter( p -> p.getBarCode().equals(productCode)).count() <= 0 ) return -1;
+    	
+    	ezOrder o = new ezOrder();
+        o.setProductCode(productCode);
+        o.setQuantity(quantity);
+        o.setPricePerUnit(pricePerUnit);
+        
+        orders.put(o.getOrderId(), o);
+        
+        return o.getOrderId();
     }
 
-    @Override
+    private boolean validBarCode(String productCode) {
+		// TODO validation of bar code
+		return true;
+	}
+
+
+
+	@Override
     public Integer payOrderFor(String productCode, int quantity, double pricePerUnit) throws InvalidProductCodeException, InvalidQuantityException, InvalidPricePerUnitException, UnauthorizedException {
-        return null;
+        //exceptions are raised by the called methods
+		
+		Integer orderId = issueOrder(productCode, quantity, pricePerUnit);
+		if(orderId == -1) return -1;
+        
+		try {
+			if(!payOrder(orderId)) 
+				return -1;
+		} catch (InvalidOrderIdException | UnauthorizedException e) {
+			e.printStackTrace();
+		}	
+        
+        return orderId;
+        
     }
 
     @Override
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
-        return false;
+        if(orderId <= 0) throw new InvalidOrderIdException();
+    	
+    	ezOrder o = (ezOrder) orders.get(orderId);
+    	if(o == null || !(o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") ) ) 
+    		return false;
+        
+    	double amountToPay = o.getQuantity() * o.getPricePerUnit();
+    	
+    	if(accountBook.computeBalance() < amountToPay) 
+    		return false;
+    	
+    	accountBook.recordBalanceUpdate(- amountToPay);
+        o.setStatus("PAYED");
+        return true;
     }
 
     @Override
     public boolean recordOrderArrival(Integer orderId) throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
-        return false;
+    	if(orderId <= 0) throw new InvalidOrderIdException();
+    	//TODO add unauthorized user exception
+    	
+    	ezOrder o = (ezOrder) orders.get(orderId);
+    	ezProductType prod = (ezProductType) products.stream().filter( p -> p.getBarCode().equals(o.getProductCode())).collect(Collectors.toList()).get(0);
+        
+    	if(prod.getLocation() == null) throw new InvalidLocationException();
+    	
+        if( ! (o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED")) ) return false;
+        
+        if(o.getStatus().equals("PAYED")) {
+	        
+	        
+	        prod.setQuantity(prod.getQuantity() + o.getQuantity());
+	        o.setStatus("COMPLETED");
+        }
+        
+        
+        return true;
+        
     }
 
     @Override
     public List<Order> getAllOrders() throws UnauthorizedException {
-        return null;
+        
+    	//TODO throw unauthorized user exception
+    	
+    	List<Order> ordersInIssuedOrderedOrCompletedState = orders.values().stream()
+    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED")))
+        		.collect(Collectors.toList());
+    	
+    	return ordersInIssuedOrderedOrCompletedState;
     }
 
     @Override
