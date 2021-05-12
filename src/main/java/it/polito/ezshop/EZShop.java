@@ -1,4 +1,4 @@
-package it.polito.ezshop.EZShop;
+package it.polito.ezshop;
 
 import it.polito.ezshop.data.EZShopInterface;
 import it.polito.ezshop.view.EZShopGUI;

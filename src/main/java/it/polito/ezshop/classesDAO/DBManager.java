@@ -72,7 +72,7 @@ public class DBManager {
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
-				stat.execute("CREATE TABLE customer " + "(id integer not null AUTO_INCREMENT, " + "name varchar (30), " + "card varchar (10), " + "primary key(id));");
+				stat.execute("CREATE TABLE customer " + "(id integer not null, " + "name varchar (30), " + "card varchar (10), " + "primary key(id));");
 			}
 			
 			
