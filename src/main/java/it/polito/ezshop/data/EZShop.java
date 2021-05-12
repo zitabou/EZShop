@@ -27,6 +27,7 @@ public class EZShop implements EZShopInterface {
 	private List<ReturnTransaction> returns;
 	private Map<Integer, Order> orders;
 	private AccountBook accountBook;
+	private ezUser activeUser;
 	
 	private Integer user_id = 1;
 	private Integer prod_id = 0;
@@ -44,6 +45,7 @@ public class EZShop implements EZShopInterface {
 		customers = new ArrayList<>();
 		returns = new ArrayList<>();
 		orders = new HashMap<>();
+		activeUser = null;
 		
 		users.add(new ezUser(0, "admin", "admin", "Administrator"));
 	}
@@ -90,8 +92,10 @@ public class EZShop implements EZShopInterface {
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         
     	for (User u : users) {
-    		if(u.getUsername().equals(username) && u.getPassword().equals(password))
-    				return u; 
+    		if(u.getUsername().equals(username) && u.getPassword().equals(password)) {
+    			activeUser = (ezUser) u;	
+    			return u; 
+    		}
     	}
     	
     	return null;
@@ -99,6 +103,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean logout() {
+    	activeUser = null;
         return true;
     }
 
@@ -161,7 +166,7 @@ public class EZShop implements EZShopInterface {
         if(productCode == null || productCode.equals("") || !validBarCode(productCode))    	throw new InvalidProductCodeException();
         if( quantity <= 0) throw new InvalidQuantityException();
         if (pricePerUnit <= 0) throw new InvalidPricePerUnitException();
-        //TODO unauthorized user
+        if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
         	
         //product does not exist
       	if(products.stream().filter( p -> p.getBarCode().equals(productCode)).count() <= 0 ) return -1;
@@ -204,7 +209,8 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
         if(orderId <= 0) throw new InvalidOrderIdException();
-    	
+        if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+        
     	ezOrder o = (ezOrder) orders.get(orderId);
     	if(o == null || !(o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") ) ) 
     		return false;
@@ -222,7 +228,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean recordOrderArrival(Integer orderId) throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
     	if(orderId <= 0) throw new InvalidOrderIdException();
-    	//TODO add unauthorized user exception
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
     	ezProductType prod = (ezProductType) products.stream().filter( p -> p.getBarCode().equals(o.getProductCode())).collect(Collectors.toList()).get(0);
@@ -245,8 +251,8 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<Order> getAllOrders() throws UnauthorizedException {
-        
-    	//TODO throw unauthorized user exception
+        if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+    	//
     	
     	List<Order> ordersInIssuedOrderedOrCompletedState = orders.values().stream()
     			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED")))
@@ -636,16 +642,45 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+    	
+    	//TODO: insert Debit or Credit inside accountBook.creditsAndDebits
+    	
         return accountBook.recordBalanceUpdate(qty);
+        
     }
 
     @Override
     public List<BalanceOperation> getCreditsAndDebits(LocalDate from, LocalDate to) throws UnauthorizedException {
-        return accountBook.getCreditsAndDebits();
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+    	//TODO check if only Administrator and ShopManager can call this method
+    	
+    	if(from == null || to == null) return null;
+    	
+    	if(from.isAfter(to)) {
+    		swapDates(from, to);
+    	}
+    	
+    	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
+    			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
+    			.collect(Collectors.toList());
+    	
+        return credsAndDebtsFiltered;
     }
 
-    @Override
+    private void swapDates(LocalDate from, LocalDate to) {
+		LocalDate tmp = from;
+		from = to;
+		to = tmp;
+	}
+
+
+
+	@Override
     public double computeBalance() throws UnauthorizedException {
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+		//TODO check if only Administrator and ShopManager can call this method
+		
         return accountBook.computeBalance();
     }
 }

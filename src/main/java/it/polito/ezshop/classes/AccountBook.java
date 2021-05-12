@@ -14,6 +14,9 @@ public class AccountBook {
 	}
 	
 	public boolean recordBalanceUpdate(double quantity) {
+		if (balance < quantity) {
+			return false;
+		}
 		balance += quantity;
 		return true;
 		
