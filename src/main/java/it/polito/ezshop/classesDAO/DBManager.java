@@ -74,14 +74,7 @@ public class DBManager {
 			if(!existsTable("customer")) { //no such table in DB
 				stat.execute("CREATE TABLE customer " + "(id integer not null, " + "name varchar (30), " + "card varchar (10), " + "primary key(id));");
 			}
-			
-			
-			
-			
-			
-			
-			
-			
+
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

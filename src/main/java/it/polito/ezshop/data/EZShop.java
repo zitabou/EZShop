@@ -13,20 +13,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /*used only with DB impl*/
+/*
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
-
+*/
 
 public class EZShop implements EZShopInterface {
 
-	private List<User> users;
-	private List<ProductType> products;
-	private List<SaleTransaction> sales;
-	private List<Customer> customers;
-	private List<LoyaltyCard> cards;
-	private List<ReturnTransaction> returns;
+	private Map<Integer, User> users;
+	private Map<String, ProductType> products;
+	private Map<Integer, SaleTransaction> sales;
+	private Map<Integer, Customer> customers;
+	private Map<String, LoyaltyCard> cards;
+	private Map<Integer, ReturnTransaction> returns;
 	private Map<Integer, Order> orders;
 	private AccountBook accountBook;
 	private ezUser activeUser;
@@ -41,15 +42,15 @@ public class EZShop implements EZShopInterface {
 	public EZShop() {
 		
 		accountBook = new AccountBook();
-		users = new ArrayList<>();
-		products = new ArrayList<>();
-		sales = new ArrayList<>();
-		customers = new ArrayList<>();
-		returns = new ArrayList<>();
+		users = new HashMap<>();
+		products = new HashMap<>();
+		sales = new HashMap<>();
+		customers = new HashMap<>();
+		returns = new HashMap<>();
 		orders = new HashMap<>();
 		activeUser = null;
 		
-		users.add(new ezUser(0, "admin", "admin", "Administrator"));
+		users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
 		
 	}
 	
@@ -74,7 +75,8 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
-        return users;
+    	
+        return new ArrayList<User>( users.values());
     }
 
     @Override
@@ -90,7 +92,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
         
-    	for (User u : users) {
+    	for (User u : users.values()) {
     		if(u.getUsername().equals(username) && u.getPassword().equals(password)) {
     			activeUser = (ezUser) u;	
     			return u; 
@@ -114,18 +116,16 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote) throws InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-    	for (ProductType p : products) {
-    		if(p.getId() == id) {
-    			p.setProductDescription(newDescription);
-    			p.setBarCode(newNote);
-    			p.setPricePerUnit(newPrice);
-    			p.setNote(newNote);
-    			return true; 
-    		}
-    	}
+    	ProductType p = products.get(id);
+    	if (p== null) return false;
+    	p.setProductDescription(newDescription);
+		p.setBarCode(newNote);
+		p.setPricePerUnit(newPrice);
+		p.setNote(newNote);
+		return true;
     	
     	
-    	return false;
+    	
     }
 
     @Override
@@ -136,7 +136,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
     	
-        return products;
+        return new ArrayList<ProductType>( products.values());
     }
 
     @Override
@@ -167,7 +167,7 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
         	
         //product does not exist
-      	if(products.stream().filter( p -> p.getBarCode().equals(productCode)).count() <= 0 ) return -1;
+      	if(products.get(productCode) == null ) return -1;
     	
     	ezOrder o = new ezOrder();
         o.setProductCode(productCode);
@@ -229,7 +229,7 @@ public class EZShop implements EZShopInterface {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
-    	ezProductType prod = (ezProductType) products.stream().filter( p -> p.getBarCode().equals(o.getProductCode())).collect(Collectors.toList()).get(0);
+    	ezProductType prod = (ezProductType) products.get(o.getProductCode());
         
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
@@ -393,7 +393,7 @@ public class EZShop implements EZShopInterface {
     		System.out.println(ex.getMessage());
     		return null; //not found or any DB error
     	}
-    	return customers;
+    	return new ArrayList<Customer>( customers.values());
     }
 
     @Override
@@ -403,12 +403,15 @@ public class EZShop implements EZShopInterface {
    	 		throw new UnauthorizedException();
     	 */
     	card_id++;
-    	cards.add(new LoyaltyCard("card_"+card_id, 0));
+    	cards.put("card_"+card_id, new LoyaltyCard("card_"+card_id, 0));
     	
     	/*
     	 if DB is unreachable return empty string
     	 */
-        return cards.get(cards.size()-1).getcardID();
+    	
+    	List<LoyaltyCard> lcs = (List<LoyaltyCard>) cards.values();
+    	
+        return lcs.get(cards.size()-1).getcardID();
     }
 
     @Override
@@ -428,16 +431,15 @@ public class EZShop implements EZShopInterface {
    	 		throw new UnauthorizedException();
     	 */
     	
-    	int index = -1;
-    	for(Customer c : customers)                 				 			//get the customer
-    		if(c.getId() == customerId)
-    			index = customers.indexOf(c);
-    	if(index > 0)															//if the customer exists search for card availability
-    		for(LoyaltyCard lc : cards)
-    			if(lc.getcardID().equals(customerCard) && lc.getInUse() == false) {  //if card exists and it is available assign it to customer and exit successfully
-    				customers.get(index).setCustomerCard(customerCard);
-    				return true;												
-    			}    	
+    	Customer c = customers.get(customerId);
+    	
+    	if(c != null) {															//if the customer exists search for card availability
+    		LoyaltyCard lc = cards.get(customerCard);
+    		if(lc != null && lc.getInUse() == false) {
+    			c.setCustomerCard(customerCard);
+    			return true;
+    		}
+    	}
     	/*
    	 	if DB is unreachable return false
     	 */
@@ -456,13 +458,20 @@ public class EZShop implements EZShopInterface {
    	 	if(if there is no logged user or if it has not the rights to perform the operation)
    	 		throw new UnauthorizedException();
     	 */
+    	LoyaltyCard lc = cards.get(customerCard);
+    	if( lc != null && (pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) ) {  //check that the points are positive and if they are negative check that the card points are not less
+			lc.setPoints(pointsToBeAdded);
+			return true;
+		}
+    	/*
+    	 * TODO Not sure I respected the logic, check if right. Here is the previous code
     	for(LoyaltyCard lc : cards)						
 			if(lc.getcardID().equals(customerCard)) {		 					   //get the card
 				if(pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) {  //check that the points are positive and if they are negative check that the card points are not less
 					lc.setPoints(pointsToBeAdded);
 					return true;
 				}
-		}  
+		} */ 
     	
     	/*
    	 	if DB is unreachable return false
@@ -473,24 +482,19 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
     	sale_id++;
-    	sales.add(new ezSaleTransaction(sale_id,0.0,0.0,0.0));
+    	sales.put(sale_id, new ezSaleTransaction(sale_id,0.0,0.0,0.0));
         return sale_id;
     }
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
     	
-    	for(ProductType prod : products)
-    		if(prod.getBarCode().equals(productCode)) {
-    			//if(pro.)
-    			prod.setQuantity(prod.getQuantity()-amount);
-    		
-    	
-    	
+    	ProductType prod = products.get(productCode);
+    	if(prod == null) return true;
+    	prod.setQuantity(prod.getQuantity()-amount);
     	return false;
     	
     }
-    	return true;}
 
     @Override
     public boolean deleteProductFromSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
@@ -535,7 +539,7 @@ public class EZShop implements EZShopInterface {
     	ret_id++;
         ReturnTransaction ret = new ReturnTransaction();
         ret.setBalanceId(ret_id);
-        returns.add(ret);
+        returns.put(ret_id, ret);
         ret.setSaleReference(saleNumber);
         SaleTransaction referingSale = getSaleTransaction(saleNumber);
         //referingSale.add(ReturnTransaction);
@@ -548,16 +552,10 @@ public class EZShop implements EZShopInterface {
     	int i=0;
     	
     	try {
-    		//retrieve return transaction and refering sale transaction
-	    	ReturnTransaction ret = returns.stream().filter( 
-	        		r -> r.getBalanceId() == returnId 
-	        		)
-	        		.collect(Collectors.toList()).get(0);
+    		//retrieve return transaction and referring sale transaction
+	    	ReturnTransaction ret =returns.get(returnId);
 	    	
-	    	SaleTrans referingSale = (SaleTrans) sales.stream().filter( 
-	        		s -> s.getReceiptNumber() == ret.getSaleReference() 
-	        		)
-	        		.collect(Collectors.toList()).get(0);
+	    	SaleTrans referingSale = (SaleTrans) sales.get(ret.getSaleReference());
 	    	
 	    	//return false if amount to be returned > amount bought
 	    	List<ezProductType> saleProducts = referingSale.getAllProducts();
@@ -588,21 +586,13 @@ public class EZShop implements EZShopInterface {
     	int i;
     	try {
     	
-	    	ReturnTransaction ret = returns.stream().filter( 
-	        		r -> r.getBalanceId() == returnId 
-	        		)
-	        		.collect(Collectors.toList()).get(0);
+	    	ReturnTransaction ret = returns.get(returnId);
 	    	
-	    	SaleTrans referingSale = (SaleTrans) sales.stream().filter( 
-	        		s -> s.getReceiptNumber() == ret.getSaleReference() 
-	        		)
-	        		.collect(Collectors.toList()).get(0);
+	    	SaleTrans referingSale = (SaleTrans) sales.get(ret.getSaleReference());
 	    	
 	    	if(commit) {
 	    		//increase quantity available
-	    		ProductType prodType = products.stream().filter(
-	    				p -> p.getBarCode().equals(ret.getProdId())
-	    				).collect(Collectors.toList()).get(0);
+	    		ProductType prodType = products.get(ret.getProdId());
 	    		
 	    		prodType.setQuantity(prodType.getQuantity() + ret.getAmount());
 	    		
