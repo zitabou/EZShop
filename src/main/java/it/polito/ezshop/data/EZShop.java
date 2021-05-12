@@ -274,8 +274,11 @@ public class EZShop implements EZShopInterface {
     	cust_id++;
     	customers.add(new ezCustomer(customerName, cust_id, "N/A", 0));
 
-    	
-    	
+   
+
+	/*JDBC*/
+		DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
+
     	
     	
   /*impl with DB*/ 
