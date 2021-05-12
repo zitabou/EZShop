@@ -7,8 +7,6 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import it.polito.ezshop.data.*;
-import it.polito.ezshop.exceptions.*;
-
 
 
 @Entity
@@ -36,7 +34,7 @@ public class ezCustomer implements Customer{
 
     public void setId(Integer id) {this.id = id;}
 
-    public String getCustomerCardId() {return card;}
+    public String getCustomerCard() {return card;}
     
     public void setCustomerCard(String customerCard) {this.card = customerCard;}
     
@@ -65,13 +63,5 @@ public class ezCustomer implements Customer{
     @Transient
     private LoyaltyCard lCard;
 
-	@Override
-	public String getCustomerCard() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	
-    
 	
 }

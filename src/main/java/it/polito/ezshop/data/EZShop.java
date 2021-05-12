@@ -2,6 +2,8 @@ package it.polito.ezshop.data;
 
 import it.polito.ezshop.exceptions.*;
 import it.polito.ezshop.classes.*;
+import it.polito.ezshop.classesDAO.DAOcustomer;
+import it.polito.ezshop.classesDAO.DAOexception;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -31,7 +33,7 @@ public class EZShop implements EZShopInterface {
 	
 	private Integer user_id = 1;
 	private Integer prod_id = 0;
-	private Integer cust_id = 0;
+	private Integer cust_id =555;
 	private Integer card_id = 0;
 	private Integer sale_id = 0;
 	private Integer ret_id = 0;
@@ -48,6 +50,7 @@ public class EZShop implements EZShopInterface {
 		activeUser = null;
 		
 		users.add(new ezUser(0, "admin", "admin", "Administrator"));
+		
 	}
 	
 	
@@ -267,44 +270,21 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerNameException("customer name is null ");
     	if(customerName.equals(""))
     		throw new InvalidCustomerNameException("customer name is empty ");
-    	/*
-    	 if(if there is no logged user or if it has not the rights to perform the operation)
-    	 	throw new UnauthorizedException();
-    	 */
-    	cust_id++;
-    	customers.add(new ezCustomer(customerName, cust_id, "N/A", 0));
-
-   
-
-	/*JDBC*/
-		DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
-
     	
     	
-  /*impl with DB*/ 
-    	/*
-    	 * 
-    	Transaction tx = null;
-    	Session s = null;
+    	
+    	
+    	
     	try {
-    		s = DBManager.getSession();  //it opens a session
-    		tx = s.beginTransaction();
-	
-    		s.save(new ezCustomer(customerName, cust_id, "N/A", 0));
-		
-    		tx.commit();
-    		
-    		System.out.println("session -<"+DBManager.factory.getCurrentSession()+">");
-    	}catch(Exception ex) {
-    		ex.printStackTrace();
-    		tx.rollback();
+    		DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
+    	}catch (DAOexception ex) {
+    		System.out.println(ex.getMessage());
+    		return -1; //not found or any DB error
     	}
-    	finally {s.close();}
-        
-        *
-        */
- /**/       
+    		System.out.println();
     	return cust_id;
+  
+    	
     }
 
     @Override
@@ -327,15 +307,22 @@ public class EZShop implements EZShopInterface {
    	 	if(if there is no logged user or if it has not the rights to perform the operation)
    	 		throw new UnauthorizedException();
     	 */
-    	
+    	/*
     	for (Customer c : customers) {
     		if(c.getId() == id) {
     			c.setCustomerName(newCustomerName);
     			c.setCustomerCard(newCustomerCard);
-    			return true; 
     		}
+    	}*/
+    	
+    	try {
+    		DAOcustomer.Update(new ezCustomer(newCustomerName, cust_id, newCustomerCard,0));
+    	}catch (DAOexception ex) {
+    		System.out.println(ex.getMessage());
+    		return false; //not found or any DB error
     	}
-    	return false;  //not found
+    	
+    	return true;
     }
 
     @Override
@@ -351,13 +338,23 @@ public class EZShop implements EZShopInterface {
     	 */
     	
     	
-    	for (Customer c : customers) {
+    	/*for (Customer c : customers) {
     		if(c.getId() == id) {
     			customers.remove(c);
     			return true; 
     		}
-    	}    	
-        return false;
+    	}*/   
+    	
+    	ezCustomer cust = new ezCustomer();
+    	cust.setId(id);
+    	try {
+    		
+    		DAOcustomer.Delete(cust);
+    	}catch (DAOexception ex) {
+    		System.out.println(ex.getMessage());
+    		return false; //not found or any DB error
+    	}
+    	return true;
     }
 
     @Override
@@ -370,12 +367,22 @@ public class EZShop implements EZShopInterface {
    	 	if(if there is no logged user or if it has not the rights to perform the operation)
    	 		throw new UnauthorizedException();
     	 */
-    	for (Customer c : customers) {
+    	/*for (Customer c : customers) {
     		if(c.getId() == id) {
     			return c; 
     		}
-    	}    	
-    	return null;
+    	} */
+    	
+    	ezCustomer cust;
+    	try {
+    		cust = DAOcustomer.Read(id);
+    	}catch (DAOexception ex) {
+    		System.out.println(ex.getMessage());
+    		return null; //not found or any DB error
+    	}
+    	
+    	return cust;
+    	
     }
 
     @Override
@@ -384,7 +391,13 @@ public class EZShop implements EZShopInterface {
    	 	if(if there is no logged user or if it has not the rights to perform the operation)
    	 		throw new UnauthorizedException();
     	 */
-    	
+    	List<Customer> cust;
+    	try {
+    		cust = DAOcustomer.readAll();
+    	}catch (DAOexception ex) {
+    		System.out.println(ex.getMessage());
+    		return null; //not found or any DB error
+    	}
     	return customers;
     }
 
