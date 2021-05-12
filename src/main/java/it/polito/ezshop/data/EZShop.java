@@ -31,7 +31,7 @@ public class EZShop implements EZShopInterface {
 	private AccountBook accountBook;
 	private ezUser activeUser;
 	
-	private Integer user_id = 1;
+	private Integer user_id = 0;
 	private Integer prod_id = 0;
 	private Integer cust_id =555;
 	private Integer card_id = 0;
@@ -62,18 +62,14 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-    	user_id++;
-    	users.add(new ezUser(user_id, username, password, role));
-    	for (User u : users) {
-    		System.out.println("User: " + u.getId() + ", " + u.getUsername()+ ", "+ u.getRole() + ", "+ u.getPassword());
-    	}
     	
-    	return 1;
+    	user_id++;
+    	return user_id;
     }
 
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        return false;
+        return true;
     }
 
     @Override
@@ -113,7 +109,6 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
     	prod_id++;
-    	products.add(new ezProductType(prod_id, description, productCode, pricePerUnit, note));		
     	return prod_id;
     }
 
@@ -135,7 +130,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteProductType(Integer id) throws InvalidProductIdException, UnauthorizedException {
-        return false;
+        return true;
     }
 
     @Override
