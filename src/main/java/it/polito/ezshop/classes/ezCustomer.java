@@ -16,13 +16,15 @@ public class ezCustomer implements Customer{
 	public ezCustomer() {
 		customerName = "N/A";
 		id = 0;
-		card = null;
+		card = "N/A";
+		points = 0;
 	}
 	
 	public ezCustomer(String customerName, Integer id, String customerCard, Integer points) {
 		this.customerName = customerName;
 		this.id = id;
-		card = "N/A";
+		this.card = customerCard;
+		this.points = points;
 	}
 	
 	
@@ -38,30 +40,16 @@ public class ezCustomer implements Customer{
     
     public void setCustomerCard(String customerCard) {this.card = customerCard;}
     
-    public LoyaltyCard getLoyaltyCard() {return lCard;}
-    
-    public void setLoyaltyCard(LoyaltyCard lCard) {
-    	this.lCard = lCard;
-    	this.card = lCard.getcardID();
-    }
+    public Integer getPoints() {return this.points;}
 
-    public Integer getPoints() {return this.lCard.getPoints();}
+    public void setPoints(Integer points) {this.points = points;}
+    
 
-    public void setPoints(Integer points) {this.lCard.setPoints(points);}
-    
-    
-    @Column(name="Name")
-    private String customerName;
-    
-    @Id
-    @Column(name="CustomerID")
     private Integer id;
     
-    @Column(name="Card_Id")
+    private String customerName;
+    
     private String card;
     
-    @Transient
-    private LoyaltyCard lCard;
-
-	
+    private Integer points;
 }

@@ -2,8 +2,8 @@ package it.polito.ezshop.data;
 
 import it.polito.ezshop.exceptions.*;
 import it.polito.ezshop.classes.*;
-import it.polito.ezshop.classesDAO.DAOcustomer;
-import it.polito.ezshop.classesDAO.DAOexception;
+import it.polito.ezshop.classesDAO.*;
+import it.polito.ezshop.classesDAO.DBManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -51,6 +51,8 @@ public class EZShop implements EZShopInterface {
 		activeUser = null;
 		
 		users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
+		DBManager.getConnection();
+		DBManager.closeConnection();
 		
 	}
 	
@@ -267,18 +269,11 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerNameException("customer name is empty ");
     	
     	
+    	int id = 0;
     	
-    	
-    	
-    	try {
-    		DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
-    	}catch (DAOexception ex) {
-    		System.out.println(ex.getMessage());
-    		return -1; //not found or any DB error
-    	}
-    		System.out.println();
-    	return cust_id;
-  
+    	id = DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
+
+    	return id;
     	
     }
 
@@ -298,24 +293,10 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerCardException("customer card is empty");
     	if(newCustomerCard.length() > 10)
     		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
-    	/*
-    	for (Customer c : customers) {
-    		if(c.getId() == id) {
-    			c.setCustomerName(newCustomerName);
-    			c.setCustomerCard(newCustomerCard);
-    		}
-    	}*/
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
     	
-    	try {
-    		DAOcustomer.Update(new ezCustomer(newCustomerName, cust_id, newCustomerCard,0));
-    	}catch (DAOexception ex) {
-    		System.out.println(ex.getMessage());
-    		return false; //not found or any DB error
-    	}
+    	DAOcustomer.Update(new ezCustomer(newCustomerName, id, newCustomerCard,0));
     	
     	return true;
     }
@@ -327,28 +308,11 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerIdException("customer id is null");
     	if(id <=0)
     		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+ 
     	
-    	
-    	/*for (Customer c : customers) {
-    		if(c.getId() == id) {
-    			customers.remove(c);
-    			return true; 
-    		}
-    	}*/   
-    	
-    	ezCustomer cust = new ezCustomer();
-    	cust.setId(id);
-    	try {
-    		
-    		DAOcustomer.Delete(cust);
-    	}catch (DAOexception ex) {
-    		System.out.println(ex.getMessage());
-    		return false; //not found or any DB error
-    	}
+    	DAOcustomer.Delete(id);
+
     	return true;
     }
 
@@ -358,10 +322,8 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerIdException("customer id is null");
     	if(id <=0)
     		throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
     	/*for (Customer c : customers) {
     		if(c.getId() == id) {
     			return c; 
@@ -369,12 +331,7 @@ public class EZShop implements EZShopInterface {
     	} */
     	
     	ezCustomer cust;
-    	try {
-    		cust = DAOcustomer.Read(id);
-    	}catch (DAOexception ex) {
-    		System.out.println(ex.getMessage());
-    		return null; //not found or any DB error
-    	}
+    	cust = (ezCustomer) DAOcustomer.Read(id);
     	
     	return cust;
     	
@@ -382,36 +339,23 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<Customer> getAllCustomers() throws UnauthorizedException {
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
-    	List<Customer> cust;
-    	try {
-    		cust = DAOcustomer.readAll();
-    	}catch (DAOexception ex) {
-    		System.out.println(ex.getMessage());
-    		return null; //not found or any DB error
-    	}
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
+    	customers = DAOcustomer.readAll();
     	return new ArrayList<Customer>( customers.values());
     }
 
     @Override
     public String createCard() throws UnauthorizedException {
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
-    	card_id++;
-    	cards.put("card_"+card_id, new LoyaltyCard("card_"+card_id, 0));
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+    	//card_id++;
+    	//cards.put("card_"+card_id, new LoyaltyCard("card_"+card_id, 0));
     	
-    	/*
-    	 if DB is unreachable return empty string
-    	 */
+    	LoyaltyCard card = new LoyaltyCard();
+    	String id;
+    	id = DAOloyaltyCard.Create(card);
     	
-    	List<LoyaltyCard> lcs = (List<LoyaltyCard>) cards.values();
-    	
-        return lcs.get(cards.size()-1).getcardID();
+        return id;
     }
 
     @Override
@@ -426,16 +370,14 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerCardException("customer card is empty");
     	if(customerCard.length() > 10)
     		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
-    	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
     	
     	Customer c = customers.get(customerId);
-    	
-    	if(c != null) {															//if the customer exists search for card availability
+    	System.out.println("ATTACH CARD TO CUSTOMER");
+    	/*if(c != null) {															//if the customer exists search for card availability
     		LoyaltyCard lc = cards.get(customerCard);
-    		if(lc != null && lc.getInUse() == false) {
+    		if(lc != null && lc.getCustomer() == 0) {
     			c.setCustomerCard(customerCard);
     			return true;
     		}
@@ -454,16 +396,15 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidCustomerCardException("customer card is empty");
     	if(customerCard.length() > 10)
     		throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
     	/*
-   	 	if(if there is no logged user or if it has not the rights to perform the operation)
-   	 		throw new UnauthorizedException();
-    	 */
     	LoyaltyCard lc = cards.get(customerCard);
     	if( lc != null && (pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) ) {  //check that the points are positive and if they are negative check that the card points are not less
 			lc.setPoints(pointsToBeAdded);
 			return true;
 		}
-    	/*
+    	
     	 * TODO Not sure I respected the logic, check if right. Here is the previous code
     	for(LoyaltyCard lc : cards)						
 			if(lc.getcardID().equals(customerCard)) {		 					   //get the card
@@ -473,14 +414,21 @@ public class EZShop implements EZShopInterface {
 				}
 		} */ 
     	
-    	/*
-   	 	if DB is unreachable return false
-    	 */
-    	return false;
+    	//we get the card so that we will increase the already accumulated points
+    	LoyaltyCard card;//old card points
+    	card = DAOloyaltyCard.Read(customerCard);
+    	
+    	card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
+    	DAOloyaltyCard.Update(card);
+    	
+    	
+    	return true;
     }
 
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
     	sale_id++;
     	sales.put(sale_id, new ezSaleTransaction(sale_id,0.0,0.0,0.0));
         return sale_id;
@@ -488,6 +436,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
+
+    	
     	
     	ProductType prod = products.get(productCode);
     	if(prod == null) return true;

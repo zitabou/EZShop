@@ -45,22 +45,26 @@ public class DBManager {
 
 	protected static Connection conn;  //Connection singleton
 	
-	public static Connection getConnection(){
+	public static Connection getConnection() throws DAOexception{
 		if (conn == null){
 			try {
 				conn = DriverManager.getConnection("jdbc:sqlite:Shop.db");
 				InitialiseDB();
 			} catch (SQLException e) {
-				throw new RuntimeException("DBManager error!", e);
+				throw new DAOexception("DBManager error!", e);
 			}
 		}
 		return conn;
 	}
 	
-	public static void closeConnection() throws SQLException{
-		if (conn != null && conn.isClosed()){
-			conn.close();
-			conn = null;
+	public static void closeConnection() throws DAOexception{
+		try {
+			if (conn != null && conn.isClosed()){
+				conn.close();
+				conn = null;
+			}
+		}catch(SQLException ex) {
+			throw new DAOexception("unable to close connection");
 		}
 	}
 	
@@ -72,9 +76,24 @@ public class DBManager {
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
-				stat.execute("CREATE TABLE customer " + "(id integer not null, " + "name varchar (30), " + "card varchar (10), " + "primary key(id));");
+				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id));");
 			}
+			stat.close();
+			
+			//Loyalty Card
+			stat = conn.createStatement();
+			if(!existsTable("loyalty_card")) { //no such table in DB
+				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS ('card_' || SUBSTR('00000' || id,-5,5)), card_points Integer, customer Integer, primary key(id));");
 
+			}
+			stat.close();
+			
+			
+			
+			
+			
+			
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
