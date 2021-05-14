@@ -300,20 +300,11 @@ System.out.println("2");
         Matcher check = regex.matcher(newPos);
     	if( !check.matches())
     		throw new InvalidLocationException();
-    	/*
-    	//TODO see if it can be done by the table properties
-    	//check that no other product has the same position
-    	List<ProductType> t_prod = null; 
-    	Map<Integer, ProductType>map;
     	
-    	map = DAOproductType.readAll();
-    	t_prod = (List<ProductType>) map.values();
-    	for(ProductType p : t_prod) {
-    		if(p.getLocation().equals(newPos))
-    			return false;
-    	}
-    		*/
-    	
+
+
+
+		
     	// real operations
     	ProductType prod = null; 						// old product 
     	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
