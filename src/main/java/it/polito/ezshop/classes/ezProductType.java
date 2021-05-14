@@ -1,34 +1,28 @@
 package it.polito.ezshop.classes;
 
 import it.polito.ezshop.data.*;
-import it.polito.ezshop.classes.Position;
-
 
 public class ezProductType implements ProductType{
 	
 	public ezProductType() {
-		quantity = 0;
-		location = "N/A";
-		note = "N/A";
-		productDescription = "N/A";
-		barCode = "N/A";
-		pricePerUnit = 0.0;
-		id = 0;
-		
-		//setPosition(null);;
+		this.id = 0;
+		this.productDescription = "N/A";
+		this.barCode = "N/A";
+		this.pricePerUnit = 0.0;
+		this.quantity = 0;
+		this.note = "N/A";
+		this.location = "";
 		
 	}
 	
-	public ezProductType(Integer id, String productDescription, String barCode, Double pricePerUnit, String note) {
-		this.quantity = 0;
-		this.location = null;
-		this.note = note;
+	public ezProductType(Integer id, String productDescription, String barCode, Double pricePerUnit, Integer quantity, String note, String location) {
+		this.id = id;
 		this.productDescription = productDescription;
 		this.barCode = barCode;
 		this.pricePerUnit = pricePerUnit;
-		this.id = id;
-		
-		//this.setPosition(null);
+		this.quantity = 0;
+		this.note = note;
+		this.location = location;
 	}
 	
 	
@@ -63,21 +57,17 @@ public class ezProductType implements ProductType{
 	
 	
 	
-	// additional methods 
-	
-	//public Position getPosition() {return position;}
-
-	//public void setPosition(Position position) {this.position = position;}
-
-
-
-	private Integer quantity;
-	private String location;
-	private String note;
+	private Integer id;
 	private String productDescription;
 	private String barCode;
 	private Double pricePerUnit;
-	private Integer id;
+	private Integer quantity;
+	private String note;
+	private String location;
+
+	
+	
+	
 	
 	//private Position position;
 	

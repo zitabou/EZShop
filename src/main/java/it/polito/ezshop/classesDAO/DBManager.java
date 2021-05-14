@@ -3,7 +3,6 @@ package it.polito.ezshop.classesDAO;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -84,12 +83,29 @@ public class DBManager {
 			stat = conn.createStatement();
 			if(!existsTable("loyalty_card")) { //no such table in DB
 				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS ('card_' || SUBSTR('00000' || id,-5,5)), card_points Integer, customer Integer, primary key(id));");
+			}
+			stat.close();
 
+			//Product
+			stat = conn.createStatement();
+			if(!existsTable("product")) { //no such table in DB
+				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(30), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), UNIQUE(location));");
 			}
 			stat.close();
 			
 			
+			//Sale transaction
+			stat = conn.createStatement();
+			if(!existsTable("sale_transaction")) { //no such table in DB
+				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, cost REAL, discount REAL, date TEXT, status varchar(10), primary key(id));");
+			}
+			stat.close();
 			
+			stat = conn.createStatement();
+			if(!existsTable("sale_products")) { //no such table in DB
+				stat.execute("CREATE TABLE sale_products (sale_id INTEGER not null, price REAL, discount REAL, quantity INTEGER);");
+			}
+			stat.close();
 			
 			
 			

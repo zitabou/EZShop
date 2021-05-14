@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.*;
 
 import it.polito.ezshop.data.SaleTransaction;
+import it.polito.ezshop.data.User;
 
 public class ezSaleTransaction extends Credit implements SaleTransaction{  //two methods are commented in SaleTransaction interface
 	
@@ -17,9 +18,10 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 		price = 0.0;
 		
 		customer = new ezCustomer();
-		quantityPerProduct = new ArrayList<>();
-		products = new ArrayList<ezProductType>();
-		
+		products = new HashMap<Integer, ezProductType>();
+		quantityPerProduct = new HashMap<Integer, Integer>();
+	    setDiscountPerProduct(new HashMap<Integer, Double>());;
+	    
 	}
 	
 	public ezSaleTransaction(int saleId, double money, double discountRate, double price) {
@@ -31,8 +33,9 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 		this.price = price;
 		
 		customer = new ezCustomer();
-		quantityPerProduct = new ArrayList<>();
-		products = new ArrayList<ezProductType>();
+		products = new HashMap<Integer, ezProductType>();
+		quantityPerProduct = new HashMap<Integer, Integer>();
+	    setDiscountPerProduct(new HashMap<Integer, Double>());;
 	}
 	
 
@@ -84,26 +87,14 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
     
 	public void setCustomer(ezCustomer customer) {this.customer = customer;}
 	
-	public List<Integer> getAllQuantities() {return quantityPerProduct;}
-
-	public boolean updateQuantityPerProduct(ezProductType product, Integer quantity) {
-		int prodId = product.getId();
-		for(int i =0; i<products.size(); i++) {
-			if(prodId == products.get(i).getId()) {
-				price = price + products.get(i).getPricePerUnit()*(quantity - quantityPerProduct.get(i));
-				quantityPerProduct.set(i, quantity);
-				return true;
-			}
-		}
-		return false; // product was not found
-	}
 	
+	//products
+	public List<ezProductType> getAllProducts() {return (List<ezProductType>) products.values();}
 
-	public List<ezProductType> getAllProducts() {return products;}
-
+	//maybe just the id is enough
 	public boolean addProductToSale(ezProductType product, Integer quantity) {
-		products.add(product);
-		quantityPerProduct.add(quantity);
+		products.put(product.getId(), product);
+		quantityPerProduct.put(product.getId(), quantity);
 		return true;
 	}
 	
@@ -118,6 +109,23 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 		}
 		return false; // product was not found
 	}
+	
+	//quantities
+	public List<Integer> getAllQuantities() {return (List<Integer>) quantityPerProduct.values();}
+
+	public boolean updateQuantityPerProduct(Integer product, Integer quantity) {
+		Integer q = quantityPerProduct.get(product);
+		if(q != null ) {
+				quantityPerProduct.put(product, q+quantity);
+				return true;
+		}
+		return false; // product was not found
+	}
+	
+	//discounts
+	public Map<Integer, Double> getDiscountPerProduct() {return discountPerProduct;}
+
+	public void setDiscountPerProduct(Map<Integer, Double> discountPerProduct) {this.discountPerProduct = discountPerProduct;}
 	
 	
 	//points are calculated based on the cost of the price. one point per 10 money
@@ -137,6 +145,8 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
 	
 	
 
+
+
 	private int balanceId;
     private LocalDate date;
     private double money; //?
@@ -147,8 +157,10 @@ public class ezSaleTransaction extends Credit implements SaleTransaction{  //two
     private int saleID;
     private String paymentType;
     private ezCustomer customer;
-    private List<Integer> quantityPerProduct;
-    private List<ezProductType> products;
+    private Map<Integer, ezProductType> products;
+    private Map<Integer, Integer> quantityPerProduct;
+    private Map<Integer, Double> discountPerProduct;
+
     private Receipt receipt;
 	
 }

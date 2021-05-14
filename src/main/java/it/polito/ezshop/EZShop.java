@@ -9,9 +9,6 @@ public class EZShop {
     public static void main(String[] args){
         EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
         EZShopGUI gui = new EZShopGUI(ezShop);
-        
-        
-        
     }
 
 }

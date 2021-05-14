@@ -10,7 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
 
 /*used only with DB impl*/
 /*
@@ -23,7 +27,7 @@ import org.hibernate.cfg.Configuration;
 public class EZShop implements EZShopInterface {
 
 	private Map<Integer, User> users;
-	private Map<String, ProductType> products;
+	private Map<Integer, ProductType> products;
 	private Map<Integer, SaleTransaction> sales;
 	private Map<Integer, Customer> customers;
 	private Map<String, LoyaltyCard> cards;
@@ -109,56 +113,221 @@ public class EZShop implements EZShopInterface {
     	activeUser = null;
         return true;
     }
+    
+    
+    private boolean validBarCode(String productCode) {
+		
+    	char[] char_digits = productCode.toCharArray();
+    	int check_digit = 0 ;
+    	int mul = 0;
+    	long round_int= 0;
+    	double round= 0;
+    	
+    	//get the sum of products
+    	for(int i=0; i<char_digits.length-1; i++) {
+    		if(i%2 == 1)
+    			mul = 3;
+    		else
+    			mul = 1;
+    		check_digit = (Character.getNumericValue(char_digits[i]) * mul) + check_digit;
+    	}
+    	
+    	//calculate the nearest equal or higher multiple of ten
+    	round = (double)check_digit/10.0;
+    	round_int = (long)round;
+    	if(round-round_int != 0)  //fractional part /=0
+    		round = (round_int+1)*10;
+    	else                      //fractional part  =0
+    		round = check_digit;
+    	
+    	//check if the last digit is indeed what it should
+    	if(round - check_digit == Character.getNumericValue(char_digits[char_digits.length-1]) )
+    		return true;
+		return false;
+	}
 
     @Override
     public Integer createProductType(String description, String productCode, double pricePerUnit, String note) throws InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-    	prod_id++;
+    	if(description == null || description.equals(""))
+    		throw new InvalidProductDescriptionException("product description is null or empty");
+    	if(productCode == null || productCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!StringUtils.isNumeric(productCode))
+    		throw new InvalidProductCodeException("product barcode is not numeric");
+    	if(!validBarCode(productCode) || productCode.length()<12 || productCode.length()>14)
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if(pricePerUnit <= 0 )
+    		throw new InvalidPricePerUnitException("price per unit cannot be <=0");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+
+    	
+    	
+    	Integer prod_id = null;
+    	ezProductType prod = new ezProductType(0, description, productCode, pricePerUnit, 0, note, "N/A");
+    	try{
+    		prod_id = DAOproductType.Create(prod);
+    	}catch (DAOexception e) {
+    		return -1;
+    	}
+    	
     	return prod_id;
     }
 
     @Override
     public boolean updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote) throws InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-    	ProductType p = products.get(id);
-    	if (p== null) return false;
-    	p.setProductDescription(newDescription);
-		p.setBarCode(newNote);
-		p.setPricePerUnit(newPrice);
-		p.setNote(newNote);
+    	if(id <= 0 || id == null)
+    		throw new InvalidProductIdException("product id is null or <=0");
+    	if(newDescription == null || newDescription.equals(""))
+    		throw new InvalidProductDescriptionException("product description is null or empty");
+    	if(newCode == null || newCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!StringUtils.isNumeric(newCode))
+    		throw new InvalidProductCodeException("product barcode is not numeric");
+    	if(!validBarCode(newCode) || newCode.length()<12 || newCode.length()>14)
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if(newPrice <= 0)
+    		throw new InvalidProductCodeException("Invalid price value (<=0)");
+    	
+    	
+    	ProductType prod = null; 					// new product 
+    	try {prod = DAOproductType.Read(id);				// read necessary to leave other fields unchanged
+    	}catch (DAOexception e) {
+    		return false;
+    	}
+    	prod.setProductDescription(newDescription);
+    	prod.setBarCode(newNote);
+    	prod.setPricePerUnit(newPrice);
+    	prod.setNote(newNote);
+
+    	try{DAOproductType.Update(prod);				//update
+    	}catch (DAOexception e) {
+    		return false;
+    	}
 		return true;
-    	
-    	
-    	
     }
 
     @Override
     public boolean deleteProductType(Integer id) throws InvalidProductIdException, UnauthorizedException {
+    	if(id <= 0 || id == null)
+    		throw new InvalidProductIdException("product id is null or <=0");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
+    	ProductType prod = new ezProductType();
+    	prod.setId(id);
+    	try{DAOproductType.Delete((ezProductType)prod);
+    	}catch (DAOexception e) {
+    		return false;
+    	}
         return true;
     }
 
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
     	
+    	try{products = DAOproductType.readAll();
+    	}catch (DAOexception e) {
+    		return null;
+    	}
+    	
         return new ArrayList<ProductType>( products.values());
     }
 
     @Override
     public ProductType getProductTypeByBarCode(String barCode) throws InvalidProductCodeException, UnauthorizedException {
-        return null;
+    	
+    	ProductType prod = null;
+    	try{prod = DAOproductType.read(barCode);
+    	}catch (DAOexception e) {
+    		return null;
+    	}
+    	
+        return prod;
     }
 
     @Override
     public List<ProductType> getProductTypesByDescription(String description) throws UnauthorizedException {
-        return null;
+    	
+    	try{products = DAOproductType.readAll(description);
+    	}catch (DAOexception e) {
+    		return null;
+    	}
+    	
+        return new ArrayList<ProductType>( products.values());
     }
 
     @Override
     public boolean updateQuantity(Integer productId, int toBeAdded) throws InvalidProductIdException, UnauthorizedException {
-        return false;
+    	if(productId <= 0 || productId == null)
+    		throw new InvalidProductIdException("product id is null or <=0");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
+    	ProductType prod = null; 						// new product 
+    	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
+    	}catch (DAOexception e) {
+    		return false;
+    	}
+    	
+System.out.println("1");
+    	if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation().equals("")))
+    		return false;
+System.out.println("2");
+    	prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
+
+    	try{DAOproductType.Update(prod);				//update
+    	}catch (DAOexception e) {
+    		return false;
+    	}
+    	
+		return true;
+    	
     }
 
     @Override
     public boolean updatePosition(Integer productId, String newPos) throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
-        return false;
+    	
+
+    	
+    	if(productId <= 0 || productId == null)
+    		throw new InvalidProductIdException("product id is null or <=0");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
+    	String pattern = "^\\d+\\-\\d+\\-\\d+$";  // TODO be sure about the regex
+        Pattern regex = Pattern.compile(pattern);
+        Matcher check = regex.matcher(newPos);
+    	if( !check.matches())
+    		throw new InvalidLocationException();
+    	/*
+    	//TODO see if it can be done by the table properties
+    	//check that no other product has the same position
+    	List<ProductType> t_prod = null; 
+    	Map<Integer, ProductType>map;
+    	
+    	map = DAOproductType.readAll();
+    	t_prod = (List<ProductType>) map.values();
+    	for(ProductType p : t_prod) {
+    		if(p.getLocation().equals(newPos))
+    			return false;
+    	}
+    		*/
+    	
+    	// real operations
+    	ProductType prod = null; 						// old product 
+    	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
+    	}catch (DAOexception e) {
+    		return false;
+    	}
+    	
+    	prod.setLocation(newPos);			//assign new value
+    	try{DAOproductType.Update(prod);	//update
+    	}catch (DAOexception e) {
+    		return false;
+    	}
+    	
+		return true;
     }
 
     @Override
@@ -180,12 +349,6 @@ public class EZShop implements EZShopInterface {
         
         return o.getOrderId();
     }
-
-    private boolean validBarCode(String productCode) {
-		// TODO validation of bar code
-		return true;
-	}
-
 
 
 	@Override
@@ -270,11 +433,12 @@ public class EZShop implements EZShopInterface {
     	
     	
     	int id = 0;
+    	try {id = DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
+    	}catch(DAOexception e) {
+    		return -1;
+    	}
     	
-    	id = DAOcustomer.Create(new ezCustomer(customerName, cust_id, "N/A", 0));
-
     	return id;
-    	
     }
 
     @Override
@@ -296,8 +460,10 @@ public class EZShop implements EZShopInterface {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
 
     	
-    	DAOcustomer.Update(new ezCustomer(newCustomerName, id, newCustomerCard,0));
-    	
+    	try{DAOcustomer.Update(new ezCustomer(newCustomerName, id, newCustomerCard,0));
+    	}catch(DAOexception e) {
+    		return false;
+    	}
     	return true;
     }
 
@@ -311,8 +477,10 @@ public class EZShop implements EZShopInterface {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
  
     	
-    	DAOcustomer.Delete(id);
-
+    	try{DAOcustomer.Delete(id);
+    	}catch(DAOexception e) {
+    		return false;
+    	}
     	return true;
     }
 
@@ -331,8 +499,10 @@ public class EZShop implements EZShopInterface {
     	} */
     	
     	ezCustomer cust;
-    	cust = (ezCustomer) DAOcustomer.Read(id);
-    	
+    	try{cust = (ezCustomer) DAOcustomer.Read(id);
+    	}catch(DAOexception e) {
+    		return null;
+    	}
     	return cust;
     	
     }
@@ -341,7 +511,10 @@ public class EZShop implements EZShopInterface {
     public List<Customer> getAllCustomers() throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
 
-    	customers = DAOcustomer.readAll();
+    	try{customers = DAOcustomer.readAll();
+    	}catch(DAOexception e) {
+    		return null;
+    	}
     	return new ArrayList<Customer>( customers.values());
     }
 
@@ -353,13 +526,18 @@ public class EZShop implements EZShopInterface {
     	
     	LoyaltyCard card = new LoyaltyCard();
     	String id;
-    	id = DAOloyaltyCard.Create(card);
-    	
+    	try{id = DAOloyaltyCard.Create(card);
+    	}catch(DAOexception e) {
+    		return null;
+    	}
         return id;
     }
 
     @Override
+ // TODO WHEN IS THIS FUNCTION CALLED
     public boolean attachCardToCustomer(String customerCard, Integer customerId) throws InvalidCustomerIdException, InvalidCustomerCardException, UnauthorizedException {
+    	System.out.println("ATTACH CARD TO CUSTOMER is called");
+    	
     	if(customerId == null)
     		throw new InvalidCustomerIdException("customer id is null");
     	if(customerId <=0)
@@ -373,19 +551,15 @@ public class EZShop implements EZShopInterface {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
 
     	
-    	Customer c = customers.get(customerId);
-    	System.out.println("ATTACH CARD TO CUSTOMER");
-    	/*if(c != null) {															//if the customer exists search for card availability
-    		LoyaltyCard lc = cards.get(customerCard);
-    		if(lc != null && lc.getCustomer() == 0) {
-    			c.setCustomerCard(customerCard);
-    			return true;
-    		}
-    	}
+    	
+    	Customer cust = null;
+    	cust  = DAOcustomer.Read(customerId);   //get customer from DB
+    	cust.setCustomerCard(customerCard);     //change the card
+    	DAOcustomer.Update(cust);               //update the customer(this will update the card info as well)
     	/*
    	 	if DB is unreachable return false
     	 */
-    	return false;
+    	return true;
     }
 
     @Override
@@ -416,10 +590,15 @@ public class EZShop implements EZShopInterface {
     	
     	//we get the card so that we will increase the already accumulated points
     	LoyaltyCard card;//old card points
-    	card = DAOloyaltyCard.Read(customerCard);
+    	try{
+    		card = DAOloyaltyCard.Read(customerCard);
     	
-    	card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
-    	DAOloyaltyCard.Update(card);
+    		card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
+    		DAOloyaltyCard.Update(card);
+    	
+    	}catch(DAOexception e) {
+    		return false;
+    	}
     	
     	
     	return true;
@@ -429,8 +608,13 @@ public class EZShop implements EZShopInterface {
     public Integer startSaleTransaction() throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
 
-    	sale_id++;
+    	/*sale_id++;
     	sales.put(sale_id, new ezSaleTransaction(sale_id,0.0,0.0,0.0));
+        */
+    	
+    	Integer sale_id = null;
+    	sale_id = DAOsaleTransaction.Create();
+    	
         return sale_id;
     }
 

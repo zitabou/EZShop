@@ -32,9 +32,10 @@ public class DAOcustomer {
 			    generatedKey = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			throw new DAOexception("product error" + e.getMessage());
+			throw new DAOexception("error while creating Customer" + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId()); }
 		}
 		return generatedKey;
 	}
@@ -63,8 +64,8 @@ public class DAOcustomer {
 		}catch(SQLException e){
 			throw new DAOexception("error while reading customer " + customerId);
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + cust.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + cust.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId()); }
 		}
 		
 		return cust;
@@ -86,7 +87,7 @@ public class DAOcustomer {
 				cust.setCustomerCard(rs.getString("card_id"));
 			}							
 		}catch(SQLException e){
-			throw new DAOexception("error while updating loyalty_card"+cust.getCustomerCard());
+			throw new DAOexception("error while updating Customer"+cust.getCustomerCard());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
 			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
@@ -111,11 +112,13 @@ public class DAOcustomer {
 		
 		//update new loyalty card
 		try{
+			//reset the previous card. It is detached from the customer
 			pstat = conn.prepareStatement("UPDATE loyalty_card SET customer=? WHERE customer=?");
 			pstat.setInt(1, 0);
 			pstat.setInt(2, cust.getId());
 			pstat.executeUpdate();
 			
+			//attach new card to customer and update points
 			pstat = conn.prepareStatement("UPDATE loyalty_card SET card_points=?,customer=? WHERE card_id=?");
 			pstat.setInt(1, cust.getPoints());
 			pstat.setInt(2, cust.getId());
@@ -123,9 +126,9 @@ public class DAOcustomer {
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating loyalty_card"+cust.getCustomerCard());
+			throw new DAOexception("error while updating Customer"+cust.getCustomerCard());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating loyalty_card"+cust.getCustomerCard()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer"+cust.getCustomerCard()); }
 		}
 		
 	}
