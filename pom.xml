@@ -139,6 +139,13 @@
     		<version>3.34.0</version>
 		</dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
+        </dependency>
+
 
 
                 
@@ -149,19 +156,6 @@
             <version>5.3.7.Final</version>
         </dependency>
 
-		<!-- API, java.xml.bind module -->
-		<dependency>
-    		<groupId>jakarta.xml.bind</groupId>
-    		<artifactId>jakarta.xml.bind-api</artifactId>
-    		<version>2.3.2</version>
-		</dependency>
-
-		<!-- Runtime, com.sun.xml.bind module -->
-		<dependency>
-    		<groupId>org.glassfish.jaxb</groupId>
-    		<artifactId>jaxb-runtime</artifactId>
-    		<version>2.3.2</version>
-		</dependency>
         
 
     </dependencies>
