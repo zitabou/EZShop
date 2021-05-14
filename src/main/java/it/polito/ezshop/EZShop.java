@@ -11,7 +11,7 @@ public class EZShop {
         EZShopGUI gui = new EZShopGUI(ezShop);
         
         
-        //my modification
+        
     }
 
 }
