@@ -111,6 +111,12 @@ public class DBManager {
 				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type varchar (30), primary key(balance_id));");
 			}
 			stat.close();
+
+			stat = conn.createStatement();
+			if(!existsTable("orders")) { //no such table in DB
+				stat.execute("CREATE TABLE orders (order_id INTEGER not null, product_code varchar(30), quantity INTEGER, price_per_unit REAL, status varchar(30), primary key(order_id));");
+			}
+			stat.close();
 			
 			
 		} catch (SQLException e) {

@@ -65,10 +65,20 @@ public class ezProductType implements ProductType{
 	private String note;
 	private String location;
 
-	
-	
-	
-	
+	@Override
+	public String toString() {
+		return "ezProductType{" +
+				"id=" + id +
+				", productDescription='" + productDescription + '\'' +
+				", barCode='" + barCode + '\'' +
+				", pricePerUnit=" + pricePerUnit +
+				", quantity=" + quantity +
+				", note='" + note + '\'' +
+				", location='" + location + '\'' +
+				'}';
+	}
+
+
 	//private Position position;
 	
 }

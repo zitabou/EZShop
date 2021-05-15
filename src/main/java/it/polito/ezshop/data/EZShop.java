@@ -40,6 +40,7 @@ public class EZShop implements EZShopInterface {
 	private Integer cust_id =555;
 	private Integer ret_id = 0;
 	private Integer balance_id = 0;
+	private Integer order_id = 0;
 	
 	private Integer last_sale_id = 0;
 	private SaleTransaction openSale = null;
@@ -234,7 +235,7 @@ public class EZShop implements EZShopInterface {
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
@@ -270,7 +271,7 @@ System.out.println("prod: " +prod.getBarCode());
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
@@ -341,14 +342,23 @@ System.out.println("prod: " +prod.getBarCode());
         if( quantity <= 0) throw new InvalidQuantityException();
         if (pricePerUnit <= 0) throw new InvalidPricePerUnitException();
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-        	
+
         //product does not exist
-      	if(products.get(productCode) == null ) return -1;
-    	
+      	if(DAOproductType.read(productCode) == null ) return -1;
+		order_id = 0;
+      	DAOorder.readAll().values().stream().map(o -> o.getOrderId() ).forEach(id -> {
+			if(id > order_id)
+				order_id = id;
+		});
+      	order_id++;
     	ezOrder o = new ezOrder();
         o.setProductCode(productCode);
         o.setQuantity(quantity);
         o.setPricePerUnit(pricePerUnit);
+        o.setOrderId(order_id);
+        o.setStatus("ISSUED");
+
+        DAOorder.Create(o);
         
         orders.put(o.getOrderId(), o);
         
@@ -388,8 +398,9 @@ System.out.println("prod: " +prod.getBarCode());
     	if(accountBook.computeBalance() < amountToPay) 
     		return false;
     	
-    	accountBook.recordBalanceUpdate(- amountToPay, balance_id);
+    	recordBalanceUpdate(- amountToPay);
         o.setStatus("PAYED");
+		DAOorder.Update(o);
         return true;
     }
 
@@ -400,7 +411,7 @@ System.out.println("prod: " +prod.getBarCode());
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
     	ezProductType prod = (ezProductType) products.get(o.getProductCode());
-        
+
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
         if( ! (o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED")) ) return false;
@@ -421,12 +432,13 @@ System.out.println("prod: " +prod.getBarCode());
     public List<Order> getAllOrders() throws UnauthorizedException {
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	//
-    	
+
+		orders = DAOorder.readAll();
     	List<Order> ordersInIssuedOrderedOrCompletedState = orders.values().stream()
-    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED")))
+    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED") || o.getStatus().equals("PAYED")))
         		.collect(Collectors.toList());
-    	
-    	return ordersInIssuedOrderedOrCompletedState;
+
+    	return  ordersInIssuedOrderedOrCompletedState;
     }
 
     @Override
@@ -827,6 +839,7 @@ System.out.println("getSaleTransaction");
 			if(id > balance_id)
 				balance_id = id;
 		});
+		
     	balance_id++;
         return accountBook.recordBalanceUpdate(qty, balance_id);
         
