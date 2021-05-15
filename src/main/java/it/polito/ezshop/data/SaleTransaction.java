@@ -8,9 +8,9 @@ public interface SaleTransaction {
 
     void setReceiptNumber(Integer receiptNumber);
 
-    //List<ReceiptEntry> getEntries();
+    List<ReceiptEntry> getEntries();
 
-    //void setEntries(List<ReceiptEntry> entries);
+    void setEntries(List<ReceiptEntry> entries);
 
     double getDiscountRate();
 

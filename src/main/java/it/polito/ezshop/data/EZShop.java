@@ -37,11 +37,13 @@ public class EZShop implements EZShopInterface {
 	private ezUser activeUser;
 	
 	private Integer user_id = 0;
-	private Integer prod_id = 0;
 	private Integer cust_id =555;
-	private Integer card_id = 0;
-	private Integer sale_id = 0;
 	private Integer ret_id = 0;
+	
+	private Integer last_sale_id = 0;
+	private SaleTransaction openSale = null;
+	private Map<String, ProductType> openProds = null;
+	
 	
 	public EZShop() {
 		
@@ -53,6 +55,8 @@ public class EZShop implements EZShopInterface {
 		returns = new HashMap<>();
 		orders = new HashMap<>();
 		activeUser = null;
+		
+		openProds = new HashMap<>();
 		
 		users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
 		DBManager.getConnection();
@@ -116,7 +120,13 @@ public class EZShop implements EZShopInterface {
     
     
     private boolean validBarCode(String productCode) {
-		
+		//bar12: 629104150024
+    	//bar13: 6291041500213
+    	//bar14: 62910415002134
+    	
+    	if(!StringUtils.isNumeric(productCode)  || productCode.length()<12 || productCode.length()>14)
+    		return false;
+    	
     	char[] char_digits = productCode.toCharArray();
     	int check_digit = 0 ;
     	int mul = 0;
@@ -124,11 +134,9 @@ public class EZShop implements EZShopInterface {
     	double round= 0;
     	
     	//get the sum of products
+    	int pair = (char_digits.length-1)%2;
     	for(int i=0; i<char_digits.length-1; i++) {
-    		if(i%2 == 1)
-    			mul = 3;
-    		else
-    			mul = 1;
+    		mul = (2*((i+pair)%2))+1;
     		check_digit = (Character.getNumericValue(char_digits[i]) * mul) + check_digit;
     	}
     	
@@ -139,7 +147,6 @@ public class EZShop implements EZShopInterface {
     		round = (round_int+1)*10;
     	else                      //fractional part  =0
     		round = check_digit;
-    	
     	//check if the last digit is indeed what it should
     	if(round - check_digit == Character.getNumericValue(char_digits[char_digits.length-1]) )
     		return true;
@@ -152,9 +159,7 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidProductDescriptionException("product description is null or empty");
     	if(productCode == null || productCode.equals(""))
     		throw new InvalidProductCodeException("product barcode is null or empty");   
-    	if(!StringUtils.isNumeric(productCode))
-    		throw new InvalidProductCodeException("product barcode is not numeric");
-    	if(!validBarCode(productCode) || productCode.length()<12 || productCode.length()>14)
+    	if(!validBarCode(productCode))
     		throw new InvalidProductCodeException("Wrong product barcode format");
     	if(pricePerUnit <= 0 )
     		throw new InvalidPricePerUnitException("price per unit cannot be <=0");
@@ -165,8 +170,7 @@ public class EZShop implements EZShopInterface {
     	
     	Integer prod_id = null;
     	ezProductType prod = new ezProductType(0, description, productCode, pricePerUnit, 0, note, "N/A");
-    	try{
-    		prod_id = DAOproductType.Create(prod);
+    	try{prod_id = DAOproductType.Create(prod);
     	}catch (DAOexception e) {
     		return -1;
     	}
@@ -182,25 +186,22 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidProductDescriptionException("product description is null or empty");
     	if(newCode == null || newCode.equals(""))
     		throw new InvalidProductCodeException("product barcode is null or empty");   
-    	if(!StringUtils.isNumeric(newCode))
-    		throw new InvalidProductCodeException("product barcode is not numeric");
-    	if(!validBarCode(newCode) || newCode.length()<12 || newCode.length()>14)
+    	if(!validBarCode(newCode))
     		throw new InvalidProductCodeException("Wrong product barcode format");
     	if(newPrice <= 0)
     		throw new InvalidProductCodeException("Invalid price value (<=0)");
     	
     	
     	ProductType prod = null; 					// new product 
-    	try {prod = DAOproductType.Read(id);				// read necessary to leave other fields unchanged
-    	}catch (DAOexception e) {
-    		return false;
-    	}
-    	prod.setProductDescription(newDescription);
-    	prod.setBarCode(newNote);
-    	prod.setPricePerUnit(newPrice);
-    	prod.setNote(newNote);
+    	try {
+    		prod = DAOproductType.Read(id);				// read necessary to leave other fields unchanged
+    		prod.setProductDescription(newDescription);
+    		prod.setBarCode(newCode);
+    		prod.setPricePerUnit(newPrice);
+    		prod.setNote(newNote);
 
-    	try{DAOproductType.Update(prod);				//update
+    		DAOproductType.Update(prod);				//update
+    		
     	}catch (DAOexception e) {
     		return false;
     	}
@@ -225,6 +226,8 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
     	try{products = DAOproductType.readAll();
     	}catch (DAOexception e) {
@@ -236,10 +239,20 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public ProductType getProductTypeByBarCode(String barCode) throws InvalidProductCodeException, UnauthorizedException {
+    	if(barCode == null || barCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!validBarCode(barCode))
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
+    	
+System.out.println("1");
     	ProductType prod = null;
     	try{prod = DAOproductType.read(barCode);
+System.out.println("prod: " +prod.getBarCode());
     	}catch (DAOexception e) {
+    		e.printStackTrace();
     		return null;
     	}
     	
@@ -248,6 +261,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getProductTypesByDescription(String description) throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
     	
     	try{products = DAOproductType.readAll(description);
     	}catch (DAOexception e) {
@@ -265,22 +281,19 @@ public class EZShop implements EZShopInterface {
     		throw new UnauthorizedException();
     	
     	ProductType prod = null; 						// new product 
-    	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
-    	}catch (DAOexception e) {
-    		return false;
-    	}
-    	
-System.out.println("1");
-    	if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation().equals("")))
-    		return false;
-System.out.println("2");
-    	prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
+    	try {
+    		prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
+    		if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation()==null)) {
+    			System.out.println("Unacceptable quantity");
+    			return false;
+    		}
+    		prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
 
-    	try{DAOproductType.Update(prod);				//update
+    		DAOproductType.Update(prod);				//update
     	}catch (DAOexception e) {
+    		System.out.println(e.getMessage());
     		return false;
-    	}
-    	
+    	}    	
 		return true;
     	
     }
@@ -607,27 +620,54 @@ System.out.println("2");
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
-
-    	/*sale_id++;
-    	sales.put(sale_id, new ezSaleTransaction(sale_id,0.0,0.0,0.0));
-        */
-    	
-    	Integer sale_id = null;
-    	sale_id = DAOsaleTransaction.Create();
-    	
-        return sale_id;
+   	
+    	last_sale_id = DAOsaleTransaction.readId()+1; // it will be updated once the transaction is closed
+    	openSale = new ezSaleTransaction(last_sale_id);
+	
+        return last_sale_id;
     }
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
-
+    	System.out.println("1111");       	
+    	if(transactionId <=0 || transactionId ==null)
+    		throw new InvalidTransactionIdException();
+    	if(productCode == null || productCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!validBarCode(productCode))
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if(amount < 0)
+    		throw new InvalidQuantityException();
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
     	
-    	ProductType prod = products.get(productCode);
-    	if(prod == null) return true;
-    	prod.setQuantity(prod.getQuantity()-amount);
-    	return false;
+    	
+System.out.println("transactionId: " + transactionId + "\nproductCode: " + productCode + "\namount: " + amount);
+    	ProductType prod = null;
+    	ReceiptEntry entry = new ezReceiptEntry();
+    	
+    	try {
+    		prod = DAOproductType.read(productCode);
+    		if(prod == null) return false;
+    	
+    		entry.setAmount(amount);
+    		entry.setDiscountRate(0.1);
+    		entry.setBarCode(productCode);
+    		entry.setPricePerUnit(prod.getPricePerUnit());
+    		entry.setProductDescription(prod.getProductDescription());
+    	
+    		prod.setQuantity(prod.getQuantity() - amount);
+    		openProds.put(productCode,prod);
+    		openSale.getEntries().add(entry);
+    		
+    		openSale.setPrice(openSale.getPrice() + entry.getPricePerUnit()*entry.getAmount());
+    	
+    	
+    	}catch(DAOexception e) {
+    		return false;
+    	}
+    	return true;
     	
     }
 
@@ -653,6 +693,14 @@ System.out.println("2");
 
     @Override
     public boolean endSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
+    	if(transactionId <=0 || transactionId ==null)
+    		throw new InvalidTransactionIdException();
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
+    	last_sale_id++;
+    	DAOsaleTransaction.Create(openSale);
+    	
         return false;
     }
 
@@ -663,6 +711,7 @@ System.out.println("2");
 
     @Override
     public SaleTransaction getSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
+System.out.println("getSaleTransaction");
         return null;
     }
 
@@ -683,14 +732,14 @@ System.out.println("2");
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        
+/*        
     	int i=0;
     	
     	try {
     		//retrieve return transaction and referring sale transaction
 	    	ReturnTransaction ret =returns.get(returnId);
 	    	
-	    	SaleTrans referingSale = (SaleTrans) sales.get(ret.getSaleReference());
+	    	SaleTransaction referingSale = (SaleTransaction) sales.get(ret.getSaleReference());
 	    	
 	    	//return false if amount to be returned > amount bought
 	    	List<ezProductType> saleProducts = referingSale.getAllProducts();
@@ -707,7 +756,7 @@ System.out.println("2");
     		//return false if the transaction do not exist
     		return false;
     	}
-        
+        */
         return true;
     }
     
@@ -719,6 +768,7 @@ System.out.println("2");
     		throw new InvalidTransactionIdException();
     	//TODO throw exception if user has no rights
     	int i;
+    	/*
     	try {
     	
 	    	ReturnTransaction ret = returns.get(returnId);
@@ -747,7 +797,7 @@ System.out.println("2");
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-    	
+    	*/
     	return true;
     }
 

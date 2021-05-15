@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
+import it.polito.ezshop.classes.LoyaltyCard;
 import it.polito.ezshop.classes.ezCustomer;
 import it.polito.ezshop.data.Customer;
 
@@ -75,26 +76,13 @@ public class DAOcustomer {
 	public static void Update(Customer cust) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		ResultSet rs = null;
+		LoyaltyCard card = null;
 		
-		//get real card_id
-		try{
-			pstat = conn.prepareStatement("SELECT card_id FROM loyalty_card WHERE ID=?");
-			pstat.setString(1, cust.getCustomerCard());
-			rs = pstat.executeQuery();
-			
-			if (rs.next() == true) {// it should never happen since the update includes the creation of the card
-				cust.setCustomerCard(rs.getString("card_id"));
-			}							
-		}catch(SQLException e){
-			throw new DAOexception("error while updating Customer"+cust.getCustomerCard());
-		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
-		}
+		//get the old card and transfer the points
+		card = DAOloyaltyCard.ReadCustomer(cust);
+		cust.setPoints(card.getPoints());  			//take points from old card
 		
-		
-		//update customer table
+		//update customer table with new card and same points
 		try{
 			pstat = conn.prepareStatement("UPDATE customer SET customer_name=?,customer_card=?, customer_points=? WHERE customer_id=?");
 			pstat.setString(1, cust.getCustomerName());
@@ -109,27 +97,18 @@ public class DAOcustomer {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
 		}
 		
+		//detach old card without reseting the points
+		card.setCustomer(0);
+		DAOloyaltyCard.Update(card);
+
+		//attach new card to customer and update points
+		card.setCardID(cust.getCustomerCard());
+		card.setPoints(cust.getPoints());
+		card.setCustomer(cust.getId());
 		
-		//update new loyalty card
-		try{
-			//reset the previous card. It is detached from the customer
-			pstat = conn.prepareStatement("UPDATE loyalty_card SET customer=? WHERE customer=?");
-			pstat.setInt(1, 0);
-			pstat.setInt(2, cust.getId());
-			pstat.executeUpdate();
+		DAOloyaltyCard.Update(card);
 			
-			//attach new card to customer and update points
-			pstat = conn.prepareStatement("UPDATE loyalty_card SET card_points=?,customer=? WHERE card_id=?");
-			pstat.setInt(1, cust.getPoints());
-			pstat.setInt(2, cust.getId());
-			pstat.setString(3, cust.getCustomerCard());
-			pstat.executeUpdate();
-			
-		}catch(SQLException e){
-			throw new DAOexception("error while updating Customer"+cust.getCustomerCard());
-		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer"+cust.getCustomerCard()); }
-		}
+		
 		
 	}
 	
