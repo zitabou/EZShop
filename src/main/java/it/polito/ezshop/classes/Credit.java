@@ -41,7 +41,7 @@ public class Credit implements BalanceOperation {
 
     @Override
     public String getType() {
-        return null;
+        return type;
     }
 
     @Override

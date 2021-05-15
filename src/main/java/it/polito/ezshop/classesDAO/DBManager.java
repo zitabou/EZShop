@@ -108,7 +108,7 @@ public class DBManager {
 
 			stat = conn.createStatement();
 			if(!existsTable("balance_operation")) { //no such table in DB
-				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type VARCHAR);");
+				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type varchar (30), primary key(balance_id));");
 			}
 			stat.close();
 			

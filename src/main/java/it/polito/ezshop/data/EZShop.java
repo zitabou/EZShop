@@ -821,8 +821,12 @@ System.out.println("getSaleTransaction");
     @Override
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-    	
 
+    	//get last balance_id on DB
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+			if(id > balance_id)
+				balance_id = id;
+		});
     	balance_id++;
         return accountBook.recordBalanceUpdate(qty, balance_id);
         
@@ -842,8 +846,7 @@ System.out.println("getSaleTransaction");
     	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
     			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
     			.collect(Collectors.toList());
-    	System.out.println(credsAndDebtsFiltered);
-    	System.out.println(accountBook.getCreditsAndDebits());
+
         return credsAndDebtsFiltered;
     }
 

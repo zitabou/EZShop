@@ -3,6 +3,7 @@ package it.polito.ezshop.classes;
 import java.time.LocalDate;
 import java.util.*;
 
+import it.polito.ezshop.data.ReceiptEntry;
 import it.polito.ezshop.data.SaleTransaction;
 
 public class SaleTrans extends Credit implements SaleTransaction{  //two methods are commented in SaleTransaction interface
@@ -58,8 +59,18 @@ public class SaleTrans extends Credit implements SaleTransaction{  //two methods
     public Integer getReceiptNumber() {return receipt.getReceiptNumber();}
     
     public void setReceiptNumber(Integer receiptNumber) { receipt.setReceiptNumber(receiptNumber);}
-    
-  //--the following methods use ticket that is not present.
+
+	@Override
+	public List<ReceiptEntry> getEntries() {
+		return null;
+	}
+
+	@Override
+	public void setEntries(List<ReceiptEntry> entries) {
+
+	}
+
+	//--the following methods use ticket that is not present.
     //List<ReceiptEntry> getEntries(){}
     //void setEntries(List<ReceiptEntry> entries) {}
     
