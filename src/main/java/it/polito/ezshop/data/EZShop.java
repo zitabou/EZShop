@@ -42,6 +42,7 @@ public class EZShop implements EZShopInterface {
 	private Integer card_id = 0;
 	private Integer sale_id = 0;
 	private Integer ret_id = 0;
+	private Integer balance_id = 0;
 	
 	public EZShop() {
 		
@@ -371,7 +372,7 @@ public class EZShop implements EZShopInterface {
     	if(accountBook.computeBalance() < amountToPay) 
     		return false;
     	
-    	accountBook.recordBalanceUpdate(- amountToPay);
+    	accountBook.recordBalanceUpdate(- amountToPay, balance_id);
         o.setStatus("PAYED");
         return true;
     }
@@ -768,9 +769,9 @@ public class EZShop implements EZShopInterface {
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
-    	//TODO: insert Debit or Credit inside accountBook.creditsAndDebits
-    	
-        return accountBook.recordBalanceUpdate(qty);
+
+    	balance_id++;
+        return accountBook.recordBalanceUpdate(qty, balance_id);
         
     }
 
@@ -788,7 +789,8 @@ public class EZShop implements EZShopInterface {
     	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
     			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
     			.collect(Collectors.toList());
-    	
+    	System.out.println(credsAndDebtsFiltered);
+    	System.out.println(accountBook.getCreditsAndDebits());
         return credsAndDebtsFiltered;
     }
 

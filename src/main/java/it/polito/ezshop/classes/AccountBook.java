@@ -1,8 +1,10 @@
 package it.polito.ezshop.classes;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.ezshop.classesDAO.DAObalanceOperation;
 import it.polito.ezshop.data.BalanceOperation;
 
 public class AccountBook {
@@ -13,16 +15,24 @@ public class AccountBook {
 		creditsAndDebts = new ArrayList<>();
 	}
 	
-	public boolean recordBalanceUpdate(double quantity) {
-		if (balance < quantity) {
+	public boolean recordBalanceUpdate(double money, Integer balance_id) {
+		if ( (money<0) && balance < (money * -1)) {
 			return false;
 		}
-		balance += quantity;
+		BalanceOperation newBO = money < 0 ? new Debit() : new Credit();
+		newBO.setBalanceId(balance_id);
+		newBO.setDate(LocalDate.now());
+		newBO.setMoney(money);
+		newBO.setType(money < 0 ? "debit" : "credit");
+		System.out.println(newBO);
+		DAObalanceOperation.Create(newBO);
+		balance += money;
 		return true;
 		
 	}
 	
 	public List<BalanceOperation> getCreditsAndDebits(){
+		creditsAndDebts = (List<BalanceOperation>) DAObalanceOperation.readAll().values();
 		return creditsAndDebts;
 	}
 	

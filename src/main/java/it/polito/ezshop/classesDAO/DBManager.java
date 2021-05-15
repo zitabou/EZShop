@@ -106,6 +106,12 @@ public class DBManager {
 				stat.execute("CREATE TABLE sale_products (sale_id INTEGER not null, price REAL, discount REAL, quantity INTEGER);");
 			}
 			stat.close();
+
+			stat = conn.createStatement();
+			if(!existsTable("balance_operation")) { //no such table in DB
+				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type VARCHAR);");
+			}
+			stat.close();
 			
 			
 			
