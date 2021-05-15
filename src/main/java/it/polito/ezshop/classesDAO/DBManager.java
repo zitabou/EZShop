@@ -72,6 +72,14 @@ public class DBManager {
 		Statement stat = null;
 		try {
 
+			//User
+			stat = conn.createStatement();
+			if(!existsTable("user")) {
+				stat.execute("CREATE TABLE user (user_id integer primary key autoincrement, user_username varchar(30), user_password varchar(30), user_role varchar(30) );");
+				stat.execute("INSERT INTO user (user_id, user_username, user_password, user_role) VALUES (1, 'admin', 'admin', 'Administrator');");
+			}
+			stat.close();
+
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
