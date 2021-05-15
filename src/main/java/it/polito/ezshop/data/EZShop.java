@@ -263,22 +263,21 @@ public class EZShop implements EZShopInterface {
     		throw new UnauthorizedException();
     	
     	ProductType prod = null; 						// new product 
-    	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
-    	}catch (DAOexception e) {
-    		return false;
-    	}
-    	
-System.out.println("1");
-    	if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation().equals("")))
-    		return false;
-System.out.println("2");
-    	prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
+    	try {
 
-    	try{DAOproductType.Update(prod);				//update
-    	}catch (DAOexception e) {
-    		return false;
-    	}
+    		prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
+    		if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation()==null)) {
+    			System.out.println("Unacceptable quantity");
+    			return false;
+    		}
+    		prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
+
+    		DAOproductType.Update(prod);				//update
     	
+		}catch (DAOexception e) {
+    		System.out.println(e.getMessage());
+    		return false;
+    	}    	
 		return true;
     	
     }
