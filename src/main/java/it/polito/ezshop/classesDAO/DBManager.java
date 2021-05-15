@@ -105,6 +105,12 @@ public class DBManager {
 				stat.execute("CREATE TABLE receipt_entries (sale_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL, discount_rate REAL );");
 			}
 			stat.close();
+
+			stat = conn.createStatement();
+			if(!existsTable("balance_operation")) { //no such table in DB
+				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type VARCHAR);");
+			}
+			stat.close();
 			
 			
 		} catch (SQLException e) {

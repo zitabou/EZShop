@@ -39,6 +39,7 @@ public class EZShop implements EZShopInterface {
 	private Integer user_id = 0;
 	private Integer cust_id =555;
 	private Integer ret_id = 0;
+	private Integer balance_id = 0;
 	
 	private Integer last_sale_id = 0;
 	private SaleTransaction openSale = null;
@@ -313,20 +314,11 @@ System.out.println("prod: " +prod.getBarCode());
         Matcher check = regex.matcher(newPos);
     	if( !check.matches())
     		throw new InvalidLocationException();
-    	/*
-    	//TODO see if it can be done by the table properties
-    	//check that no other product has the same position
-    	List<ProductType> t_prod = null; 
-    	Map<Integer, ProductType>map;
     	
-    	map = DAOproductType.readAll();
-    	t_prod = (List<ProductType>) map.values();
-    	for(ProductType p : t_prod) {
-    		if(p.getLocation().equals(newPos))
-    			return false;
-    	}
-    		*/
-    	
+
+
+
+		
     	// real operations
     	ProductType prod = null; 						// old product 
     	try {prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
@@ -396,7 +388,7 @@ System.out.println("prod: " +prod.getBarCode());
     	if(accountBook.computeBalance() < amountToPay) 
     		return false;
     	
-    	accountBook.recordBalanceUpdate(- amountToPay);
+    	accountBook.recordBalanceUpdate(- amountToPay, balance_id);
         o.setStatus("PAYED");
         return true;
     }
@@ -830,9 +822,9 @@ System.out.println("getSaleTransaction");
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
-    	//TODO: insert Debit or Credit inside accountBook.creditsAndDebits
-    	
-        return accountBook.recordBalanceUpdate(qty);
+
+    	balance_id++;
+        return accountBook.recordBalanceUpdate(qty, balance_id);
         
     }
 
@@ -850,7 +842,8 @@ System.out.println("getSaleTransaction");
     	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
     			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
     			.collect(Collectors.toList());
-    	
+    	System.out.println(credsAndDebtsFiltered);
+    	System.out.println(accountBook.getCreditsAndDebits());
         return credsAndDebtsFiltered;
     }
 
