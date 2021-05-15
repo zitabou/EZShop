@@ -117,6 +117,9 @@ public class EZShop implements EZShopInterface {
     
     private boolean validBarCode(String productCode) {
 		
+    	if(!StringUtils.isNumeric(productCode)  || productCode.length()<12 || productCode.length()>14)
+    		return false;
+    	
     	char[] char_digits = productCode.toCharArray();
     	int check_digit = 0 ;
     	int mul = 0;
@@ -124,11 +127,9 @@ public class EZShop implements EZShopInterface {
     	double round= 0;
     	
     	//get the sum of products
+    	int pair = (char_digits.length-1)%2;
     	for(int i=0; i<char_digits.length-1; i++) {
-    		if(i%2 == 1)
-    			mul = 3;
-    		else
-    			mul = 1;
+    		mul = (2*((i+pair)%2))+1;
     		check_digit = (Character.getNumericValue(char_digits[i]) * mul) + check_digit;
     	}
     	
@@ -139,7 +140,6 @@ public class EZShop implements EZShopInterface {
     		round = (round_int+1)*10;
     	else                      //fractional part  =0
     		round = check_digit;
-    	
     	//check if the last digit is indeed what it should
     	if(round - check_digit == Character.getNumericValue(char_digits[char_digits.length-1]) )
     		return true;
@@ -152,9 +152,7 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidProductDescriptionException("product description is null or empty");
     	if(productCode == null || productCode.equals(""))
     		throw new InvalidProductCodeException("product barcode is null or empty");   
-    	if(!StringUtils.isNumeric(productCode))
-    		throw new InvalidProductCodeException("product barcode is not numeric");
-    	if(!validBarCode(productCode) || productCode.length()<12 || productCode.length()>14)
+    	if(!validBarCode(productCode))
     		throw new InvalidProductCodeException("Wrong product barcode format");
     	if(pricePerUnit <= 0 )
     		throw new InvalidPricePerUnitException("price per unit cannot be <=0");
