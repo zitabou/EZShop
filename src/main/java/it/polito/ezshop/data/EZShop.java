@@ -721,7 +721,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
-   	
+
     	last_sale_id = DAOsaleTransaction.readId()+1; // it will be updated once the transaction is closed
     	openSale = new ezSaleTransaction(last_sale_id);
     	List<TicketEntry> entry = new ArrayList<>();
@@ -1032,7 +1032,7 @@ System.out.println(prod.getBarCode());
 
     @Override
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-    	if(returnId <= 0 || returnId == null)
+    	/*if(returnId <= 0 || returnId == null)
     		throw new InvalidTransactionIdException();
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i;
@@ -1065,7 +1065,7 @@ System.out.println(prod.getBarCode());
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-
+*/
     	return true;
     }
 
