@@ -410,7 +410,9 @@ System.out.println("prod: " +prod.getBarCode());
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
-    	ezProductType prod = (ezProductType) products.get(o.getProductCode());
+    	ezProductType prod = (ezProductType) DAOproductType.readAll().values().stream().filter(p -> p.getBarCode().equals(o.getProductCode()))
+				.collect(Collectors.toList()).get(0);
+
 
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
@@ -421,6 +423,7 @@ System.out.println("prod: " +prod.getBarCode());
 	        
 	        prod.setQuantity(prod.getQuantity() + o.getQuantity());
 	        o.setStatus("COMPLETED");
+	        DAOorder.Update(o);
         }
         
         
