@@ -760,6 +760,9 @@ public class EZShop implements EZShopInterface {
     		prod.setQuantity(prod.getQuantity() - amount);
     		prodsToUpdate.put(productCode,prod);
     		
+    		//saleTransaction
+    		openSale.setPrice(openSale.getPrice() + entry.getPricePerUnit()*amount);  	//change price
+    		
     		//entries
     		for(int i=0; i<openSale.getEntries().size(); i++){													// update entry if exists
     			if(openSale.getEntries().get(i).getBarCode().equals(productCode)) {
@@ -767,7 +770,7 @@ public class EZShop implements EZShopInterface {
     				return true;
     			}
     		}
-    		openSale.getEntries().add(entry);															       // or create a new on if it doesn't
+    		openSale.getEntries().add(entry);															       // or create a new one if it doesn't
 
     	}catch(DAOexception e) {
     		e.getMessage();
@@ -789,7 +792,7 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidQuantityException();
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
     		throw new UnauthorizedException();
-
+System.out.println("amount " + amount);
     	/* IT DOESNT INFLUENCE THE GUI VALUES !!!!  */
     	/* IT IS ONLY USED FOR KEEPING TRACK INTERNALLY */
 
@@ -799,7 +802,7 @@ public class EZShop implements EZShopInterface {
     				return false;
     			}
     			else {
-    				//openSale.setPrice(openSale.getPrice() - openSale.getEntries().get(i).getPricePerUnit()*amount);  	//change price
+    				openSale.setPrice(openSale.getPrice() - openSale.getEntries().get(i).getPricePerUnit()*amount);  	//change price
     				if(openSale.getEntries().get(i).getAmount() == amount) { 											//if the amount is equal to the one requested then remove
     					openSale.getEntries().remove(i);
     					prodsToUpdate.remove(productCode);
@@ -839,7 +842,8 @@ public class EZShop implements EZShopInterface {
     		//TODO check the price change
     		for(int i =0; i<openSale.getEntries().size(); i++) {
     			if(openSale.getEntries().get(i).getBarCode().equals(productCode)) {
-    				openSale.setPrice(openSale.getPrice() + openSale.getEntries().get(i).getPricePerUnit()*openSale.getEntries().get(i).getAmount()*(1-discountRate));
+    				openSale.getEntries().get(i).setDiscountRate(discountRate);
+    				openSale.getEntries().get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit()*(1-discountRate));
     				return true;
     			}
     		}
@@ -860,8 +864,9 @@ public class EZShop implements EZShopInterface {
     	
     	if(transactionId != last_sale_id)
     		return false;
-
-    	openSale.setPrice(openSale.getPrice() *(1-discountRate) );
+    	openSale.setDiscountRate(discountRate);
+    	openSale.setPrice(openSale.getPrice()*(1-discountRate));
+    	
     	return true;
     }
 
@@ -895,7 +900,6 @@ System.out.println("entry("+i+") ");
 System.out.println( openSale.getEntries().get(i));
     		}
 
-System.out.println( "products");
     		//update the products
     		for(ProductType prod : prodsToUpdate.values()) {
 System.out.println( "product ");
@@ -903,7 +907,6 @@ System.out.println( "product ");
 System.out.println(prod.getBarCode());
     		}
     		
-System.out.println( "end ");   
     		//get ready for next sale
     		last_sale_id = 0;
     		openSale = null;
@@ -926,7 +929,31 @@ System.out.println( "end ");
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
     		throw new UnauthorizedException();
     	
-        return false;
+    	
+    	
+    	List<TicketEntry> sale_entries = null;
+    	ProductType prod = null;
+    	
+    	
+    	try {
+    		
+    		//restore product availability
+    		sale_entries = DAOsaleEntry.Read(saleNumber);
+    		for(TicketEntry entry : sale_entries) {
+    			prod = DAOproductType.read(entry.getBarCode());
+    			prod.setQuantity(prod.getQuantity() + entry.getAmount());
+    			DAOproductType.Update(prod);
+    		}
+    			
+    		//remove sale transaction that removes the entries as well
+    		DAOsaleTransaction.Delete(saleNumber);
+    	}catch(DAOexception ex){
+    		ex.getMessage();
+    		return false;
+    	}
+    	
+    	
+        return true;
     }
 
     @Override

@@ -9,10 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import it.polito.ezshop.classes.LoyaltyCard;
-import it.polito.ezshop.classes.ezCustomer;
 import it.polito.ezshop.classes.ezReceiptEntry;
-import it.polito.ezshop.data.Customer;
 import it.polito.ezshop.data.ReceiptEntry;
 import it.polito.ezshop.data.SaleTransaction;
 import it.polito.ezshop.data.TicketEntry;
@@ -76,6 +73,9 @@ public class DAOsaleEntry {
 
 	}
 	
+	
+	
+	
 /*	
 	public static void Update(Customer cust) throws DAOexception{
 		Connection conn = DBManager.getConnection();
@@ -115,20 +115,20 @@ public class DAOsaleEntry {
 		
 		
 	}
-	
-	public static void Delete(Integer cust_id) throws DAOexception{
+	*/
+	public static void DeleteFromSale(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat1 = null;
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM customer WHERE customer_id=?");
-			pstat1.setInt(1,cust_id);
+			pstat1 = conn.prepareStatement("DELETE FROM receipt_entries WHERE sale_id=?");
+			pstat1.setInt(1,saleId);
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting Customer " + cust_id);
+			throw new DAOexception("error while deleting entry from sale " + saleId );
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId); }
 		}
 
-	}*/
+	}
 	
 }

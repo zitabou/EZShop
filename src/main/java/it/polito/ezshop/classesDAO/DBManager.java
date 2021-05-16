@@ -99,12 +99,10 @@ public class DBManager {
 			}
 			stat.close();
 			
-			
 			//Sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("sale_transaction")) { //no such table in DB
 				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, primary key(id));");
-				
 			}
 			stat.close();
 			//entries of sale transaction
@@ -120,7 +118,8 @@ public class DBManager {
 				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type varchar (30), primary key(balance_id));");
 			}
 			stat.close();
-
+			
+			//Orders
 			stat = conn.createStatement();
 			if(!existsTable("orders")) { //no such table in DB
 				stat.execute("CREATE TABLE orders (order_id INTEGER not null, product_code varchar(30), quantity INTEGER, price_per_unit REAL, status varchar(30), primary key(order_id));");
