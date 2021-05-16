@@ -111,20 +111,23 @@ public class DAOsaleTransaction {
 		
 	}
 
-	/*
-	public static void Delete(Integer cust_id) throws DAOexception{
+	
+	public static void Delete(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat1 = null;
+		
+		DAOsaleEntry.DeleteFromSale(saleId);
+		
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM customer WHERE customer_id=?");
-			pstat1.setInt(1,cust_id);
+			pstat1 = conn.prepareStatement("DELETE FROM sale_transaction WHERE id=?");
+			pstat1.setInt(1,saleId);
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting Customer " + cust_id);
+			throw new DAOexception("error while deleting sale transaction " + saleId);
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting sale transaction  " + saleId); }
 		}
 
-	}*/
+	}
 	
 }
