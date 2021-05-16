@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import it.polito.ezshop.classes.LoyaltyCard;
+import it.polito.ezshop.data.Customer;
 
 public class DAOloyaltyCard {
 
@@ -51,7 +52,7 @@ public class DAOloyaltyCard {
 	
 	
 	
-	public static LoyaltyCard Read(String cardId) throws DAOexception{
+public static LoyaltyCard Read(String cardId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
 		LoyaltyCard card = new LoyaltyCard();
@@ -78,12 +79,39 @@ public class DAOloyaltyCard {
 		
 		return card;
 	}
+
+	public static LoyaltyCard ReadCustomer(Customer cust) throws DAOexception{
+	
+		Connection conn = DBManager.getConnection();
+		LoyaltyCard card = new LoyaltyCard();
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+	
+		try {
+			pstat = conn.prepareStatement("SELECT * FROM loyalty_card WHERE customer=?");
+			pstat.setInt(1, cust.getId());
+			rs = pstat.executeQuery();
+		
+			if (rs.next() == true) {
+				card.setCardID(rs.getString("card_id"));
+				card.setCustomer(rs.getInt("customer"));
+				card.setPoints(rs.getInt("card_points"));
+			}
+			pstat.close();
+		}catch(SQLException e){
+			throw new DAOexception("error while reading product" + e.getMessage());
+		}finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card "); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card "); }
+		}
+		
+		return card;
+}
 	
 	
 	public static void Update(LoyaltyCard card) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		ResultSet rs = null;
 		try{
 			pstat = conn.prepareStatement("UPDATE loyalty_card SET card_points=?,customer=? WHERE card_id=?");
 			pstat.setInt(1, card.getPoints());

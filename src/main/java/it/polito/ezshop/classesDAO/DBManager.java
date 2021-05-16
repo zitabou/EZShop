@@ -10,7 +10,6 @@ import java.sql.Statement;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-
 import it.polito.ezshop.classes.*;
 
 public class DBManager {
@@ -86,7 +85,6 @@ public class DBManager {
 				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id));");
 			}
 			stat.close();
-			
 			//Loyalty Card
 			stat = conn.createStatement();
 			if(!existsTable("loyalty_card")) { //no such table in DB
@@ -97,7 +95,7 @@ public class DBManager {
 			//Product
 			stat = conn.createStatement();
 			if(!existsTable("product")) { //no such table in DB
-				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(30), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), UNIQUE(location));");
+				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(14), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), UNIQUE(location));");
 			}
 			stat.close();
 			
@@ -105,24 +103,28 @@ public class DBManager {
 			//Sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("sale_transaction")) { //no such table in DB
-				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, cost REAL, discount REAL, date TEXT, status varchar(10), primary key(id));");
+				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, primary key(id));");
+				
 			}
 			stat.close();
-			
+			//entries of sale transaction
 			stat = conn.createStatement();
-			if(!existsTable("sale_products")) { //no such table in DB
-				stat.execute("CREATE TABLE sale_products (sale_id INTEGER not null, price REAL, discount REAL, quantity INTEGER);");
+			if(!existsTable("receipt_entries")) { //no such table in DB
+				stat.execute("CREATE TABLE receipt_entries (sale_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL, discount_rate REAL );");
 			}
 			stat.close();
 
 			stat = conn.createStatement();
 			if(!existsTable("balance_operation")) { //no such table in DB
-				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type VARCHAR);");
+				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type varchar (30), primary key(balance_id));");
 			}
 			stat.close();
-			
-			
-			
+
+			stat = conn.createStatement();
+			if(!existsTable("orders")) { //no such table in DB
+				stat.execute("CREATE TABLE orders (order_id INTEGER not null, product_code varchar(30), quantity INTEGER, price_per_unit REAL, status varchar(30), primary key(order_id));");
+			}
+			stat.close();
 			
 			
 		} catch (SQLException e) {

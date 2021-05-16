@@ -39,10 +39,14 @@ public class EZShop implements EZShopInterface {
 //	private Integer user_id = 1; //'Admin' user is created with user_id=1, if the table does not exist.
 	private Integer prod_id = 0;
 	private Integer cust_id =555;
-	private Integer card_id = 0;
-	private Integer sale_id = 0;
 	private Integer ret_id = 0;
 	private Integer balance_id = 0;
+	private Integer order_id = 0;
+	
+	private Integer last_sale_id = 0;
+	private SaleTransaction openSale = null;
+	private Map<String, ProductType> openProds = null;
+	
 	
 	public EZShop() {
 		
@@ -54,9 +58,9 @@ public class EZShop implements EZShopInterface {
 		returns = new HashMap<>();
 		orders = new HashMap<>();
 		activeUser = null;
-		
-	
 	//	users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
+		openProds = new HashMap<>();
+		
 		DBManager.getConnection();
 		DBManager.closeConnection();
 		
@@ -192,7 +196,10 @@ public class EZShop implements EZShopInterface {
     
     
     private boolean validBarCode(String productCode) {
-		
+		//bar12: 629104150024
+    	//bar13: 6291041500213
+    	//bar14: 62910415002134
+    	
     	if(!StringUtils.isNumeric(productCode)  || productCode.length()<12 || productCode.length()>14)
     		return false;
     	
@@ -239,8 +246,7 @@ public class EZShop implements EZShopInterface {
     	
     	Integer prod_id = null;
     	ezProductType prod = new ezProductType(0, description, productCode, pricePerUnit, 0, note, "N/A");
-    	try{
-    		prod_id = DAOproductType.Create(prod);
+    	try{prod_id = DAOproductType.Create(prod);
     	}catch (DAOexception e) {
     		return -1;
     	}
@@ -256,25 +262,22 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidProductDescriptionException("product description is null or empty");
     	if(newCode == null || newCode.equals(""))
     		throw new InvalidProductCodeException("product barcode is null or empty");   
-    	if(!StringUtils.isNumeric(newCode))
-    		throw new InvalidProductCodeException("product barcode is not numeric");
-    	if(!validBarCode(newCode) || newCode.length()<12 || newCode.length()>14)
+    	if(!validBarCode(newCode))
     		throw new InvalidProductCodeException("Wrong product barcode format");
     	if(newPrice <= 0)
     		throw new InvalidProductCodeException("Invalid price value (<=0)");
     	
     	
     	ProductType prod = null; 					// new product 
-    	try {prod = DAOproductType.Read(id);				// read necessary to leave other fields unchanged
-    	}catch (DAOexception e) {
-    		return false;
-    	}
-    	prod.setProductDescription(newDescription);
-    	prod.setBarCode(newNote);
-    	prod.setPricePerUnit(newPrice);
-    	prod.setNote(newNote);
+    	try {
+    		prod = DAOproductType.Read(id);				// read necessary to leave other fields unchanged
+    		prod.setProductDescription(newDescription);
+    		prod.setBarCode(newCode);
+    		prod.setPricePerUnit(newPrice);
+    		prod.setNote(newNote);
 
-    	try{DAOproductType.Update(prod);				//update
+    		DAOproductType.Update(prod);				//update
+    		
     	}catch (DAOexception e) {
     		return false;
     	}
@@ -299,21 +302,33 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getAllProductTypes() throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
     	try{products = DAOproductType.readAll();
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
     @Override
     public ProductType getProductTypeByBarCode(String barCode) throws InvalidProductCodeException, UnauthorizedException {
+    	if(barCode == null || barCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!validBarCode(barCode))
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
+    	
+System.out.println("1");
     	ProductType prod = null;
     	try{prod = DAOproductType.read(barCode);
+System.out.println("prod: " +prod.getBarCode());
     	}catch (DAOexception e) {
+    		e.printStackTrace();
     		return null;
     	}
     	
@@ -322,12 +337,15 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getProductTypesByDescription(String description) throws UnauthorizedException {
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
     	
     	try{products = DAOproductType.readAll(description);
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
@@ -340,7 +358,6 @@ public class EZShop implements EZShopInterface {
     	
     	ProductType prod = null; 						// new product 
     	try {
-
     		prod = DAOproductType.Read(productId);		// read necessary to leave other fields unchanged
     		if((prod.getQuantity() + toBeAdded < 0) || (prod.getLocation()==null)) {
     			System.out.println("Unacceptable quantity");
@@ -349,8 +366,7 @@ public class EZShop implements EZShopInterface {
     		prod.setQuantity(prod.getQuantity() + toBeAdded);	//assign new value
 
     		DAOproductType.Update(prod);				//update
-    	
-		}catch (DAOexception e) {
+    	}catch (DAOexception e) {
     		System.out.println(e.getMessage());
     		return false;
     	}    	
@@ -400,14 +416,23 @@ public class EZShop implements EZShopInterface {
         if( quantity <= 0) throw new InvalidQuantityException();
         if (pricePerUnit <= 0) throw new InvalidPricePerUnitException();
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-        	
+
         //product does not exist
-      	if(products.get(productCode) == null ) return -1;
-    	
+      	if(DAOproductType.read(productCode) == null ) return -1;
+		order_id = 0;
+      	DAOorder.readAll().values().stream().map(o -> o.getOrderId() ).forEach(id -> {
+			if(id > order_id)
+				order_id = id;
+		});
+      	order_id++;
     	ezOrder o = new ezOrder();
         o.setProductCode(productCode);
         o.setQuantity(quantity);
         o.setPricePerUnit(pricePerUnit);
+        o.setOrderId(order_id);
+        o.setStatus("ISSUED");
+
+        DAOorder.Create(o);
         
         orders.put(o.getOrderId(), o);
         
@@ -447,8 +472,9 @@ public class EZShop implements EZShopInterface {
     	if(accountBook.computeBalance() < amountToPay) 
     		return false;
     	
-    	accountBook.recordBalanceUpdate(- amountToPay, balance_id);
+    	recordBalanceUpdate(- amountToPay);
         o.setStatus("PAYED");
+		DAOorder.Update(o);
         return true;
     }
 
@@ -459,7 +485,7 @@ public class EZShop implements EZShopInterface {
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
     	ezProductType prod = (ezProductType) products.get(o.getProductCode());
-        
+
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
         if( ! (o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED")) ) return false;
@@ -480,12 +506,13 @@ public class EZShop implements EZShopInterface {
     public List<Order> getAllOrders() throws UnauthorizedException {
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	//
-    	
+
+		orders = DAOorder.readAll();
     	List<Order> ordersInIssuedOrderedOrCompletedState = orders.values().stream()
-    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED")))
+    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED") || o.getStatus().equals("PAYED")))
         		.collect(Collectors.toList());
-    	
-    	return ordersInIssuedOrderedOrCompletedState;
+
+    	return  ordersInIssuedOrderedOrCompletedState;
     }
 
     @Override
@@ -671,27 +698,54 @@ public class EZShop implements EZShopInterface {
     @Override
     public Integer startSaleTransaction() throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
-
-    	/*sale_id++;
-    	sales.put(sale_id, new ezSaleTransaction(sale_id,0.0,0.0,0.0));
-        */
-    	
-    	Integer sale_id = null;
-    	sale_id = DAOsaleTransaction.Create();
-    	
-        return sale_id;
+   	
+    	last_sale_id = DAOsaleTransaction.readId()+1; // it will be updated once the transaction is closed
+    	openSale = new ezSaleTransaction(last_sale_id);
+	
+        return last_sale_id;
     }
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))) throw new UnauthorizedException();
-
+    	System.out.println("1111");       	
+    	if(transactionId <=0 || transactionId ==null)
+    		throw new InvalidTransactionIdException();
+    	if(productCode == null || productCode.equals(""))
+    		throw new InvalidProductCodeException("product barcode is null or empty");   
+    	if(!validBarCode(productCode))
+    		throw new InvalidProductCodeException("Wrong product barcode format");
+    	if(amount < 0)
+    		throw new InvalidQuantityException();
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
     	
     	
-    	ProductType prod = products.get(productCode);
-    	if(prod == null) return true;
-    	prod.setQuantity(prod.getQuantity()-amount);
-    	return false;
+    	
+System.out.println("transactionId: " + transactionId + "\nproductCode: " + productCode + "\namount: " + amount);
+    	ProductType prod = null;
+    	ReceiptEntry entry = new ezReceiptEntry();
+    	
+    	try {
+    		prod = DAOproductType.read(productCode);
+    		if(prod == null) return false;
+    	
+    		entry.setAmount(amount);
+    		entry.setDiscountRate(0.1);
+    		entry.setBarCode(productCode);
+    		entry.setPricePerUnit(prod.getPricePerUnit());
+    		entry.setProductDescription(prod.getProductDescription());
+    	
+    		prod.setQuantity(prod.getQuantity() - amount);
+    		openProds.put(productCode,prod);
+    		openSale.getEntries().add(entry);
+    		
+    		openSale.setPrice(openSale.getPrice() + entry.getPricePerUnit()*entry.getAmount());
+    	
+    	
+    	}catch(DAOexception e) {
+    		return false;
+    	}
+    	return true;
     	
     }
 
@@ -717,6 +771,14 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean endSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
+    	if(transactionId <=0 || transactionId ==null)
+    		throw new InvalidTransactionIdException();
+    	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    		throw new UnauthorizedException();
+    	
+    	last_sale_id++;
+    	DAOsaleTransaction.Create(openSale);
+    	
         return false;
     }
 
@@ -727,6 +789,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public SaleTransaction getSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
+System.out.println("getSaleTransaction");
         return null;
     }
 
@@ -747,14 +810,14 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        
+/*        
     	int i=0;
     	
     	try {
     		//retrieve return transaction and referring sale transaction
 	    	ReturnTransaction ret =returns.get(returnId);
 	    	
-	    	SaleTrans referingSale = (SaleTrans) sales.get(ret.getSaleReference());
+	    	SaleTransaction referingSale = (SaleTransaction) sales.get(ret.getSaleReference());
 	    	
 	    	//return false if amount to be returned > amount bought
 	    	List<ezProductType> saleProducts = referingSale.getAllProducts();
@@ -771,7 +834,7 @@ public class EZShop implements EZShopInterface {
     		//return false if the transaction do not exist
     		return false;
     	}
-        
+        */
         return true;
     }
     
@@ -783,6 +846,7 @@ public class EZShop implements EZShopInterface {
     		throw new InvalidTransactionIdException();
     	//TODO throw exception if user has no rights
     	int i;
+    	/*
     	try {
     	
 	    	ReturnTransaction ret = returns.get(returnId);
@@ -811,7 +875,7 @@ public class EZShop implements EZShopInterface {
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-    	
+    	*/
     	return true;
     }
 
@@ -843,8 +907,13 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-    	
 
+    	//get last balance_id on DB
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+			if(id > balance_id)
+				balance_id = id;
+		});
+		
     	balance_id++;
         return accountBook.recordBalanceUpdate(qty, balance_id);
         
@@ -864,8 +933,7 @@ public class EZShop implements EZShopInterface {
     	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
     			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
     			.collect(Collectors.toList());
-    	System.out.println(credsAndDebtsFiltered);
-    	System.out.println(accountBook.getCreditsAndDebits());
+
         return credsAndDebtsFiltered;
     }
 

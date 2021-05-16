@@ -51,7 +51,7 @@ public class Debit implements BalanceOperation {
 
     @Override
     public String getType() {
-        return null;
+        return type;
     }
 
     @Override
