@@ -51,7 +51,7 @@ public class DAOcustomer {
 		ResultSet rs = null;
 		
 		try {
-			pstat = conn.prepareStatement("SELECT * FROM customer WHERE ID=?");
+			pstat = conn.prepareStatement("SELECT * FROM customer WHERE customer_id=?");
 			pstat.setInt(1, customerId);
 			rs = pstat.executeQuery();
 			if (rs.next() == true) {
