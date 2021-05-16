@@ -82,5 +82,19 @@ public class ezOrder extends Debit implements Order{
 	private LocalDate date;
 	private double money;
 	private String type;
-	
+
+	@Override
+	public String toString() {
+		return "ezOrder{" +
+				"balanceId=" + balanceId +
+				", productCode='" + productCode + '\'' +
+				", pricePerUnit=" + pricePerUnit +
+				", quantity=" + quantity +
+				", status='" + status + '\'' +
+				", orderId=" + orderId +
+				", date=" + date +
+				", money=" + money +
+				", type='" + type + '\'' +
+				'}';
+	}
 }

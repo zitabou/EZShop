@@ -36,10 +36,12 @@ public class EZShop implements EZShopInterface {
 	private AccountBook accountBook;
 	private ezUser activeUser;
 	
-	private Integer user_id = 0;
+//	private Integer user_id = 1; //'Admin' user is created with user_id=1, if the table does not exist.
+	private Integer prod_id = 0;
 	private Integer cust_id =555;
 	private Integer ret_id = 0;
 	private Integer balance_id = 0;
+	private Integer order_id = 0;
 	
 	private Integer last_sale_id = 0;
 	private SaleTransaction openSale = null;
@@ -49,17 +51,16 @@ public class EZShop implements EZShopInterface {
 	public EZShop() {
 		
 		accountBook = new AccountBook();
-		users = new HashMap<>();
+		//users = new HashMap<>();
 		products = new HashMap<>();
 		sales = new HashMap<>();
 		customers = new HashMap<>();
 		returns = new HashMap<>();
 		orders = new HashMap<>();
 		activeUser = null;
+	//	users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
+		openProds = new HashMap<>();
 		
-		prodsToUpdate = new HashMap<>();
-		
-		users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
 		DBManager.getConnection();
 		DBManager.closeConnection();
 		
@@ -74,43 +75,117 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-    	
-    	user_id++;
-    	return user_id;
+	    Integer user_id = 0;
+	try {
+		//user_id++;
+		//User usr = new ezUser(user_id, username, password, role);
+		User usr = new ezUser(username, password, role);
+		user_id = DAOuser.Create(usr);	
+	} catch (DAOexception e){
+		return -1;
+	} finally {
+		return user_id;
+	}
     }
 
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        return true;
+       	try {
+		DAOuser.Delete(id);
+	} catch ( DAOexception e ) {
+		return false;
+	} finally {
+		return true;
+	}	
     }
 
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
+	users = null;
+    	try{
+		users= DAOuser.readAll();
+    	}catch (DAOexception e) {
+    		return null;
+    	} finally {
+        	return new ArrayList<User>(users.values());
+	}
     	
-        return new ArrayList<User>( users.values());
     }
 
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        return null;
+	User usr = null;
+	try {
+		usr = DAOuser.Read(id);
+		if (usr==null) {
+			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
+		}
+		String role = activeUser.getRole();
+		if (role.equals("Administrator") == false) {
+			throw new UnauthorizedException("The active user is not authorized to getUser(id)");
+		}
+	} catch (DAOexception e) {
+		return null;
+	} finally {
+		return usr;
+	}
     }
 
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
-        return false;
+	User usr = getUser(id);
+	if (usr==null) {
+		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
+	}
+	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false){
+		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator. updateUserRights(,)");
+	}
+	if (activeUser.getRole().equals("Administrator") == false) {
+		throw new UnauthorizedException("The active user is not authorized to updateUserRights(,)");
+	}
+
+	usr.setRole(role);
+	try {
+		DAOuser.Update(usr);
+	} catch (DAOexception e) {
+		return false;	
+	} finally {
+		return true;
+	}
     }
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        
+	activeUser = null;	
+    	try {
+		users = DAOuser.readAll();
+	} catch (DAOexception e) {
+		return null;		
+	} 
+	boolean validate_username = false;
+	boolean validate_password = false;
+	User aux_usr = null;
     	for (User u : users.values()) {
-    		if(u.getUsername().equals(username) && u.getPassword().equals(password)) {
-    			activeUser = (ezUser) u;	
-    			return u; 
-    		}
+		//System.out.println(u.getId() + "-" + u.getUsername() + "-" + u.getPassword());
+		validate_username = validate_username || u.getUsername().equals(username);
+		if (validate_username) {
+			aux_usr = u;
+			break;
+		}	
     	}
-    	
-    	return null;
+	if (validate_username == false) {
+		throw new InvalidUsernameException("Username does not exist.");
+	}	
+	try {
+    		if(aux_usr.getPassword().equals(password)) {
+    			activeUser = (ezUser) aux_usr;
+			return aux_usr;
+	    	} else {
+			throw new InvalidPasswordException("Password is incorrect.");
+		}
+	}catch (Exception e) {
+		return null;
+	}
     }
 
     @Override
@@ -232,7 +307,7 @@ public class EZShop implements EZShopInterface {
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
@@ -265,7 +340,7 @@ public class EZShop implements EZShopInterface {
     	}catch (DAOexception e) {
     		return null;
     	}
-    	
+
         return new ArrayList<ProductType>( products.values());
     }
 
@@ -340,14 +415,23 @@ public class EZShop implements EZShopInterface {
         if( quantity <= 0) throw new InvalidQuantityException();
         if (pricePerUnit <= 0) throw new InvalidPricePerUnitException();
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-        	
+
         //product does not exist
-      	if(products.get(productCode) == null ) return -1;
-    	
+      	if(DAOproductType.read(productCode) == null ) return -1;
+		order_id = 0;
+      	DAOorder.readAll().values().stream().map(o -> o.getOrderId() ).forEach(id -> {
+			if(id > order_id)
+				order_id = id;
+		});
+      	order_id++;
     	ezOrder o = new ezOrder();
         o.setProductCode(productCode);
         o.setQuantity(quantity);
         o.setPricePerUnit(pricePerUnit);
+        o.setOrderId(order_id);
+        o.setStatus("ISSUED");
+
+        DAOorder.Create(o);
         
         orders.put(o.getOrderId(), o);
         
@@ -387,8 +471,9 @@ public class EZShop implements EZShopInterface {
     	if(accountBook.computeBalance() < amountToPay) 
     		return false;
     	
-    	accountBook.recordBalanceUpdate(- amountToPay, balance_id);
+    	recordBalanceUpdate(- amountToPay);
         o.setStatus("PAYED");
+		DAOorder.Update(o);
         return true;
     }
 
@@ -399,7 +484,7 @@ public class EZShop implements EZShopInterface {
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
     	ezProductType prod = (ezProductType) products.get(o.getProductCode());
-        
+
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
         if( ! (o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED")) ) return false;
@@ -420,12 +505,13 @@ public class EZShop implements EZShopInterface {
     public List<Order> getAllOrders() throws UnauthorizedException {
         if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	//
-    	
+
+		orders = DAOorder.readAll();
     	List<Order> ordersInIssuedOrderedOrCompletedState = orders.values().stream()
-    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED")))
+    			.filter(o -> (o.getStatus().equals("ISSUED") || o.getStatus().equals("ORDERED") || o.getStatus().equals("COMPLETED") || o.getStatus().equals("PAYED")))
         		.collect(Collectors.toList());
-    	
-    	return ordersInIssuedOrderedOrCompletedState;
+
+    	return  ordersInIssuedOrderedOrCompletedState;
     }
 
     @Override
@@ -947,8 +1033,13 @@ System.out.println( "end ");
     @Override
     public boolean recordBalanceUpdate(double qty) throws UnauthorizedException {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-    	
 
+    	//get last balance_id on DB
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+			if(id > balance_id)
+				balance_id = id;
+		});
+		
     	balance_id++;
         return accountBook.recordBalanceUpdate(qty, balance_id);
         
@@ -968,8 +1059,7 @@ System.out.println( "end ");
     	List<BalanceOperation> credsAndDebtsFiltered = accountBook.getCreditsAndDebits().stream()
     			.filter( balanceOperation -> (balanceOperation.getDate().isAfter(from) && balanceOperation.getDate().isBefore(to) ))
     			.collect(Collectors.toList());
-    	System.out.println(credsAndDebtsFiltered);
-    	System.out.println(accountBook.getCreditsAndDebits());
+
         return credsAndDebtsFiltered;
     }
 

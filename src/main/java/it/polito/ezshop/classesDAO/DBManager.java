@@ -71,6 +71,14 @@ public class DBManager {
 		Statement stat = null;
 		try {
 
+			//User
+			stat = conn.createStatement();
+			if(!existsTable("user")) {
+				stat.execute("CREATE TABLE user (user_id integer primary key autoincrement, user_username varchar(30), user_password varchar(30), user_role varchar(30) );");
+				stat.execute("INSERT INTO user (user_id, user_username, user_password, user_role) VALUES (1, 'admin', 'admin', 'Administrator');");
+			}
+			stat.close();
+
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
@@ -109,7 +117,13 @@ public class DBManager {
 			//balance operation
 			stat = conn.createStatement();
 			if(!existsTable("balance_operation")) { //no such table in DB
-				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type VARCHAR);");
+				stat.execute("CREATE TABLE balance_operation (balance_id INTEGER not null, date TEXT, money REAL, type varchar (30), primary key(balance_id));");
+			}
+			stat.close();
+
+			stat = conn.createStatement();
+			if(!existsTable("orders")) { //no such table in DB
+				stat.execute("CREATE TABLE orders (order_id INTEGER not null, product_code varchar(30), quantity INTEGER, price_per_unit REAL, status varchar(30), primary key(order_id));");
 			}
 			stat.close();
 			

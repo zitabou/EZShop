@@ -24,7 +24,6 @@ public class AccountBook {
 		newBO.setDate(LocalDate.now());
 		newBO.setMoney(money);
 		newBO.setType(money < 0 ? "debit" : "credit");
-		System.out.println(newBO);
 		DAObalanceOperation.Create(newBO);
 		balance += money;
 		return true;
@@ -32,22 +31,21 @@ public class AccountBook {
 	}
 	
 	public List<BalanceOperation> getCreditsAndDebits(){
-		creditsAndDebts = (List<BalanceOperation>) DAObalanceOperation.readAll().values();
+		creditsAndDebts = new ArrayList<BalanceOperation> ( DAObalanceOperation.readAll().values() );
+
 		return creditsAndDebts;
 	}
 	
 	//updates balance by recomputing it from scratch and returns its value
 	public double computeBalance() {
-		/*
+
 		balance = 0;
-		creditsAndDebts.forEach(balanceOp -> {
+		getCreditsAndDebits().forEach(balanceOp ->
 			
-			if (balanceOp.getClass().equals(Debit.class)) {
-				balance -= balanceOp.getMoney();
-			} else if (balanceOp.getClass().equals(Credit.class)) {
-				balance += balanceOp.getMoney();
-			}
-		});*/
+
+				balance += balanceOp.getMoney()
+
+		);
 		
 		
 		return balance;
