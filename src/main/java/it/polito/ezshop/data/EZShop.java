@@ -75,10 +75,23 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-	    Integer user_id = 0;
+	if (username.equalsIgnoreCase("") || username == null) {
+		throw new InvalidUsernameException("Username is empty or null at createUser(...).");
+	}
+	if (password.equalsIgnoreCase("") || password == null) {
+		throw new InvalidPasswordException("Password is empty or null at createUser(...).");
+	}
+	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. createUser(...)");
+	}
+	Integer user_id = 0;
 	try {
-		//user_id++;
-		//User usr = new ezUser(user_id, username, password, role);
+		// Check if the username is not being used already
+		for (User u : getAllUsers()) {
+			if ( u.getUsername().equals(username) ) {
+				throw new InvalidUsernameException("The username is already in use.");
+			}
+		}
 		User usr = new ezUser(username, password, role);
 		user_id = DAOuser.Create(usr);	
 	} catch (DAOexception e){
@@ -90,6 +103,12 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
+	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+	throw new UnauthorizedException("The active user is not authorized to deleteUser(id), or there is no logged user.");
+	}
+	if (id <= 0 || id == null) {
+	throw new InvalidUserIdException("Invalid User ID. deleteUser(id)");
+	}
        	try {
 		DAOuser.Delete(id);
 	} catch ( DAOexception e ) {
@@ -102,6 +121,9 @@ public class EZShop implements EZShopInterface {
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
 	users = null;
+	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+	throw new UnauthorizedException("The active user is not authorized to getAllUsers(), or there is no logged user.");
+	}
     	try{
 		users= DAOuser.readAll();
     	}catch (DAOexception e) {
@@ -117,12 +139,11 @@ public class EZShop implements EZShopInterface {
 	User usr = null;
 	try {
 		usr = DAOuser.Read(id);
-		if (usr==null) {
+		if (usr==null || id <= 0 || id == null) {
 			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
 		}
-		String role = activeUser.getRole();
-		if (role.equals("Administrator") == false) {
-			throw new UnauthorizedException("The active user is not authorized to getUser(id)");
+		if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+			throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
 		}
 	} catch (DAOexception e) {
 		return null;
@@ -134,14 +155,14 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
 	User usr = getUser(id);
-	if (usr==null) {
+	if (usr==null || id <= 0 || id == null) {
 		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
 	}
-	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false){
-		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator. updateUserRights(,)");
+	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. updateUserRights(,)");
 	}
-	if (activeUser.getRole().equals("Administrator") == false) {
-		throw new UnauthorizedException("The active user is not authorized to updateUserRights(,)");
+	if (activeUser == null || (activeUser.getRole().equals("Administrator") == false)) {
+		throw new UnauthorizedException("The active user is not authorized to updateUserRights(,) or there is no logged user.");
 	}
 
 	usr.setRole(role);
@@ -156,6 +177,12 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
+	if (username.equalsIgnoreCase("") || username == null) {
+		throw new InvalidUsernameException("Username is empty or null at login.");
+	}
+	if (password.equalsIgnoreCase("") || password == null) {
+		throw new InvalidPasswordException("Password is empty or null at login.");
+	}	
 	activeUser = null;	
     	try {
 		users = DAOuser.readAll();
@@ -173,9 +200,10 @@ public class EZShop implements EZShopInterface {
 			break;
 		}	
     	}
-	if (validate_username == false) {
+	
+	if (validate_username == false ) {
 		throw new InvalidUsernameException("Username does not exist.");
-	}	
+	}
 	try {
     		if(aux_usr.getPassword().equals(password)) {
     			activeUser = (ezUser) aux_usr;
