@@ -36,12 +36,19 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("product error");
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
 		}
 		
 		return generatedKey;
 	}
+	
+
+	
+
+/* READ  */
 	
 	
 	
@@ -110,6 +117,11 @@ public class DAOproductType {
 	}
 	
 	
+	
+	
+/* UPDATE */	
+	
+	
 	public static void Update(ProductType prod) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
@@ -133,6 +145,37 @@ public class DAOproductType {
 		}
 	}
 	
+	public static void UpdateByCode(ProductType prod) throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		try{
+			pstat = conn.prepareStatement("UPDATE product SET quantity=?, description = ?, price = ?, location =?, note =? WHERE barcode=?");
+			pstat.setInt(1, prod.getQuantity());
+			pstat.setString(2, prod.getProductDescription());
+			pstat.setDouble(3, prod.getPricePerUnit());
+			pstat.setString(4, prod.getLocation());
+			pstat.setString(5, prod.getNote());
+			pstat.setString(6, prod.getBarCode());
+			
+			pstat.executeUpdate();
+		
+			
+		}catch(SQLException e){
+			throw new DAOexception("error while updating productType ");
+		}finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId()); }
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+/* DELETE */	
+	
+	
 	public static void Delete(ProductType prod) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
@@ -146,6 +189,17 @@ public class DAOproductType {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product" + prod.getId()); }
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+/*  READ  ALL  */	
+	
 	
 	
 	public static Map<Integer, ProductType> readAll() throws DAOexception {
