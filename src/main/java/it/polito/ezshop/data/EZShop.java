@@ -59,7 +59,7 @@ public class EZShop implements EZShopInterface {
 		orders = new HashMap<>();
 		activeUser = null;
 	//	users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
-		openProds = new HashMap<>();
+		prodsToUpdate = new HashMap<>();
 		
 		DBManager.getConnection();
 		DBManager.closeConnection();
