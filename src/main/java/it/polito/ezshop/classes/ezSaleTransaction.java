@@ -2,14 +2,14 @@ package it.polito.ezshop.classes;
 
 import java.util.*;
 
-import it.polito.ezshop.data.ReceiptEntry;
 import it.polito.ezshop.data.SaleTransaction;
+import it.polito.ezshop.data.TicketEntry;
 
 public class ezSaleTransaction implements SaleTransaction{  //two methods are commented in SaleTransaction interface
 	
 	
 	public ezSaleTransaction() {
-		saleID = 0;;
+		saleID = 0;
 		discountRate = 0.0;
 		price = 0.0;
 		//customer = new ezCustomer();
@@ -25,7 +25,7 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 	}
 	
 	public ezSaleTransaction(int saleId, double discountRate, double price) {
-		this.setReceiptNumber(saleId);
+		this.saleID = saleId;
 		this.discountRate = discountRate;
 		this.price = price;
 		//this.customer = new ezCustomer();
@@ -35,13 +35,13 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 
 	//implements
     
-    public Integer getReceiptNumber() {return this.saleID;}
+    public Integer getTicketNumber() {return this.saleID;}
     
-    public void setReceiptNumber(Integer receiptNumber) { this.saleID = receiptNumber;}
+    public void setTicketNumber(Integer receiptNumber) { this.saleID = receiptNumber;}
     
-    public List<ReceiptEntry> getEntries(){return this.entries;}
+    public List<TicketEntry> getEntries(){return this.entries;}
     
-    public void setEntries(List<ReceiptEntry> entries) {this.entries = entries;}
+    public void setEntries(List<TicketEntry> entries) {this.entries = entries;}
     
     public double getDiscountRate() {return discountRate;}
 
@@ -73,7 +73,7 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 	
 	
 	private Integer saleID;
-	private List<ReceiptEntry> entries;
+	private List<TicketEntry> entries;
     private double discountRate;
     private double price;
     

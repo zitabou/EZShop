@@ -1,8 +1,9 @@
 package it.polito.ezshop.classes;
 
 import it.polito.ezshop.data.ReceiptEntry;
+import it.polito.ezshop.data.TicketEntry;
 
-public class ezReceiptEntry implements ReceiptEntry{
+public class ezReceiptEntry implements TicketEntry{
 
 	@Override
 	public String getBarCode() {return this.barcode;}

@@ -15,50 +15,46 @@ import it.polito.ezshop.classes.ezReceiptEntry;
 import it.polito.ezshop.data.Customer;
 import it.polito.ezshop.data.ReceiptEntry;
 import it.polito.ezshop.data.SaleTransaction;
+import it.polito.ezshop.data.TicketEntry;
 
 public class DAOsaleEntry {
 	
-	public static int Create(ReceiptEntry entry) throws DAOexception {
+	public static void Create(Integer saleId, TicketEntry entry) throws DAOexception {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		ResultSet rs = null;
-		int generatedKey = 0;
 		
 		try {
-			pstat = conn.prepareStatement("INSERT INTO receipt_entry (barcode, product_description, amount, price_per_unit, discount_rate) VALUES (?,?,?,?,?)");
-			pstat.setString(1,entry.getBarCode());
-			pstat.setString(2,entry.getProductDescription());
-			pstat.setInt(3,entry.getAmount());
-			pstat.setDouble(4, entry.getPricePerUnit());
-			pstat.setDouble(5, entry.getDiscountRate());
+			pstat = conn.prepareStatement("INSERT INTO receipt_entries (sale_id, barcode, product_description, amount, price_per_unit, discount_rate) VALUES (?,?,?,?,?,?)");
+			pstat.setInt(1,saleId);
+			pstat.setString(2,entry.getBarCode());
+			pstat.setString(3,entry.getProductDescription());
+			pstat.setInt(4,entry.getAmount());
+			pstat.setDouble(5, entry.getPricePerUnit());
+			pstat.setDouble(6, entry.getDiscountRate());
 			
 			pstat.executeUpdate();
 			
-			rs = pstat.getGeneratedKeys();
-			if (rs.next()) {
-			    generatedKey = rs.getInt(1);
-			}
 		}catch(SQLException e){
-			throw new DAOexception("error while creating receipt entry");
+			throw new DAOexception(e.getMessage());
+			//throw new DAOexception("error while creating receipt entry for sale " + saleId);
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry " + generatedKey); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry " + generatedKey); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry for sale " + saleId); }
 		}
-		return generatedKey;
 	}
 	
 	
 	
-	public static List<ReceiptEntry> Read(Integer saleId) throws DAOexception{
+	public static List<TicketEntry> Read(Integer saleId) throws DAOexception{
 		
-		List<ReceiptEntry> list= new ArrayList<>();
-        ReceiptEntry entry= null;
+		List<TicketEntry> list= new ArrayList<>();
+        TicketEntry entry= null;
         Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
         try {
-        	pstat = conn.prepareStatement("SELECT * FROM receipt_entry WHERE sale_id=?");
+        	pstat = conn.prepareStatement("SELECT * FROM receipt_entries WHERE sale_id=?");
         	pstat.setInt(1, saleId);
         	rs = pstat.executeQuery();
             while (rs.next()) {

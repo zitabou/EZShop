@@ -23,7 +23,6 @@ public class DAOsaleTransaction {
 			else {
 				generatedKey = rs.getInt("id");
 			}
-System.out.println("id: " + generatedKey);	
 		}catch(SQLException e){
 			e.printStackTrace();
 			//throw new DAOexception("sale transaction error");
@@ -39,14 +38,11 @@ System.out.println("id: " + generatedKey);
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		int generatedKey = 0;
-		
 		try {
-			pstat = conn.prepareStatement("INSERT INTO sale_transaction (discount, price, status) VALUES (?,?,?)");
+			pstat = conn.prepareStatement("INSERT INTO sale_transaction (discount_rate, price) VALUES (?,?)");
 			pstat.setDouble(1,sale.getDiscountRate());
 			pstat.setDouble(2,sale.getPrice());
-			pstat.setString(2,"Open");
 			pstat.executeUpdate();
-			
 			rs = pstat.getGeneratedKeys();
 			if (rs.next()) {
 			    generatedKey = rs.getInt(1);
@@ -54,7 +50,10 @@ System.out.println("id: " + generatedKey);
 		}catch(SQLException e){
 			throw new DAOexception("error while creating sale transaction " + generatedKey);
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
 		}
 		return generatedKey;
 	}
@@ -73,7 +72,7 @@ System.out.println("id: " + generatedKey);
 			pstat.setInt(1, saleId);
 			rs = pstat.executeQuery();
 			if (rs.next() == true) {
-				sale.setReceiptNumber(rs.getInt("id"));
+				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
 				sale.setPrice(0);
 				//entries still left it will be done later
@@ -97,16 +96,16 @@ System.out.println("id: " + generatedKey);
 		PreparedStatement pstat = null;
 		
 		try{
-			pstat = conn.prepareStatement("UPDATE sale_transaction SET discount=?, price =?, WHERE id=?");
+			pstat = conn.prepareStatement("UPDATE sale_transaction SET discount_rate=?, price =?, WHERE id=?");
 			pstat.setDouble(1, sale.getDiscountRate());
 			pstat.setDouble(2, sale.getPrice());
-			pstat.setInt(3, sale.getReceiptNumber());
+			pstat.setInt(3, sale.getTicketNumber());
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating sale transaction " +  sale.getReceiptNumber());
+			throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getReceiptNumber()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber()); }
 		}
 		
 		
