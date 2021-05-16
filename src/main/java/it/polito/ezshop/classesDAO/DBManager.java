@@ -117,7 +117,12 @@ public class DBManager {
 				stat.execute("CREATE TABLE orders (order_id INTEGER not null, product_code varchar(30), quantity INTEGER, price_per_unit REAL, status varchar(30), primary key(order_id));");
 			}
 			stat.close();
-			
+
+			stat = conn.createStatement();
+			if(!existsTable("return_transaction")) { //no such table in DB
+				stat.execute("CREATE TABLE return_transaction (return_id INTEGER not null, sale_reference INTEGER, returned_value REAL, returned_product VARCHAR(30), returned_amount INTEGER, primary key(return_id));");
+			}
+			stat.close();
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

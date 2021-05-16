@@ -726,12 +726,18 @@ System.out.println("getSaleTransaction");
     public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
     	if(saleNumber <= 0 || saleNumber == null)
     		throw new InvalidTransactionIdException();
-    	//TODO throw exception if user has no rights
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+
+		ret_id = 0;
+		DAOreturnTransaction.readAll().values().stream().map(r -> r.getBalanceId() ).forEach(id -> {
+			if(id > ret_id)
+				ret_id = id;
+		});
     	ret_id++;
         ReturnTransaction ret = new ReturnTransaction();
         ret.setBalanceId(ret_id);
         returns.put(ret_id, ret);
-        ret.setSaleReference(saleNumber);
+        ret.setSaleID(saleNumber);
         SaleTransaction referingSale = getSaleTransaction(saleNumber);
         //referingSale.add(ReturnTransaction);
         return ret_id;
@@ -739,9 +745,9 @@ System.out.println("getSaleTransaction");
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-/*        
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i=0;
-    	
+    	/*
     	try {
     		//retrieve return transaction and referring sale transaction
 	    	ReturnTransaction ret =returns.get(returnId);
@@ -763,7 +769,7 @@ System.out.println("getSaleTransaction");
     		//return false if the transaction do not exist
     		return false;
     	}
-        */
+*/
         return true;
     }
     
@@ -773,9 +779,9 @@ System.out.println("getSaleTransaction");
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
     	if(returnId <= 0 || returnId == null)
     		throw new InvalidTransactionIdException();
-    	//TODO throw exception if user has no rights
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i;
-    	/*
+
     	try {
     	
 	    	ReturnTransaction ret = returns.get(returnId);
@@ -804,7 +810,7 @@ System.out.println("getSaleTransaction");
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-    	*/
+
     	return true;
     }
 
