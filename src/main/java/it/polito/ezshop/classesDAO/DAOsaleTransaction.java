@@ -74,7 +74,7 @@ public class DAOsaleTransaction {
 			if (rs.next() == true) {
 				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
-				sale.setPrice(0);
+				sale.setPrice(rs.getDouble("price"));
 				//entries still left it will be done later
 			}
 			pstat.close();
@@ -96,7 +96,7 @@ public class DAOsaleTransaction {
 		PreparedStatement pstat = null;
 		
 		try{
-			pstat = conn.prepareStatement("UPDATE sale_transaction SET discount_rate=?, price =?, WHERE id=?");
+			pstat = conn.prepareStatement("UPDATE sale_transaction SET discount_rate=?, price =? WHERE id=?");
 			pstat.setDouble(1, sale.getDiscountRate());
 			pstat.setDouble(2, sale.getPrice());
 			pstat.setInt(3, sale.getTicketNumber());

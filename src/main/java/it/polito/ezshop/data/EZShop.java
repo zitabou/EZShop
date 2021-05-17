@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -983,8 +985,7 @@ public class EZShop implements EZShopInterface {
     
     @Override
     public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
-    	if(saleNumber <= 0 || saleNumber == null)
-    		throw new InvalidTransactionIdException();
+    	if(saleNumber <= 0 || saleNumber == null)		throw new InvalidTransactionIdException();
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
 
 		ret_id = 0;
@@ -998,6 +999,8 @@ public class EZShop implements EZShopInterface {
         returns.put(ret_id, ret);
         ret.setSaleID(saleNumber);
         SaleTransaction referingSale = getSaleTransaction(saleNumber);
+
+        DAOreturnTransaction.Create(ret);
         //referingSale.add(ReturnTransaction);
         return ret_id;
     }
@@ -1006,29 +1009,40 @@ public class EZShop implements EZShopInterface {
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i=0;
-    	/*
+
     	try {
     		//retrieve return transaction and referring sale transaction
-	    	ReturnTransaction ret =returns.get(returnId);
+	    	ReturnTransaction ret =DAOreturnTransaction.Read(returnId);
 	    	
-	    	SaleTransaction referingSale = (SaleTransaction) sales.get(ret.getSaleReference());
+	    	SaleTransaction referingSale = (SaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
 	    	
 	    	//return false if amount to be returned > amount bought
-	    	List<ezProductType> saleProducts = referingSale.getAllProducts();
-	    	List<Integer> saleQuantities = referingSale.getAllQuantities();
-	    	for (i=0; i<saleProducts.size(); i++) {
-	    		if(saleProducts.get(i).getBarCode().equals(productCode)) {
-	    			if (amount > saleQuantities.get(i))
-	    				return false;
-	    		}
-	    	}
+
+			List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
+
+			AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
+			AtomicReference<Double> money= new AtomicReference<>((double) 0);
+			saleEntries.forEach( e -> {
+				if (e.getBarCode().equals(productCode) )
+					if (e.getAmount() < amount)
+						amountReturnedIsHigherThanAmountBought.set(true);
+					else
+						money.set(e.getPricePerUnit() * e.getAmount());
+
+			});
+			if(amountReturnedIsHigherThanAmountBought.get())
+				return false;
+
 	        ret.setAmount(amount);
 	        ret.setProdId(productCode);
+	        ret.setMoney(money.get());
+	        DAOreturnTransaction.Update(ret);
+
     	}catch(Exception e) {
     		//return false if the transaction do not exist
     		return false;
     	}
-*/
+
         return true;
     }
     
@@ -1036,40 +1050,47 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-    	/*if(returnId <= 0 || returnId == null)
+    	if(returnId <= 0 || returnId == null)
     		throw new InvalidTransactionIdException();
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i;
 
     	try {
     	
-	    	ReturnTransaction ret = returns.get(returnId);
+	    	ReturnTransaction ret = DAOreturnTransaction.Read(returnId);
 	    	
-	    	SaleTrans referingSale = (SaleTrans) sales.get(ret.getSaleReference());
+	    	ezSaleTransaction referingSale = (ezSaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
 	    	
 	    	if(commit) {
 	    		//increase quantity available
-	    		ProductType prodType = products.get(ret.getProdId());
-	    		
+	    		ProductType prodType = DAOproductType.read(ret.getProdId());
 	    		prodType.setQuantity(prodType.getQuantity() + ret.getAmount());
-	    		
+	    		DAOproductType.Update(prodType);
+
 	    		//decrease amount spent on the Sale
-	    		referingSale.setPrice(referingSale.getPrice() - ret.getMoney());
-	    		
-	    		List<ezProductType> saleProducts = referingSale.getAllProducts();
-		    	List<Integer> saleQuantities = referingSale.getAllQuantities();
-		    	for (i=0; i<saleProducts.size(); i++) {
-		    		if(saleProducts.get(i).getBarCode().equals(ret.getProdId())) {
-		    			//TODO update quantità
-		    			//saleQuantities.get(i) -= ret.getAmount();
-		    		}
-		    	}
+	    		referingSale.setPrice(referingSale.getPrice() - ret.getReturnedValue());
+				DAOsaleTransaction.Update(referingSale);
+
+	    		//remove returned items from sale transaction
+				List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
+				saleEntries.forEach( e -> {
+					if (e.getBarCode().equals(ret.getProdId()) )
+						e.setAmount(e.getAmount() - ret.getAmount());
+				});
+				//update (remove old entries and recreate new entries)
+				DAOsaleEntry.DeleteFromSale(ret.getSaleID());
+				saleEntries.forEach(e -> {
+					if(e.getAmount() > 0)
+						DAOsaleEntry.Create(ret.getSaleID(), e);
+				});
+
+
 	    	}
     	}catch(Exception e) {
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-*/
+
     	return true;
     }
 
