@@ -5,6 +5,8 @@ import it.polito.ezshop.data.BalanceOperation;
 import java.time.LocalDate;
 
 public class Debit implements BalanceOperation {
+
+
     @Override
     public String toString() {
         return "Debit{" +
@@ -58,4 +60,16 @@ public class Debit implements BalanceOperation {
     public void setType(String type) {
         this.type = type;
     }
+
+    public Debit() {
+    }
+
+    public Debit(Integer balanceId, LocalDate date, double money) {
+        this.balanceId = balanceId;
+        this.date = date;
+        this.money = money;
+        this.type = "debit";
+    }
+
+
 }
