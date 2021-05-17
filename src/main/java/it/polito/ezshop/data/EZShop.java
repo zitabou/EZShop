@@ -471,7 +471,9 @@ public class EZShop implements EZShopInterface {
     	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	
     	ezOrder o = (ezOrder) orders.get(orderId);
-    	ezProductType prod = (ezProductType) products.get(o.getProductCode());
+    	ezProductType prod = (ezProductType) DAOproductType.readAll().values().stream().filter(p -> p.getBarCode().equals(o.getProductCode()))
+				.collect(Collectors.toList()).get(0);
+
 
     	if(prod.getLocation() == null) throw new InvalidLocationException();
     	
@@ -482,6 +484,7 @@ public class EZShop implements EZShopInterface {
 	        
 	        prod.setQuantity(prod.getQuantity() + o.getQuantity());
 	        o.setStatus("COMPLETED");
+	        DAOorder.Update(o);
         }
         
         
@@ -951,12 +954,18 @@ System.out.println(prod.getBarCode());
     public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
     	if(saleNumber <= 0 || saleNumber == null)
     		throw new InvalidTransactionIdException();
-    	//TODO throw exception if user has no rights
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+
+		ret_id = 0;
+		DAOreturnTransaction.readAll().values().stream().map(r -> r.getBalanceId() ).forEach(id -> {
+			if(id > ret_id)
+				ret_id = id;
+		});
     	ret_id++;
         ReturnTransaction ret = new ReturnTransaction();
         ret.setBalanceId(ret_id);
         returns.put(ret_id, ret);
-        ret.setSaleReference(saleNumber);
+        ret.setSaleID(saleNumber);
         SaleTransaction referingSale = getSaleTransaction(saleNumber);
         //referingSale.add(ReturnTransaction);
         return ret_id;
@@ -964,9 +973,9 @@ System.out.println(prod.getBarCode());
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-/*        
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i=0;
-    	
+    	/*
     	try {
     		//retrieve return transaction and referring sale transaction
 	    	ReturnTransaction ret =returns.get(returnId);
@@ -988,7 +997,7 @@ System.out.println(prod.getBarCode());
     		//return false if the transaction do not exist
     		return false;
     	}
-        */
+*/
         return true;
     }
     
@@ -996,11 +1005,11 @@ System.out.println(prod.getBarCode());
 
     @Override
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-    	if(returnId <= 0 || returnId == null)
+    	/*if(returnId <= 0 || returnId == null)
     		throw new InvalidTransactionIdException();
-    	//TODO throw exception if user has no rights
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i;
-    	/*
+
     	try {
     	
 	    	ReturnTransaction ret = returns.get(returnId);
@@ -1029,7 +1038,7 @@ System.out.println(prod.getBarCode());
     		//return false if the returnTransaction is not found or if problem with DB
     		return false;
     	}
-    	*/
+*/
     	return true;
     }
 
