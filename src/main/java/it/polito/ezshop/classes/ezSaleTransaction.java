@@ -52,32 +52,10 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
     public void setPrice(double price) {this.price = price;}
     
     
-    //additional methods
-    
-    //public ezCustomer getCustomer() {return customer;}
-    
-	//public void setCustomer(ezCustomer customer) {this.customer = customer;}
-	
-	
-	//points are calculated based on the cost of the price. one point per 10 money
-	public int computePointsForSale() {
-		int points = (int) (price/10);
-		if(points > 0) 
-			return points;
-		return 0;
-	}
-	
-	//public void selectPaymentType(String payType) {paymentType = payType;}
-	//public String getPaymentType() {return paymentType;}
-	
-	
 	
 	private Integer saleID;
 	private List<TicketEntry> entries;
     private double discountRate;
     private double price;
     
-    //private String paymentType;
-    //private ezCustomer customer;
-
 }

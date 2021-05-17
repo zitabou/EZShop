@@ -7,40 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
-import it.polito.ezshop.classes.*;
 
 public class DBManager {
-	/*
-	public static SessionFactory factory;  //singleton
-	
-	public static Session getSession() {
-		if(factory == null) {
-			factory = new Configuration()
-					.configure()
-					.addAnnotatedClass(LoyaltyCard.class)
-					.addAnnotatedClass(ezCustomer.class)
-					.buildSessionFactory();
-		}
-		return factory.openSession();
-
-	}
-	
-	public static void closeDB() {
-		//if factory exists and no sessions are open then close
-		if(factory != null && factory.getCurrentSession() != null) {
-			factory.close();
-			factory = null;
-		}
-	}
-	*/
 	
 	
-	
-	
-
 	protected static Connection conn;  //Connection singleton
 	
 	public static Connection getConnection() throws DAOexception{
@@ -95,7 +65,7 @@ public class DBManager {
 			//Product
 			stat = conn.createStatement();
 			if(!existsTable("product")) { //no such table in DB
-				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(14), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), UNIQUE(location),UNIQUE(barcode));");
+				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(14), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), CHECK(quantity>0),UNIQUE(barcode), UNIQUE(location));");
 			}
 			stat.close();
 			

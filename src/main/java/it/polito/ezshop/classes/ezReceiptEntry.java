@@ -1,6 +1,5 @@
 package it.polito.ezshop.classes;
 
-import it.polito.ezshop.data.ReceiptEntry;
 import it.polito.ezshop.data.TicketEntry;
 
 public class ezReceiptEntry implements TicketEntry{

@@ -26,6 +26,56 @@ Version:
     to start tests
     >
 
+ ### **Class *DAOproductType* - method *Create(ProductType prod)***
+
+
+**Criteria for method *Create(ProductType prod)*:**
+ - Insert product in DB 
+
+
+**Predicates for method *Create(ProductType prod)*:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+| Insert product in DB    |    use unique barcode       |
+|          |    use not unique barcode       |
+|          |    use non negative quanity       |
+|          |    use negative quantity       |
+
+**Combination of predicates**:
+
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|-------|
+|*|Valid|prod5 = new ezProductType(1, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");|testCreateProduct()
+||Invalid|prod5 = new ezProductType(0, "testProd5", "123456789011", 5.0, 5, "testNote5", "5-5-5");|testCreateProductWithDuplicateBarCode()
+||Invalid|prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, -5, "testNote5", "5-5-5");|testCreateProductWithNegativeQuantity()
+|||
+
+ ### **Class *DAOproductType* - method *read(Integer prodId)***
+
+
+**Criteria for method *read(Integer prodId)*:**
+ - Read product from DB 
+
+
+**Predicates for method *read(Integer prodId)*:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+| Read product from DB     |    product present in DB       |
+||product missing from DB|
+
+**Combination of predicates**:
+
+
+| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|-------|
+|*|Valid|prod = DAOproductType.read(1)|testReadProductId()
+||Invalid|prod = DAOproductType.read(10);|testReadMissingProductId()
+|||
+
+
  ### **Class *class_name* - method *name***
 
 
@@ -72,8 +122,6 @@ Version:
 |||||||
 |||||||
 |||||||
-
-
 
 
 # White Box Unit Tests

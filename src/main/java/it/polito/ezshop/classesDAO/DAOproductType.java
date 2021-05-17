@@ -34,12 +34,12 @@ public class DAOproductType {
 			}
 
 		}catch(SQLException e){
-			throw new DAOexception("product error");
+			throw new DAOexception(e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
 		}
 		
 		return generatedKey;
@@ -52,10 +52,10 @@ public class DAOproductType {
 	
 	
 	
-	public static ProductType Read(Integer prodId) throws DAOexception{
+	public static ProductType read(Integer prodId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
-		ProductType prod = new ezProductType();
+		ProductType prod = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
@@ -65,6 +65,7 @@ public class DAOproductType {
 			rs = pstat.executeQuery();
 			
 			if (rs.next() == true) {
+				prod = new ezProductType();
 				prod.setId(rs.getInt("id"));
 				prod.setQuantity(rs.getInt("quantity"));
 				prod.setProductDescription(rs.getString("description"));
@@ -73,12 +74,11 @@ public class DAOproductType {
 				prod.setLocation(rs.getString("location"));
 				prod.setNote(rs.getString("note"));
 			}
-			pstat.close();
 		}catch(SQLException e){
 			throw new DAOexception("error while reading product" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
 		}
 		
 		return prod;
@@ -87,8 +87,8 @@ public class DAOproductType {
 	
 	
 	public static ProductType read(String barcode) throws DAOexception {
-        ProductType prod= null;
-        Connection conn = DBManager.getConnection();
+		Connection conn = DBManager.getConnection();
+		ProductType prod= null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
@@ -98,23 +98,94 @@ public class DAOproductType {
         	pstat.setString(1, barcode);
         	rs = pstat.executeQuery();
         	
-            prod = new ezProductType();
-            prod.setId(rs.getInt("id"));
-			prod.setQuantity(rs.getInt("quantity"));
-			prod.setProductDescription(rs.getString("description"));
-			prod.setBarCode(rs.getString("barcode"));
-			prod.setPricePerUnit(rs.getDouble("price"));
-			prod.setLocation(rs.getString("location"));
-			prod.setNote(rs.getString("note"));
-            
+        	if (rs.next() == true) {
+        		prod = new ezProductType();
+        		prod.setId(rs.getInt("id"));
+        		prod.setQuantity(rs.getInt("quantity"));
+        		prod.setProductDescription(rs.getString("description"));
+        		prod.setBarCode(rs.getString("barcode"));
+        		prod.setPricePerUnit(rs.getDouble("price"));
+        		prod.setLocation(rs.getString("location"));
+        		prod.setNote(rs.getString("note"));
+        	}
         }catch(SQLException e){
-			throw new DAOexception("error while getting all products by barcode");
+			throw new DAOexception("error while getting all products by barcode" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode"); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode"); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
 		}
         return prod;
 	}
+	
+	public static Map<Integer, ProductType> readAll() throws DAOexception {
+		Connection conn = DBManager.getConnection();
+		Map<Integer, ProductType> map = null;
+        ProductType prod= null;
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		
+        try {
+
+        	pstat = conn.prepareStatement("SELECT * FROM product");
+        	rs = pstat.executeQuery();
+        	map = new HashMap<>();
+        	
+            while (rs.next()) {
+                prod = new ezProductType();
+                prod.setId(rs.getInt("id"));
+				prod.setQuantity(rs.getInt("quantity"));
+				prod.setProductDescription(rs.getString("description"));
+				prod.setBarCode(rs.getString("barcode"));
+				prod.setPricePerUnit(rs.getDouble("price"));
+				prod.setLocation(rs.getString("location"));
+				prod.setNote(rs.getString("note"));
+                map.put(prod.getId(),prod);
+            }
+        }catch(SQLException e){
+			throw new DAOexception("error while getting all products " + e.getMessage());
+		}finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
+		}
+        return map;
+	}
+	
+	
+	public static Map<Integer, ProductType> readAll(String description) throws DAOexception {
+        Connection conn = DBManager.getConnection();
+        Map<Integer, ProductType> map = null;
+        ProductType prod= null;
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		
+        try {
+
+        	pstat = conn.prepareStatement("SELECT * FROM product WHERE description=?");
+        	pstat.setString(1, description);
+        	rs = pstat.executeQuery();
+        	map = new HashMap<>();
+        	
+            while (rs.next()) {
+                prod = new ezProductType();
+                prod.setId(rs.getInt("id"));
+				prod.setQuantity(rs.getInt("quantity"));
+				prod.setProductDescription(rs.getString("description"));
+				prod.setBarCode(rs.getString("barcode"));
+				prod.setPricePerUnit(rs.getDouble("price"));
+				prod.setLocation(rs.getString("location"));
+				prod.setNote(rs.getString("note"));
+                map.put(prod.getId(),prod);
+            }
+        }catch(SQLException e){
+			throw new DAOexception("error while getting all products by description "  + e.getMessage());
+		}finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
+		}
+        return map;
+	}
+	
+	
 	
 	
 	
@@ -139,9 +210,9 @@ public class DAOproductType {
 		
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating productType ");
+			throw new DAOexception("error while updating productType " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + e.getMessage()); }
 		}
 	}
 	
@@ -161,9 +232,9 @@ public class DAOproductType {
 		
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating productType ");
+			throw new DAOexception("error while updating productType " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId() + e.getMessage()); }
 		}
 	}
 	
@@ -190,82 +261,33 @@ public class DAOproductType {
 		}
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-/*  READ  ALL  */	
-	
-	
-	
-	public static Map<Integer, ProductType> readAll() throws DAOexception {
-		Map<Integer, ProductType> map = new HashMap<>();
-        ProductType prod= null;
-        Connection conn = DBManager.getConnection();
+	public static void Delete(String barcode) throws DAOexception{
+		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		ResultSet rs = null;
-		
-        try {
-
-        	pstat = conn.prepareStatement("SELECT * FROM product");
-        	rs = pstat.executeQuery();
-            while (rs.next()) {
-                prod = new ezProductType();
-                prod.setId(rs.getInt("id"));
-				prod.setQuantity(rs.getInt("quantity"));
-				prod.setProductDescription(rs.getString("description"));
-				prod.setBarCode(rs.getString("barcode"));
-				prod.setPricePerUnit(rs.getDouble("price"));
-				prod.setLocation(rs.getString("location"));
-				prod.setNote(rs.getString("note"));
-                map.put(prod.getId(),prod);
-            }
-        }catch(SQLException e){
-			throw new DAOexception("error while getting all products");
+		try{
+			pstat = conn.prepareStatement("DELETE FROM product WHERE barcode=?");
+			pstat.setString(1,barcode);
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting Product with code" + barcode + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products"); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products"); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product with code" + barcode + e.getMessage()); }
 		}
-        return map;
 	}
 	
-	
-	public static Map<Integer, ProductType> readAll(String description) throws DAOexception {
-		Map<Integer, ProductType> map = new HashMap<>();
-        ProductType prod= null;
-        Connection conn = DBManager.getConnection();
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		ResultSet rs = null;
-		
-        try {
-
-        	pstat = conn.prepareStatement("SELECT * FROM product WHERE description=?");
-        	pstat.setString(1, description);
-        	rs = pstat.executeQuery();
-        	
-            while (rs.next()) {
-                prod = new ezProductType();
-                prod.setId(rs.getInt("id"));
-				prod.setQuantity(rs.getInt("quantity"));
-				prod.setProductDescription(rs.getString("description"));
-				prod.setBarCode(rs.getString("barcode"));
-				prod.setPricePerUnit(rs.getDouble("price"));
-				prod.setLocation(rs.getString("location"));
-				prod.setNote(rs.getString("note"));
-                map.put(prod.getId(),prod);
-            }
-        }catch(SQLException e){
-			throw new DAOexception("error while getting all products by description");
+		try{
+			pstat = conn.prepareStatement("DELETE FROM product");
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all Products " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description"); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description"); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Products " + e.getMessage()); }
 		}
-        return map;
 	}
+	
 	
 
 }

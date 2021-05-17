@@ -20,7 +20,7 @@ public class ezProductType implements ProductType{
 		this.productDescription = productDescription;
 		this.barCode = barCode;
 		this.pricePerUnit = pricePerUnit;
-		this.quantity = 0;
+		this.quantity = quantity;
 		this.note = note;
 		this.location = location;
 	}
@@ -64,19 +64,6 @@ public class ezProductType implements ProductType{
 	private Integer quantity;
 	private String note;
 	private String location;
-
-	@Override
-	public String toString() {
-		return "ezProductType{" +
-				"id=" + id +
-				", productDescription='" + productDescription + '\'' +
-				", barCode='" + barCode + '\'' +
-				", pricePerUnit=" + pricePerUnit +
-				", quantity=" + quantity +
-				", note='" + note + '\'' +
-				", location='" + location + '\'' +
-				'}';
-	}
 
 
 	//private Position position;
