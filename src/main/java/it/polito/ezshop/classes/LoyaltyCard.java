@@ -1,10 +1,5 @@
 package it.polito.ezshop.classes;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
-
-@Entity
-@Table(name="LoyaltyCard")
 public class LoyaltyCard {
 	
 	public LoyaltyCard() {

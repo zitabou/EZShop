@@ -1,16 +1,8 @@
 package it.polito.ezshop.classes;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import it.polito.ezshop.data.*;
 
 
-@Entity
-@Table(name = "Customer")
 public class ezCustomer implements Customer{
 
 	public ezCustomer() {

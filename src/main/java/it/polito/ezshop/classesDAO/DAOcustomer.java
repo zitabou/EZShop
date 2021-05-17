@@ -14,6 +14,14 @@ import it.polito.ezshop.data.Customer;
 
 public class DAOcustomer {
 	
+	
+	
+	
+	
+/*CREATE*/	
+	
+	
+	
 	public static int Create(Customer cust) throws DAOexception {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
@@ -35,18 +43,25 @@ public class DAOcustomer {
 		}catch(SQLException e){
 			throw new DAOexception("error while creating Customer" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId() + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId() + e.getMessage()); }
 		}
 		return generatedKey;
 	}
 	
 	
 	
+	
+	
+	
+	
+/*READ*/
+	
+	
 	public static Customer Read(Integer customerId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
-		Customer cust = new ezCustomer();
+		Customer cust = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
@@ -54,8 +69,9 @@ public class DAOcustomer {
 			pstat = conn.prepareStatement("SELECT * FROM customer WHERE customer_id=?");
 			pstat.setInt(1, customerId);
 			rs = pstat.executeQuery();
+			
 			if (rs.next() == true) {
-				
+				cust = new ezCustomer();
 				cust.setId(rs.getInt("id"));
 				cust.setCustomerName(rs.getString("customer_name"));
 				cust.setCustomerCard(rs.getString("customer_card"));
@@ -63,14 +79,53 @@ public class DAOcustomer {
 			}
 			pstat.close();
 		}catch(SQLException e){
-			throw new DAOexception("error while reading customer " + customerId);
+			throw new DAOexception("error while reading customer " + customerId + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
 		}
 		
 		return cust;
 	}
+	
+	public static Map<Integer, Customer> readAll() throws DAOexception {
+		Connection conn = DBManager.getConnection();
+		Map<Integer, Customer> map = null;
+        Customer cust= null;
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		
+        try {
+
+        	pstat = conn.prepareStatement("SELECT * FROM customer");
+        	rs = pstat.executeQuery();
+        	map = new HashMap<>();
+            while (rs.next()) {
+                cust = new ezCustomer();
+                cust.setId(rs.getInt("customer_id"));
+                cust.setCustomerName(rs.getString("customer_name"));
+                cust.setCustomerCard(rs.getString("customer_card"));
+                cust.setPoints(rs.getInt("customer_points"));
+                map.put(cust.getId(),cust);
+            }
+        }catch(SQLException e){
+			throw new DAOexception("error while getting all customers " + e.getMessage());
+		}finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+		}
+        return map;
+
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+/*UPDATE*/
 	
 	
 	public static void Update(Customer cust) throws DAOexception{
@@ -92,9 +147,9 @@ public class DAOcustomer {
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating Customer " + cust.getId());
+			throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage()); }
 		}
 		
 		//detach old card without reseting the points
@@ -107,10 +162,14 @@ public class DAOcustomer {
 		card.setCustomer(cust.getId());
 		
 		DAOloyaltyCard.Update(card);
-			
-		
-		
 	}
+	
+	
+	
+	
+	
+/*DELETE*/
+	
 	
 	public static void Delete(Integer cust_id) throws DAOexception{
 		Connection conn = DBManager.getConnection();
@@ -120,40 +179,27 @@ public class DAOcustomer {
 			pstat1.setInt(1,cust_id);
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting Customer " + cust_id);
+			throw new DAOexception("error while deleting Customer " + cust_id + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id + e.getMessage()); }
 		}
-
 	}
 	
-	public static Map<Integer, Customer> readAll() throws DAOexception {
-		Map<Integer, Customer> map = new HashMap<>();
-        Customer cust= null;
-        Connection conn = DBManager.getConnection();
-		PreparedStatement pstat = null;
-		ResultSet rs = null;
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat1 = null;
 		
-        try {
-       // "SELECT customer_id,customer_name,customer_card,card_points FROM [customer] JOIN loyalty_card ON [customer].customer_id = card_id ");
-
-        	pstat = conn.prepareStatement("SELECT * FROM customer");
-        	rs = pstat.executeQuery();
-            while (rs.next()) {
-                cust = new ezCustomer();
-                cust.setId(rs.getInt("customer_id"));
-                cust.setCustomerName(rs.getString("customer_name"));
-                cust.setCustomerCard(rs.getString("customer_card"));
-                cust.setPoints(rs.getInt("customer_points"));
-                map.put(cust.getId(),cust);
-            }
-        }catch(SQLException e){
-			throw new DAOexception("error while getting all customers");
+		DAOloyaltyCard.DeleteAll();
+		
+		try{
+			pstat1 = conn.prepareStatement("DELETE FROM customer");
+			pstat1.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all Customers " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Customers " + e.getMessage()); }
 		}
-        return map;
-
 	}
+	
+	
 }

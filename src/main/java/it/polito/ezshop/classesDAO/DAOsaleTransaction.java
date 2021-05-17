@@ -9,8 +9,10 @@ import it.polito.ezshop.classes.ezSaleTransaction;
 import it.polito.ezshop.data.SaleTransaction;
 
 public class DAOsaleTransaction {
+
 	
-	public static Integer readId() throws DAOexception {
+	//get Id
+	public static Integer getId() throws DAOexception {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
@@ -24,14 +26,13 @@ public class DAOsaleTransaction {
 				generatedKey = rs.getInt("id");
 			}
 		}catch(SQLException e){
-			e.printStackTrace();
-			//throw new DAOexception("sale transaction error");
+			throw new DAOexception("error while getting sale transaction id " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting sale transaction id " + generatedKey + e.getMessage()); }
 		}
 		return generatedKey;
-	
-	}
+		
+	}	
 	
 	public static int Create(SaleTransaction sale) throws DAOexception {
 		Connection conn = DBManager.getConnection();
@@ -48,12 +49,12 @@ public class DAOsaleTransaction {
 			    generatedKey = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			throw new DAOexception("error while creating sale transaction " + generatedKey);
+			throw new DAOexception("error while creating sale transaction " + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating sale transaction " + generatedKey + e.getMessage()); }
 		}
 		return generatedKey;
 	}
@@ -63,7 +64,7 @@ public class DAOsaleTransaction {
 	public static SaleTransaction Read(Integer saleId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
-		SaleTransaction sale = new ezSaleTransaction();
+		SaleTransaction sale = null;
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
@@ -71,7 +72,9 @@ public class DAOsaleTransaction {
 			pstat = conn.prepareStatement("SELECT * FROM sale_transaction WHERE ID=?");
 			pstat.setInt(1, saleId);
 			rs = pstat.executeQuery();
+			
 			if (rs.next() == true) {
+				sale = new ezSaleTransaction();
 				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
 				sale.setPrice(0);
@@ -79,10 +82,10 @@ public class DAOsaleTransaction {
 			}
 			pstat.close();
 		}catch(SQLException e){
-			throw new DAOexception("error while reading sale transaction " +  saleId);
+			throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
 		}
 		
 		sale.setEntries(DAOsaleEntry.Read(saleId));
@@ -103,15 +106,18 @@ public class DAOsaleTransaction {
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber());
+			throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage()); }
 		}
 		
 		
 	}
 
+
 	
+	
+// DELETE
 	public static void Delete(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat1 = null;
@@ -123,11 +129,29 @@ public class DAOsaleTransaction {
 			pstat1.setInt(1,saleId);
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting sale transaction " + saleId);
+			throw new DAOexception("error while deleting sale transaction " + saleId + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting sale transaction  " + saleId); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting sale transaction  " + saleId + e.getMessage()); }
 		}
-
 	}
 	
+	
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat1 = null;
+		
+		DAOsaleEntry.DeleteAll();
+		
+		try{
+			pstat1 = conn.prepareStatement("DELETE FROM sale_transaction");
+			pstat1.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all sale transactions " + e.getMessage());
+		}finally {
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all sale transactions  " + e.getMessage()); }
+		}
+	}
+	
+	
+
 }

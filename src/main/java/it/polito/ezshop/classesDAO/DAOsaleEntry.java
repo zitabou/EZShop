@@ -5,13 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import it.polito.ezshop.classes.ezReceiptEntry;
-import it.polito.ezshop.data.ReceiptEntry;
-import it.polito.ezshop.data.SaleTransaction;
 import it.polito.ezshop.data.TicketEntry;
 
 public class DAOsaleEntry {
@@ -32,11 +28,10 @@ public class DAOsaleEntry {
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception(e.getMessage());
-			//throw new DAOexception("error while creating receipt entry for sale " + saleId);
+			throw new DAOexception("error while creating receipt entry for sale " + saleId + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry for sale " + saleId); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry for sale " + saleId + e.getMessage()); }
 		}
 	}
 	
@@ -44,9 +39,9 @@ public class DAOsaleEntry {
 	
 	public static List<TicketEntry> Read(Integer saleId) throws DAOexception{
 		
-		List<TicketEntry> list= new ArrayList<>();
+		Connection conn = DBManager.getConnection();
+		List<TicketEntry> list= null;
         TicketEntry entry= null;
-        Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
 		
@@ -54,6 +49,7 @@ public class DAOsaleEntry {
         	pstat = conn.prepareStatement("SELECT * FROM receipt_entries WHERE sale_id=?");
         	pstat.setInt(1, saleId);
         	rs = pstat.executeQuery();
+        	list= new ArrayList<>();
             while (rs.next()) {
             	entry = new ezReceiptEntry();
                 entry.setBarCode(rs.getString("barcode"));
@@ -64,58 +60,19 @@ public class DAOsaleEntry {
                 list.add(entry);
             }
         }catch(SQLException e){
-			throw new DAOexception("error while getting all customers");
+			throw new DAOexception("error while getting all customers " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
 		}
         return list;
 
 	}
 	
-	
-	
-	
-/*	
-	public static void Update(Customer cust) throws DAOexception{
-		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat = null;
-		LoyaltyCard card = null;
-		
-		//get the old card and transfer the points
-		card = DAOloyaltyCard.ReadCustomer(cust);
-		cust.setPoints(card.getPoints());  			//take points from old card
-		
-		//update customer table with new card and same points
-		try{
-			pstat = conn.prepareStatement("UPDATE customer SET customer_name=?,customer_card=?, customer_points=? WHERE customer_id=?");
-			pstat.setString(1, cust.getCustomerName());
-			pstat.setString(2, cust.getCustomerCard());
-			pstat.setInt(3, cust.getPoints());
-			pstat.setInt(4, cust.getId());
-			pstat.executeUpdate();
-			
-		}catch(SQLException e){
-			throw new DAOexception("error while updating Customer " + cust.getId());
-		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + cust.getId()); }
-		}
-		
-		//detach old card without reseting the points
-		card.setCustomer(0);
-		DAOloyaltyCard.Update(card);
 
-		//attach new card to customer and update points
-		card.setCardID(cust.getCustomerCard());
-		card.setPoints(cust.getPoints());
-		card.setCustomer(cust.getId());
-		
-		DAOloyaltyCard.Update(card);
-			
-		
-		
-	}
-	*/
+	/*No Updates can happen to an entry. They are bound to a saleTransaction*/
+	
+
 	public static void DeleteFromSale(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat1 = null;
@@ -124,11 +81,23 @@ public class DAOsaleEntry {
 			pstat1.setInt(1,saleId);
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting entry from sale " + saleId );
+			throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage() );
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId); }
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage()); }
 		}
-
+	}
+	
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat1 = null;
+		try{
+			pstat1 = conn.prepareStatement("DELETE FROM receipt_entries");
+			pstat1.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all entries " + e.getMessage());
+		}finally {
+			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all entrie " + e.getMessage()); }
+		}
 	}
 	
 }
