@@ -10,6 +10,8 @@ public class EZShop {
 	try{
         EZShopInterface ezShop = new it.polito.ezshop.data.EZShop();
         EZShopGUI gui = new EZShopGUI(ezShop);
+        
+        //myedit
 	} catch (NumberFormatException nfe) {
 		// Exception at the level of the GUI
 		nfe.printStackTrace();
