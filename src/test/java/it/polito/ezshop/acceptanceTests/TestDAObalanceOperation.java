@@ -11,6 +11,7 @@ import it.polito.ezshop.data.ProductType;
 import net.bytebuddy.asm.Advice;
 import org.junit.*;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Map;
 
@@ -60,6 +61,18 @@ public class TestDAObalanceOperation {
 
     }
 
+    @Test (expected = NullPointerException.class)
+    public void testCreateBOWithWrongId() {
+        int newId = DAObalanceOperation.readAll().size() +1;
+        BalanceOperation debit = new Debit(newId , LocalDate.now(), 0);
+        DAObalanceOperation.Create(debit);
+
+        //same id, will throw NullPointerException exception
+        BalanceOperation credit = new Credit(newId , LocalDate.now(), 0);
+        DAObalanceOperation.Create(credit);
+
+
+    }
 
     @Test
     public void testReadAllBalanceOperation() {

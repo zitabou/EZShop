@@ -30,7 +30,7 @@ public class DAObalanceOperation {
             pstat.setInt(1, bo.getBalanceId());
             pstat.setString(2, bo.getDate().toString());
             pstat.setDouble(3, bo.getMoney());
-            pstat.setString(4, bo.getType());
+            pstat.setString(4, bo.getMoney() >= 0 ? "credit" : "debit");
 
             pstat.executeUpdate();
 
@@ -93,52 +93,7 @@ public class DAObalanceOperation {
         }
 
     }
-/*
-    public static BalanceOperation Read(Integer balanceId) throws DAOexception{
 
-        Connection conn = DBManager.getConnection();
-        Customer cust = new ezCustomer();
-        PreparedStatement pstat = null;
-        ResultSet rs = null;
-        BalanceOperation op = null;
-
-        try {
-            pstat = conn.prepareStatement("SELECT * FROM balance_operation WHERE ID=?");
-            pstat.setInt(1, balanceId);
-            rs = pstat.executeQuery();
-            if (rs.next() == true) {
-                op = rs.getString("type").equals("debit") ? new Debit() : new Credit();
-                op.setBalanceId(rs.getInt("balance_id"));
-                op.setDate(LocalDate.parse(rs.getString("date")));
-                op.setMoney(rs.getDouble("money"));
-                op.setType(rs.getString("type"));
-            }
-            pstat.close();
-        }catch(SQLException e){
-            throw new DAOexception("error while reading balance operation " + balanceId);
-        }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + balanceId); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + balanceId); }
-        }
-
-        return op;
-    }
-
-    public static void Delete(Integer balance_id) throws DAOexception{
-        Connection conn = DBManager.getConnection();
-        PreparedStatement pstat1 = null;
-        try{
-            pstat1 = conn.prepareStatement("DELETE FROM balance_operation WHERE balance_id=?");
-            pstat1.setInt(1,balance_id);
-            pstat1.executeUpdate();
-        }catch(SQLException e){
-            throw new DAOexception("error while deleting Balance Operation " + balance_id);
-        }finally {
-            try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Balance Operation " + balance_id); }
-        }
-
-    }
-*/
 
 
 
