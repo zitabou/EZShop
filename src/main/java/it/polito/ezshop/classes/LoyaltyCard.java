@@ -7,6 +7,19 @@ public class LoyaltyCard {
 		this.points = 0;
 		this.customer = 0;
 	}
+	
+	public LoyaltyCard(Integer points) {
+		cardID = "0000000000";
+		this.points = points;
+		this.customer = 0;
+	}
+	
+	public LoyaltyCard(Integer points, Integer customer) {
+		cardID = "0000000000";
+		this.points = points;
+		this.customer = customer;
+	}
+	
 	public LoyaltyCard(String cardID, Integer points) {
 		this.cardID = cardID;
 		this.points = points;
