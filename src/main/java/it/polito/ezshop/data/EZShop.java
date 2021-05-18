@@ -688,6 +688,8 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
+	System.out.println("Modifying points on card: " + customerCard);
+	System.out.println("Points to be added: " + pointsToBeAdded);
         if (customerCard == null)
             throw new InvalidCustomerCardException("customer card is null");
         if (customerCard.equals(""))
@@ -716,11 +718,14 @@ public class EZShop implements EZShopInterface {
         //we get the card so that we will increase the already accumulated points
         LoyaltyCard card;//old card points
         try {
-            card = DAOloyaltyCard.Read(customerCard); //old card points
-
-            card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
-            DAOloyaltyCard.Update(card);
-
+            	card = DAOloyaltyCard.Read(customerCard); //old card points
+		//System.out.println(card.getCardID() + "|" + "|"  );
+		if (card == null) {
+			return false;
+		}
+            	card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
+            	DAOloyaltyCard.Update(card);
+		System.out.println("Points modified successfully!");
         } catch (DAOexception e) {
             return false;
         }
@@ -895,14 +900,36 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public int computePointsForSale(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+      	System.out.println("Computing points for sale with ID: " + transactionId); 
+	if (transactionId <= 0 || transactionId == null)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-
+	/*
         if (transactionId == last_sale_id)
             return (int) (openSale.getPrice() / 10.0);
         return -1;
+	*/
+	//Check if transaction exists
+	
+	Map<Integer, SaleTransaction> sts = null;
+	int computed_points = 0;
+	try {
+		sts= DAOsaleTransaction.ReadAll();
+		for (SaleTransaction st : sts.values()) {
+			System.out.println();
+			if(st.getTicketNumber() == transactionId){
+				System.out.println("SaleTransction found, computing points...");
+				System.out.println(st.getTicketNumber() + "|" +  st.getPrice() + "|" + st.getDiscountRate());
+				computed_points = (int)(st.getPrice()/10.0);
+				System.out.println("Computed points: " + computed_points);
+				return computed_points;
+			}
+		}
+		return -1;
+	}catch (DAOexception e) {
+		return -1;
+	}
     }
 
     @Override

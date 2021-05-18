@@ -136,8 +136,13 @@ public class DAOcustomer {
 		
 		//get the old card and transfer the points
 		card = DAOloyaltyCard.ReadCustomer(cust);
+		/////
+		if (card == null) {
+			card = new LoyaltyCard();
+			card.setCardID(cust.getCustomerCard());
+		}
+		/////
 		cust.setPoints(card.getPoints());  			//take points from old card
-		
 		//update customer table with new card and same points
 		try{
 			pstat = conn.prepareStatement("UPDATE customer SET customer_name=?,customer_card=?, customer_points=? WHERE customer_id=?");
