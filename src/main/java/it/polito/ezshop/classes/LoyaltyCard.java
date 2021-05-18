@@ -3,10 +3,23 @@ package it.polito.ezshop.classes;
 public class LoyaltyCard {
 	
 	public LoyaltyCard() {
-		cardID = "N/A";
+		cardID = "0000000000";
 		points = 0;
 		customer = 0;
 	}
+	
+	public LoyaltyCard(Integer points) {
+		cardID = "0000000000";
+		this.points = points;
+		this.customer = 0;
+	}
+	
+	public LoyaltyCard(Integer points, Integer customer) {
+		cardID = "0000000000";
+		this.points = points;
+		this.customer = customer;
+	}
+	
 	public LoyaltyCard(String cardID, Integer points) {
 		this.cardID = cardID;
 		this.points = points;
