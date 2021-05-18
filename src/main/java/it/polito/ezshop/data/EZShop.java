@@ -66,117 +66,146 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-        Integer user_id = 0;
-        try {
-            //user_id++;
-            //User usr = new ezUser(user_id, username, password, role);
-            User usr = new ezUser(username, password, role);
-            user_id = DAOuser.Create(usr);
-        } catch (DAOexception e) {
-            return -1;
-        } finally {
-            return user_id;
-        }
+	if (username.equalsIgnoreCase("") || username == null) {
+		throw new InvalidUsernameException("Username is empty or null at createUser(...).");
+	}
+	if (password.equalsIgnoreCase("") || password == null) {
+		throw new InvalidPasswordException("Password is empty or null at createUser(...).");
+	}
+	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. createUser(...)");
+	}
+	Integer user_id = 0;
+	try {
+		// Check if the username is not being used already
+		for (User u : getAllUsers()) {
+			if ( u.getUsername().equals(username) ) {
+				throw new InvalidUsernameException("The username is already in use.");
+			}
+		}
+		User usr = new ezUser(username, password, role);
+		user_id = DAOuser.Create(usr);	
+	} catch (DAOexception e){
+		return -1;
+	} finally {
+		return user_id;
+	}
     }
 
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        try {
-            DAOuser.Delete(id);
-        } catch (DAOexception e) {
-            return false;
-        } finally {
-            return true;
-        }
+       	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+	throw new UnauthorizedException("The active user is not authorized to deleteUser(id), or there is no logged user.");
+	}
+	if (id <= 0 || id == null) {
+	throw new InvalidUserIdException("Invalid User ID. deleteUser(id)");
+	}
+       	try {
+		DAOuser.Delete(id);
+	} catch ( DAOexception e ) {
+		return false;
+	} finally {
+		return true;
+	}	
     }
 
     @Override
     public List<User> getAllUsers() throws UnauthorizedException {
-        users = null;
-        try {
-            users = DAOuser.readAll();
-        } catch (DAOexception e) {
-            return null;
-        } finally {
-            return new ArrayList<User>(users.values());
-        }
+	users = null;
+	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+	throw new UnauthorizedException("The active user is not authorized to getAllUsers(), or there is no logged user.");
+	}
 
+    	try{
+		users= DAOuser.readAll();
+    	}catch (DAOexception e) {
+    		return null;
+    	} finally {
+        	return new ArrayList<User>(users.values());
+	}
     }
 
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
-        User usr = null;
-        try {
-            usr = DAOuser.Read(id);
-            if (usr == null) {
-                throw new InvalidUserIdException("Invalid User ID. getUser(id)");
-            }
-            String role = activeUser.getRole();
-            if (role.equals("Administrator") == false) {
-                throw new UnauthorizedException("The active user is not authorized to getUser(id)");
-            }
-        } catch (DAOexception e) {
-            return null;
-        } finally {
-            return usr;
-        }
+	User usr = null;
+	try {
+		usr = DAOuser.Read(id);
+		if (usr==null || id <= 0 || id == null) {
+			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
+		}
+		if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+			throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
+		}
+	} catch (DAOexception e) {
+		return null;
+	} finally {
+		return usr;
+	}
     }
 
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
-        User usr = getUser(id);
-        if (usr == null) {
-            throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
-        }
-        if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true) == false) {
-            throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator. updateUserRights(,)");
-        }
-        if (activeUser.getRole().equals("Administrator") == false) {
-            throw new UnauthorizedException("The active user is not authorized to updateUserRights(,)");
-        }
+	User usr = getUser(id);
+	if (usr==null || id <= 0 || id == null) {
+		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
+	}
+	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. updateUserRights(,)");
+	}
+	if (activeUser == null || (activeUser.getRole().equals("Administrator") == false)) {
+		throw new UnauthorizedException("The active user is not authorized to updateUserRights(,) or there is no logged user.");
+	}
 
-        usr.setRole(role);
-        try {
-            DAOuser.Update(usr);
-        } catch (DAOexception e) {
-            return false;
-        } finally {
-            return true;
-        }
+	usr.setRole(role);
+	try {
+		DAOuser.Update(usr);
+	} catch (DAOexception e) {
+		return false;	
+	} finally {
+		return true;
+	}
     }
 
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
-        activeUser = null;
-        try {
-            users = DAOuser.readAll();
-        } catch (DAOexception e) {
-            return null;
-        }
-        boolean validate_username = false;
-        boolean validate_password = false;
-        User aux_usr = null;
-        for (User u : users.values()) {
-            //System.out.println(u.getId() + "-" + u.getUsername() + "-" + u.getPassword());
-            validate_username = validate_username || u.getUsername().equals(username);
-            if (validate_username) {
-                aux_usr = u;
-                break;
-            }
-        }
-        if (validate_username == false) {
-            throw new InvalidUsernameException("Username does not exist.");
-        }
-        try {
-            if (aux_usr.getPassword().equals(password)) {
-                activeUser = (ezUser) aux_usr;
-                return aux_usr;
-            } else {
-                throw new InvalidPasswordException("Password is incorrect.");
-            }
-        } catch (Exception e) {
-            return null;
-        }
+	//Exceptions
+        if (username.equalsIgnoreCase("") || username == null) {
+		throw new InvalidUsernameException("Username is empty or null at login.");
+	}
+	if (password.equalsIgnoreCase("") || password == null) {
+		throw new InvalidPasswordException("Password is empty or null at login.");
+	}	
+	//
+        activeUser = null;	
+    	try {
+		users = DAOuser.readAll();
+	} catch (DAOexception e) {
+		return null;		
+	} 
+	boolean validate_username = false;
+	boolean validate_password = false;
+	User aux_usr = null;
+    	for (User u : users.values()) {
+		//System.out.println(u.getId() + "-" + u.getUsername() + "-" + u.getPassword());
+		validate_username = validate_username || u.getUsername().equals(username);
+		if (validate_username) {
+			aux_usr = u;
+			break;
+		}	
+    	}
+	if (validate_username == false) {
+		throw new InvalidUsernameException("Username does not exist.");
+	}	
+	try {
+    		if(aux_usr.getPassword().equals(password)) {
+    			activeUser = (ezUser) aux_usr;
+			return aux_usr;
+	    	} else {
+			throw new InvalidPasswordException("Password is incorrect.");
+		}
+	}catch (Exception e) {
+		return null;
+	}
     }
 
     @Override
@@ -989,6 +1018,45 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
+//<<<<<<< HEAD
+		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+    	int i=0;
+
+    	try {
+    		//retrieve return transaction and referring sale transaction
+	    	ReturnTransaction ret =DAOreturnTransaction.Read(returnId);
+	    	
+	    	SaleTransaction referingSale = (SaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
+	    	
+	    	//return false if amount to be returned > amount bought
+
+			List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
+
+			AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
+			AtomicReference<Double> money= new AtomicReference<>((double) 0);
+			saleEntries.forEach( e -> {
+				if (e.getBarCode().equals(productCode) )
+					if (e.getAmount() < amount)
+						amountReturnedIsHigherThanAmountBought.set(true);
+					else
+						money.set(e.getPricePerUnit() * amount * (1-e.getDiscountRate()));
+						//money.set(e.getPricePerUnit() * e.getAmount());
+
+			});
+			if(amountReturnedIsHigherThanAmountBought.get())
+				return false;
+
+	        ret.setAmount(amount);
+	        ret.setProdId(productCode);
+	        //ret.setMoney(money.get());
+	        ret.setMoney(money.get()*(1-referingSale.getDiscountRate()));
+		DAOreturnTransaction.Update(ret);
+
+    	}catch(Exception e) {
+    		//return false if the transaction do not exist
+    		return false;
+    	}
+/*=======
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
         int i = 0;
@@ -1025,7 +1093,8 @@ public class EZShop implements EZShopInterface {
             //return false if the transaction do not exist
             return false;
         }
-
+>>>>>>> 510813cc0e481d08f30fe703819b8fd1818312a8
+*/
         return true;
     }
 
@@ -1114,7 +1183,38 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public double receiveCashPayment(Integer ticketNumber, double cash) throws InvalidTransactionIdException, InvalidPaymentException, UnauthorizedException {
-        return 0;
+	System.out.println("Receiving Cash Payment...");
+	// TODO NumberFormatException: empty String
+	// when the textbox for cash is left empty.
+	// Exceptions
+	if (ticketNumber <= 0) {
+		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
+	}
+       if (cash <= 0) {
+		throw new InvalidPaymentException("The cash is less than or equal to 0. receiveCashPayment(,)");
+	}
+	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
+	       	throw new UnauthorizedException("The active user is not authorized. receiveCashPayment(,)");
+	}
+	double change = 0;
+	try {
+	SaleTransaction st = getSaleTransaction(ticketNumber);
+	if (st == null) { return -1;}
+	if (cash < st.getPrice()) { return -1;}
+       
+	change = cash - st.getPrice();
+	//Record balance operation
+	accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+			if(id > balance_id)
+				balance_id = id;
+		});
+		
+    	balance_id++;
+        accountBook.recordBalanceUpdate(st.getPrice(), balance_id);
+       	} catch (DAOexception e) {
+	return -1;
+       	}
+	return change;
     }
 
     @Override
@@ -1124,7 +1224,32 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public double returnCashPayment(Integer returnId) throws InvalidTransactionIdException, UnauthorizedException {
-        return 0;
+	// Exceptions
+	if (returnId <= 0){
+		throw new InvalidTransactionIdException("The returnId is not valid. returnCashPayment(id)");
+	}
+	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
+	       	throw new UnauthorizedException("The active user is not authorized. returnCashPayment(id)");
+	}
+	
+	double money_returned = 0; 
+	try {
+	ReturnTransaction rt = DAOreturnTransaction.Read(returnId);
+	if (rt == null) { return -1;}
+
+	money_returned = rt.getReturnedValue();
+	//Record balance operation
+	accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+			if(id > balance_id)
+				balance_id = id;
+		});
+    	balance_id++;
+        accountBook.recordBalanceUpdate(0-money_returned, balance_id);
+	} catch(DAOexception e) {
+		return -1;
+	}
+	System.out.println("Money returned: " + money_returned);
+        return money_returned;
     }
 
     @Override
