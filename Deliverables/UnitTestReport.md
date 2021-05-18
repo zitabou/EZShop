@@ -87,10 +87,31 @@ Version:
 **Combination of predicates**:
 
 
-| Criteria | Predicate       | Valid / Invalid | Description of the test case | JUnit test case            |
-| -------- | --------------- | --------------- | ---------------------------- | -------------------------- |
-| *        | product present | Valid           | DAOproductType.Update(prod); | testReadProductId()        |
-|          | product missing | Invalid         | DAOproductType.Update(prod); | testReadMissingProductId() |
+| Criteria | Predicate       | Valid / Invalid | Description of the test case | JUnit test case         |
+| -------- | --------------- | --------------- | ---------------------------- | ----------------------- |
+| *        | product present | Valid           | DAOproductType.Update(prod); | testUpdateProd()        |
+|          | product missing | Invalid         | DAOproductType.Update(prod); | testUpdateMissingProd() |
+
+ ### **Class *DAOproductType* - method *UpdateByCode(prod)***
+
+**Criteria for method *UpdateByCode(prod)*:**
+
+ - Update product in DB by barcode 
+
+**Predicates for method *UpdateByCode(prod)*:**
+
+| Criteria                        | Predicate                 |
+| ------------------------------- | ------------------------- |
+| Update product in DB by barcode | barcode present in DB     |
+|                                 | barcode not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate       | Valid / Invalid | Description of the test case      | JUnit test case               |
+| -------- | --------------- | --------------- | --------------------------------- | ----------------------------- |
+| *        | product present | Valid           | DAOproductType.UpdateByCode(prod) | testUpdateProdByCode()        |
+|          | product missing | Invalid         | DAOproductType.UpdateByCode(prod) | testUpdateProdByMissingCode() |
 
 
 
@@ -141,8 +162,6 @@ Version:
 
 
 
-
-
  ### **Class *DAOloyaltyCard* - method *Read(String cardId)***
 
 **Criteria for method *Read(String cardId)*:**
@@ -163,8 +182,6 @@ Version:
 | -------- | ---------------------- | --------------- | ---------------------------- | ---------------------------- |
 | *        | card present in DB     | Valid           | DAOloyaltyCard.Read(card_id) | testReadLoyaltyCard()        |
 |          | card not present in DB | Invalid         | DAOloyaltyCard.Read(card_id) | testReadMissingLoyaltyCard() |
-
-
 
 
 
@@ -237,8 +254,6 @@ Version:
 
 
 
-
-
  ### **Class *DAOcustomer* - method *Read(customer)***
 
 **Criteria for method *Read(customer)*:**
@@ -284,18 +299,6 @@ Version:
 | -------- | -------------------------------- | --------------- | ---------------------------- | --------------------------- |
 | *        | Customer id>0                    | Valid           | DAOcustomer.Update(customer) | testUpdateCustomer()        |
 |          | Customer id<0, not present in DB | Invalid         | DAOcustomer.Update(customer) | testUpdateCustomerNotInDB() |
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
