@@ -88,7 +88,7 @@ public class DBManager {
 			//Product
 			stat = conn.createStatement();
 			if(!existsTable("product")) { //no such table in DB
-				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(14), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), CHECK(quantity>0),UNIQUE(barcode), UNIQUE(location));");
+				stat.execute("CREATE TABLE product (id INTEGER not null, quantity INTEGER, description VARCHAR, barcode VARCHAR(14), price REAL, location VARCHAR(30) DEFAULT NULL, note VARCHAR, primary key(id), CHECK(quantity>=0),UNIQUE(barcode), UNIQUE(location));");
 			}
 			stat.close();
 			
