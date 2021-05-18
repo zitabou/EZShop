@@ -75,7 +75,7 @@ public class DBManager {
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
-				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id), UNIQUE(customer_card), CHECK(customer_points >=0));");
+				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id),CHECK(customer_points >= 0));");
 			}
 			stat.close();
 			//Loyalty Card
