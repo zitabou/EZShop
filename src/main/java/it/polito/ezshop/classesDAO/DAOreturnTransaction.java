@@ -4,6 +4,7 @@ import it.polito.ezshop.classes.Credit;
 import it.polito.ezshop.classes.Debit;
 import it.polito.ezshop.classes.ReturnTransaction;
 import it.polito.ezshop.data.BalanceOperation;
+import it.polito.ezshop.data.SaleTransaction;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,8 +27,8 @@ public class DAOreturnTransaction {
             pstat = conn.prepareStatement("INSERT INTO return_transaction (return_id, sale_reference, returned_value, returned_product, returned_amount) VALUES (?,?,?,?,?)");
             pstat.setInt(1, r.getBalanceId());
             pstat.setInt(2, r.getSaleID());
-            pstat.setDouble(3, r.getReturnedValue());
-            pstat.setString(4, r.getProdId());
+            pstat.setDouble(3, r.getReturnedValue()==null? 0 : r.getReturnedValue());
+            pstat.setString(4, r.getProdId()==null? "" : r.getProdId());
             pstat.setInt(5, r.getAmount());
 
 
@@ -46,7 +47,38 @@ public class DAOreturnTransaction {
         return generatedKey;
     }
 
+    public static ReturnTransaction Read(Integer returnId) throws DAOexception{
 
+        Connection conn = DBManager.getConnection();
+        ReturnTransaction r = null;
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
+        BalanceOperation op = null;
+
+        try {
+            pstat = conn.prepareStatement("SELECT * FROM return_transaction WHERE return_id=?");
+            pstat.setInt(1, returnId);
+            rs = pstat.executeQuery();
+            if (rs.next() == true) {
+                r = new ReturnTransaction();
+                r.setBalanceId(rs.getInt("return_id"));
+                r.setSaleID(rs.getInt("sale_reference"));
+                r.setReturnedValue(rs.getDouble("returned_value"));
+                r.setMoney(rs.getDouble("returned_value"));//the field is duplicated
+                r.setProdId(rs.getString("returned_product"));
+                r.setAmount(rs.getInt("returned_amount"));
+
+            }
+            pstat.close();
+        }catch(SQLException e){
+            throw new DAOexception("error while reading balance operation " + returnId);
+        }finally {
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
+            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
+        }
+
+        return r;
+    }
 
     public static Map<Integer, ReturnTransaction> readAll() throws DAOexception {
         Map<Integer, ReturnTransaction> map = new HashMap<>();
@@ -63,7 +95,7 @@ public class DAOreturnTransaction {
 
                 r = new ReturnTransaction();
                 r.setBalanceId(rs.getInt("return_id"));
-                r.setSaleID(rs.getInt("sale_id"));
+                r.setSaleID(rs.getInt("sale_reference"));
                 r.setReturnedValue(rs.getDouble("returned_value"));
                 r.setProdId(rs.getString("returned_product"));
                 r.setAmount(rs.getInt("returned_amount"));
@@ -71,13 +103,33 @@ public class DAOreturnTransaction {
                 map.put(r.getBalanceId(),r);
             }
         }catch(SQLException e){
-            throw new DAOexception("error while getting all customers");
+            throw new DAOexception("error while getting all return transactions");
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
+            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
         }
         return map;
 
     }
 
+    public static void Update(ReturnTransaction r) throws DAOexception{
+        Connection conn = DBManager.getConnection();
+        PreparedStatement pstat = null;
+
+        try{
+            pstat = conn.prepareStatement("UPDATE return_transaction SET returned_amount=?, returned_product =?, returned_value=? WHERE return_id=?");
+            pstat.setDouble(1, r.getAmount());
+            pstat.setString(2, r.getProdId());
+            pstat.setDouble(3, r.getMoney());
+            pstat.setInt(4, r.getBalanceId());
+            pstat.executeUpdate();
+
+        }catch(SQLException e){
+            throw new DAOexception("error while updating return transaction " +  r.getBalanceId());
+        }finally {
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating return transaction " +  r.getBalanceId()); }
+        }
+
+
+    }
 }

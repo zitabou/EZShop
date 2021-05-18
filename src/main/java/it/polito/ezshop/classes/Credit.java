@@ -58,4 +58,14 @@ public class Credit implements BalanceOperation {
                 ", type='" + type + '\'' +
                 '}';
     }
+
+    public Credit() {
+    }
+
+    public Credit(Integer balanceId, LocalDate date, double money) {
+        this.balanceId = balanceId;
+        this.date = date;
+        this.money = money;
+        this.type = "credit";
+    }
 }

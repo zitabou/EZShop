@@ -80,6 +80,19 @@ public class DAObalanceOperation {
 
     }
 
+    public static void DeleteAll() throws DAOexception{
+        Connection conn = DBManager.getConnection();
+        PreparedStatement pstat1 = null;
+        try{
+            pstat1 = conn.prepareStatement("DELETE FROM balance_operation");
+            pstat1.executeUpdate();
+        }catch(SQLException e){
+            throw new DAOexception("error while deleting all Balance Operation ");
+        }finally {
+            try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Balance Operation "); }
+        }
+
+    }
 /*
     public static BalanceOperation Read(Integer balanceId) throws DAOexception{
 

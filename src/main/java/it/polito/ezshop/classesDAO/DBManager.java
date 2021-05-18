@@ -35,7 +35,29 @@ public class DBManager {
 			throw new DAOexception("unable to close connection");
 		}
 	}
-	
+/*
+	public static Connection getConnectionAndReset() throws DAOexception{
+		if (conn == null){
+			try {
+				conn = DriverManager.getConnection("jdbc:sqlite:Shop.db");
+				eraseDB();
+				InitialiseDB();
+			} catch (SQLException e) {
+				throw new DAOexception("DBManager error!", e);
+			}
+		}
+		return conn;
+	}
+*/
+	public static void reset() throws DAOexception{
+
+		if (conn != null){
+			eraseDB();
+			InitialiseDB();
+		}
+
+	}
+
 	private static void InitialiseDB(){ //only used inside getConnection
 		
 		Statement stat = null;
@@ -46,6 +68,7 @@ public class DBManager {
 			if(!existsTable("user")) {
 				stat.execute("CREATE TABLE user (user_id integer primary key autoincrement, user_username varchar(30), user_password varchar(30), user_role varchar(30) );");
 				stat.execute("INSERT INTO user (user_id, user_username, user_password, user_role) VALUES (1, 'admin', 'admin', 'Administrator');");
+				stat.execute("INSERT INTO user (user_id, user_username, user_password, user_role) VALUES (2, 'a', 'a', 'Administrator');");
 			}
 			stat.close();
 
@@ -106,7 +129,79 @@ public class DBManager {
 		
 		
 	}
-	
+
+	private static void eraseDB(){
+		Statement stat = null;
+		try {
+
+			//User
+			stat = conn.createStatement();
+			if(existsTable("user")) {
+				stat.execute("DROP TABLE user;");
+			}
+			stat.close();
+
+			//Customer
+			stat = conn.createStatement();
+			if(existsTable("customer")) { //no such table in DB
+				stat.execute("DROP TABLE customer;");
+			}
+			stat.close();
+			//Loyalty Card
+			stat = conn.createStatement();
+			if(existsTable("loyalty_card")) { //no such table in DB
+				stat.execute("DROP TABLE loyalty_card;");
+			}
+			stat.close();
+
+			//Product
+			stat = conn.createStatement();
+			if(existsTable("product")) { //no such table in DB
+				stat.execute("DROP TABLE product;");
+			}
+			stat.close();
+
+			//Sale transaction
+			stat = conn.createStatement();
+			if(existsTable("sale_transaction")) { //no such table in DB
+				stat.execute("DROP TABLE sale_transaction;");
+			}
+			stat.close();
+			//entries of sale transaction
+			stat = conn.createStatement();
+			if(existsTable("receipt_entries")) { //no such table in DB
+				stat.execute("DROP TABLE receipt_entries;");
+			}
+			stat.close();
+
+			//balance operation
+			stat = conn.createStatement();
+			if(existsTable("balance_operation")) { //no such table in DB
+				stat.execute("DROP TABLE balance_operation;");
+			}
+			stat.close();
+
+			//Orders
+			stat = conn.createStatement();
+			if(existsTable("orders")) { //no such table in DB
+				stat.execute("DROP TABLE orders;");
+			}
+			stat.close();
+
+			stat = conn.createStatement();
+			if(existsTable("return_transaction")) { //no such table in DB
+				stat.execute("DROP TABLE return_transaction;");
+			}
+			stat.close();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try {stat.close();} catch (SQLException e) {e.getMessage();}
+		}
+
+
+	}
 	
 	private static boolean existsTable(String tableName) {   //only used inside initialise
 		
