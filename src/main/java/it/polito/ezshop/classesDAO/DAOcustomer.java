@@ -136,7 +136,8 @@ public class DAOcustomer {
 		
 		//get the old card and transfer the points
 		card = DAOloyaltyCard.ReadCustomer(cust);
-		cust.setPoints(card.getPoints());  			//take points from old card
+		if(card!= null)
+			cust.setPoints(card.getPoints());  			//take points from old card
 		
 		//update customer table with new card and same points
 		try{
@@ -154,17 +155,19 @@ public class DAOcustomer {
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage()); }
 		}
-		
-		//detach old card without reseting the points
-		card.setCustomer(0);
-		DAOloyaltyCard.Update(card);
 
-		//attach new card to customer and update points
-		card.setCardID(cust.getCustomerCard());
-		card.setPoints(cust.getPoints());
-		card.setCustomer(cust.getId());
-		
-		DAOloyaltyCard.Update(card);
+		if(card != null) {
+			//detach old card without reseting the points
+			card.setCustomer(0);
+			DAOloyaltyCard.Update(card);
+
+			//attach new card to customer and update points
+			card.setCardID(cust.getCustomerCard());
+			card.setPoints(cust.getPoints());
+			card.setCustomer(cust.getId());
+
+			DAOloyaltyCard.Update(card);
+		}
 	}
 	
 	
