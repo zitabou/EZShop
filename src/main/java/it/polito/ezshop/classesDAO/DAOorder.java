@@ -124,7 +124,7 @@ public class DAOorder {
             pstat.setString(4, o.getStatus());
             pstat.setInt(5, o.getOrderId());
             
-            pstat.executeUpdate();
+            result = pstat.executeUpdate();
             if(result == 0)
 				throw new SQLException("[entry not found]");
 

@@ -231,7 +231,7 @@ public class DAOproductType {
 			pstat.setString(5, prod.getNote());
 			pstat.setString(6, prod.getBarCode());
 			
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
 			if(result == 0)
 				throw new SQLException("entry not found");
 			

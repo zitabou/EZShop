@@ -145,7 +145,7 @@ public class DAOcustomer {
 			pstat.setString(2, cust.getCustomerCard());
 			pstat.setInt(3, cust.getPoints());
 			pstat.setInt(4, cust.getId());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
 			if(result == 0)
 				throw new SQLException("entry not found");
 			

@@ -133,7 +133,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 			pstat.setInt(1, card.getPoints());
 			pstat.setInt(2, card.getCustomer());
 			pstat.setString(3, card.getCardID());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
 			if(result == 0)
 				throw new SQLException("entry not found");
 			
@@ -150,7 +150,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				pstat = conn.prepareStatement("UPDATE customer SET customer_points=? WHERE customer_id=?");
 				pstat.setInt(1, card.getPoints());
 				pstat.setInt(2, card.getCustomer());
-				pstat.executeUpdate();
+				result = pstat.executeUpdate();
 				if(result == 0)
 					throw new SQLException("entry not found");
 				

@@ -122,8 +122,9 @@ public class DAOreturnTransaction {
             pstat.setString(2, r.getProdId());
             pstat.setDouble(3, r.getMoney());
             pstat.setInt(4, r.getBalanceId());
-            pstat.executeUpdate();
-
+            result = pstat.executeUpdate();
+            if(result == 0)
+				throw new SQLException("entry not found");
         }catch(SQLException e){
             throw new DAOexception("error while updating return transaction " +  r.getBalanceId());
         }finally {

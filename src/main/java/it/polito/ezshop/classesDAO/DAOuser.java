@@ -86,7 +86,7 @@ public class DAOuser {
 			pstat.setString(2, usr.getPassword());
 			pstat.setString(3, usr.getRole());
 			pstat.setInt(4, usr.getId());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
 			if(result == 0)
 				throw new SQLException("entry not found");
 			

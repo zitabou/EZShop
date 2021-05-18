@@ -104,7 +104,7 @@ public class DAOsaleTransaction {
 			pstat.setDouble(1, sale.getDiscountRate());
 			pstat.setDouble(2, sale.getPrice());
 			pstat.setInt(3, sale.getTicketNumber());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
 			if(result == 0)
 				throw new SQLException("entry not found");
 			
