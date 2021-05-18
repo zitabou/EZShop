@@ -110,12 +110,10 @@ Version:
  - read all Balance operations from DB
 
 
-**Predicates for method *read(Integer prodId)*:**
+**Predicates for method *readAll()*:**
 
-| Criteria | Predicate |
-| -------- | --------- |
-
-<b>
+No criteria because there is no input
+<br>
 
 **Combination of predicates**:
 
