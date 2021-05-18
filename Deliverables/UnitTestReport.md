@@ -214,7 +214,76 @@ Version:
 
 
 
+ ### **Class *DAOcustomer* - method *Create(customer)***
 
+**Criteria for method *Create(customer)*:**
+
+ - Insert a customer in the DB 
+
+**Predicates for method *Delete(card)*:**
+
+| Criteria                    | Predicate         |
+| --------------------------- | ----------------- |
+| Insert a customer in the DB | assign points >=0 |
+|                             | assign points <0  |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate  | Valid / Invalid | Description of the test case | JUnit test case                        |
+| -------- | ---------- | --------------- | ---------------------------- | -------------------------------------- |
+| *        | points >=0 | Valid           | DAOcustomer.Create(customer) | testCreateCustomer()                   |
+|          | points <0  | Invalid         | DAOcustomer.Create(customer) | testCreateCustomerWithNegativePoints() |
+
+
+
+
+
+ ### **Class *DAOcustomer* - method *Read(customer)***
+
+**Criteria for method *Read(customer)*:**
+
+ - Read customer from DB
+
+**Predicates for method *Read(customer)*:**
+
+| Criteria              | Predicate                  |
+| --------------------- | -------------------------- |
+| Read customer from DB | Customer id >0             |
+|                       | Customer id<=0             |
+|                       | Customer not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate                        | Valid / Invalid | Description of the test case | JUnit test case           |
+| -------- | -------------------------------- | --------------- | ---------------------------- | ------------------------- |
+| *        | Customer id>0                    | Valid           | DAOcustomer.Read(customer)   | testReadCustomer()        |
+|          | Customer id<0, not present in DB | Invalid         | DAOcustomer.Read(customer)   | testReadCustomerNotInDB() |
+
+
+
+ ### **Class *DAOcustomer* - method *Update(customer)***
+
+**Criteria for method *Update(customer)*:**
+
+ - Update customer in DB
+
+**Predicates for method *Update(customer)*:**
+
+| Criteria              | Predicate                  |
+| --------------------- | -------------------------- |
+| Update customer in DB | Customer id >0             |
+|                       | Customer id<=0             |
+|                       | Customer not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate                        | Valid / Invalid | Description of the test case | JUnit test case             |
+| -------- | -------------------------------- | --------------- | ---------------------------- | --------------------------- |
+| *        | Customer id>0                    | Valid           | DAOcustomer.Update(customer) | testUpdateCustomer()        |
+|          | Customer id<0, not present in DB | Invalid         | DAOcustomer.Update(customer) | testUpdateCustomerNotInDB() |
 
 
 

@@ -33,18 +33,19 @@ public class DAOcustomer {
 			pstat.setString(1,cust.getCustomerName());
 			pstat.setString(2,cust.getCustomerCard());
 			pstat.setInt(3,cust.getPoints());
-			
+
 			pstat.executeUpdate();
-			
 			rs = pstat.getGeneratedKeys();
 			if (rs.next()) {
 			    generatedKey = rs.getInt(1);
 			}
 		}catch(SQLException e){
-			throw new DAOexception("error while creating Customer" + e.getMessage());
+			throw new DAOexception("[error while creating Customer] " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId() + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Customer" + cust.getId() + e.getMessage()); }
+			if(pstat!=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("[error while creating Customer] " + cust.getId() + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("[error while creating Customer] " + cust.getId() + e.getMessage()); }
 		}
 		return generatedKey;
 	}
@@ -72,17 +73,18 @@ public class DAOcustomer {
 			
 			if (rs.next() == true) {
 				cust = new ezCustomer();
-				cust.setId(rs.getInt("id"));
+				cust.setId(rs.getInt("customer_id"));
 				cust.setCustomerName(rs.getString("customer_name"));
 				cust.setCustomerCard(rs.getString("customer_card"));
 				cust.setPoints(rs.getInt("customer_points"));
 			}
-			pstat.close();
 		}catch(SQLException e){
 			throw new DAOexception("error while reading customer " + customerId + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
+			if(pstat !=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
+			if(rs !=null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + cust.getId() + e.getMessage()); }
 		}
 		
 		return cust;
@@ -111,8 +113,10 @@ public class DAOcustomer {
         }catch(SQLException e){
 			throw new DAOexception("error while getting all customers " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			if(pstat !=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			if(rs !=null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
 		}
         return map;
 
@@ -133,10 +137,10 @@ public class DAOcustomer {
 		PreparedStatement pstat = null;
 		LoyaltyCard card = null;
 		int result = 0;
-		
 		//get the old card and transfer the points
 		card = DAOloyaltyCard.ReadCustomer(cust);
-		cust.setPoints(card.getPoints());  			//take points from old card
+		if(card != null)
+			cust.setPoints(card.getPoints());  			//take points from old card
 		
 		//update customer table with new card and same points
 		try{
@@ -152,18 +156,20 @@ public class DAOcustomer {
 		}catch(SQLException e){
 			throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage()); }
+			if(pstat !=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage()); }
 		}
 		
 		//detach old card without reseting the points
-		card.setCustomer(0);
-		DAOloyaltyCard.Update(card);
-
+		if(card != null) {
+			card.setCustomer(0);
+			DAOloyaltyCard.Update(card);
+		}
+	
 		//attach new card to customer and update points
 		card.setCardID(cust.getCustomerCard());
 		card.setPoints(cust.getPoints());
 		card.setCustomer(cust.getId());
-		
 		DAOloyaltyCard.Update(card);
 	}
 	
@@ -176,31 +182,33 @@ public class DAOcustomer {
 	
 	public static void Delete(Integer cust_id) throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM customer WHERE customer_id=?");
-			pstat1.setInt(1,cust_id);
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM customer WHERE customer_id=?");
+			pstat.setInt(1,cust_id);
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting Customer " + cust_id + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id + e.getMessage()); }
+			if(pstat !=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + cust_id + e.getMessage()); }
 		}
 	}
 	
 	public static void DeleteAll() throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		
 		DAOloyaltyCard.DeleteAll();
 		
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM customer");
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM customer");
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting all Customers " + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Customers " + e.getMessage()); }
+			if(pstat !=null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Customers " + e.getMessage()); }
 		}
 	}
 	
