@@ -72,7 +72,7 @@ public class DAOcustomer {
 			
 			if (rs.next() == true) {
 				cust = new ezCustomer();
-				cust.setId(rs.getInt("id"));
+				cust.setId(rs.getInt("customer_id"));
 				cust.setCustomerName(rs.getString("customer_name"));
 				cust.setCustomerCard(rs.getString("customer_card"));
 				cust.setPoints(rs.getInt("customer_points"));

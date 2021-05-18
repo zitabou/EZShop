@@ -1,12 +1,5 @@
 package it.polito.ezshop.acceptanceTests;
 
-import static org.junit.Assert.*;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,11 +10,8 @@ import org.junit.Test;
 
 import it.polito.ezshop.classes.ezCustomer;
 import it.polito.ezshop.classesDAO.DAOcustomer;
-import it.polito.ezshop.classesDAO.DAOexception;
-import it.polito.ezshop.classesDAO.DAOproductType;
 import it.polito.ezshop.classesDAO.DBManager;
 import it.polito.ezshop.data.Customer;
-import it.polito.ezshop.data.ProductType;
 
 
 public class TestDAOcustomer {
@@ -62,7 +52,7 @@ public class TestDAOcustomer {
   	@Test
   	public void testReadCustomerById() {
   		
-  		Customer cus = DAOcustomer.Read(cus3.getId());
+  		Customer cus = DAOcustomer.Read(3);
   		Assert.assertTrue(cus.getCustomerName().equals("testcus3"));
   	}
     
@@ -94,7 +84,7 @@ public class TestDAOcustomer {
  		DAOcustomer.Update(cus4);
  		
  		
- 		cus4 = DAOcustomer.Read(cus4.getId());
+ 		cus4 = DAOcustomer.Read(4);
  		
  		Assert.assertTrue(cus4.getCustomerName().equals("testcus4_Updated"));
  	}
