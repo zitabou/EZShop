@@ -135,9 +135,9 @@ Version:
 
 | Criteria | Predicate                       | Valid / Invalid | Description of the test case | JUnit test case                                |
 | -------- | ------------------------------- | --------------- | ---------------------------- | ---------------------------------------------- |
-| *        | card points >=0, customer id >0 | Valid           | DAOloyaltyCard.Create(card)  | testCreateProduct()                            |
+| *        | card points >=0, customer id >=0 | Valid           | DAOloyaltyCard.Create(card)  | testCreateProduct()                            |
 |          | card points <0                  | Invalid         | DAOloyaltyCard.Create(card)  | testCreateLoyaltyaCardWithNegativePoints()     |
-|          | customer id <=0                 | Invalid         | DAOloyaltyCard.Create(card)  | testCreateLoyaltyaCardWithNegativeCustomerId() |
+|          | customer id <0                 | Invalid         | DAOloyaltyCard.Create(card)  | testCreateLoyaltyaCardWithNegativeCustomerId() |
 
 
 
