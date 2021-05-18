@@ -132,6 +132,7 @@ public class DAOcustomer {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		LoyaltyCard card = null;
+		int result = 0;
 		
 		//get the old card and transfer the points
 		card = DAOloyaltyCard.ReadCustomer(cust);
@@ -145,6 +146,8 @@ public class DAOcustomer {
 			pstat.setInt(3, cust.getPoints());
 			pstat.setInt(4, cust.getId());
 			pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
 			throw new DAOexception("error while updating Customer " + cust.getId() + e.getMessage());

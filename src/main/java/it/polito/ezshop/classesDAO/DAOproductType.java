@@ -196,6 +196,7 @@ public class DAOproductType {
 	public static void Update(ProductType prod) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		int result = 0;
 		try{
 			pstat = conn.prepareStatement("UPDATE product SET quantity=?, description = ?, barcode = ?, price = ?, location =?, note =? WHERE ID=?");
 			pstat.setInt(1, prod.getQuantity());
@@ -206,11 +207,12 @@ public class DAOproductType {
 			pstat.setString(6, prod.getNote());
 			pstat.setInt(7, prod.getId());
 			
-			pstat.executeUpdate();
-		
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating productType " + e.getMessage());
+			throw new DAOexception("[error while updating productType] " + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + e.getMessage()); }
 		}
@@ -219,6 +221,7 @@ public class DAOproductType {
 	public static void UpdateByCode(ProductType prod) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		int result = 0;
 		try{
 			pstat = conn.prepareStatement("UPDATE product SET quantity=?, description = ?, price = ?, location =?, note =? WHERE barcode=?");
 			pstat.setInt(1, prod.getQuantity());
@@ -229,7 +232,8 @@ public class DAOproductType {
 			pstat.setString(6, prod.getBarCode());
 			
 			pstat.executeUpdate();
-		
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
 			throw new DAOexception("error while updating productType " + e.getMessage());

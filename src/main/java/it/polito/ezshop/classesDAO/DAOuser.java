@@ -34,10 +34,10 @@ public class DAOuser {
 			    //System.out.println("Autoincrement key is: " + generatedKey );
 			}
 		}catch(SQLException e){
-			throw new DAOexception("error while creating User" + e.getMessage());
+			throw new DAOexception("error while creating User " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating User" + usr.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating User" + usr.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
 		}
 
 		return generatedKey;
@@ -65,8 +65,8 @@ public class DAOuser {
 		}catch(SQLException e){
 			throw new DAOexception("error while reading User" + userId);
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading User" + usr.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading User" + usr.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
 		}
 		
 		return usr;
@@ -77,6 +77,7 @@ public class DAOuser {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
+		int result = 0;
 		
 		//update user table
 		try{
@@ -86,6 +87,8 @@ public class DAOuser {
 			pstat.setString(3, usr.getRole());
 			pstat.setInt(4, usr.getId());
 			pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
 			throw new DAOexception("error while updating User" + usr.getId());
@@ -132,10 +135,10 @@ public class DAOuser {
             }
 		return map;		
         }catch(SQLException e){
-			throw new DAOexception("error while getting all user");
+			throw new DAOexception("[error while getting all user] ");
 	}finally {
-		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all users"); }
-		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all users"); }
+		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all users  "); }
+		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all users "); }
 		return map;
 	}
 

@@ -38,10 +38,10 @@ public class DAOorder {
                 generatedKey = rs.getInt(1);
             }
         }catch(SQLException e){
-            throw new DAOexception("error while creating BalanceOperation" + e.getMessage());
+            throw new DAOexception("error while creating BalanceOperation " + e.getMessage());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + o.getOrderId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + o.getOrderId()); }
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
+            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
         }
         return generatedKey;
     }
@@ -70,10 +70,10 @@ public class DAOorder {
                 map.put(o.getOrderId(),o);
             }
         }catch(SQLException e){
-            throw new DAOexception("error while getting all customers");
+            throw new DAOexception("error while getting all orders ");
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all order"); }
+            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all orders"); }
         }
         return map;
 
@@ -101,10 +101,10 @@ public class DAOorder {
             }
             pstat.close();
         }catch(SQLException e){
-            throw new DAOexception("error while reading customer " + ordedId);
+            throw new DAOexception("error while reading order " + ordedId);
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + o.getOrderId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading customer" + o.getOrderId()); }
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
+            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
         }
 
         return o;
@@ -113,7 +113,7 @@ public class DAOorder {
     public static void Update(Order o) throws DAOexception{
         Connection conn = DBManager.getConnection();
         PreparedStatement pstat = null;
-
+        int result =0;
 
         //update customer table with new card and same points
         try{
@@ -123,12 +123,15 @@ public class DAOorder {
             pstat.setDouble(3, o.getPricePerUnit());
             pstat.setString(4, o.getStatus());
             pstat.setInt(5, o.getOrderId());
+            
             pstat.executeUpdate();
+            if(result == 0)
+				throw new SQLException("[entry not found]");
 
         }catch(SQLException e){
-            throw new DAOexception("error while updating Customer " + o.getOrderId());
+            throw new DAOexception("[error while updating order] " + o.getOrderId());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating Customer" + o.getOrderId()); }
+            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating order" + o.getOrderId()); }
         }
 
     }
