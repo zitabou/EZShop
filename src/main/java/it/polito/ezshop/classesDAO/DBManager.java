@@ -81,7 +81,7 @@ public class DBManager {
 			//Loyalty Card
 			stat = conn.createStatement();
 			if(!existsTable("loyalty_card")) { //no such table in DB
-				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS (SUBSTR('0000000000' || id,-10,10)), card_points Integer, customer Integer, primary key(id),CHECK(card_points >= 0),CHECK(customer>0));");
+				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS (SUBSTR('0000000000' || id,-10,10)), card_points Integer, customer Integer, primary key(id),CHECK(card_points >= 0),CHECK(customer>=0));");
 			}
 			stat.close();
 
