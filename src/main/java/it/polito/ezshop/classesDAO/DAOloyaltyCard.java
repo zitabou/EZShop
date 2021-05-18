@@ -68,11 +68,13 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 		ResultSet rs = null;
 		
 		try {
-			pstat = conn.prepareStatement("SELECT * FROM loyalty_card WHERE card_id=?");
+			pstat = conn.prepareStatement("SELECT card_id, customer, card_points FROM loyalty_card WHERE card_id=?");
 			pstat.setString(1, cardId);
 			rs = pstat.executeQuery();
+			System.out.println(pstat);
 			
 			if (rs.next() == true) {
+				System.out.println(rs.getString("card_id") + "|" + rs.getInt("customer") + "|" + rs.getInt("card_points"));
 				card = new LoyaltyCard();
 				card.setCardID(rs.getString("card_id"));
 				card.setCustomer(rs.getInt("customer"));
@@ -84,9 +86,9 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
 			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
+			return card;
 		}
 		
-		return card;
 	}
 
 	public static LoyaltyCard ReadCustomer(Customer cust) throws DAOexception{

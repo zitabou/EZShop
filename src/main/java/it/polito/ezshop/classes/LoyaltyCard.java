@@ -3,9 +3,9 @@ package it.polito.ezshop.classes;
 public class LoyaltyCard {
 	
 	public LoyaltyCard() {
-		cardID = "0000000000";
-		points = 0;
-		customer = 0;
+		this.cardID = "N/A";
+		this.points = 0;
+		this.customer = 0;
 	}
 	
 	public LoyaltyCard(Integer points) {
@@ -23,7 +23,7 @@ public class LoyaltyCard {
 	public LoyaltyCard(String cardID, Integer points) {
 		this.cardID = cardID;
 		this.points = points;
-		customer = 0;
+		this.customer = 0;
 	}
 	
 	public LoyaltyCard(String cardID, Integer points, Integer customer) {

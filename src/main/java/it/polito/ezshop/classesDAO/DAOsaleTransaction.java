@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.HashMap;
+import java.util.Map;
 import it.polito.ezshop.classes.ezSaleTransaction;
 import it.polito.ezshop.data.SaleTransaction;
 
@@ -154,7 +155,33 @@ public class DAOsaleTransaction {
 			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all sale transactions  " + e.getMessage()); }
 		}
 	}
-	
+	public static Map<Integer, SaleTransaction> ReadAll() throws DAOexception{
+		Map<Integer, SaleTransaction> map = new HashMap<>();
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		SaleTransaction st = null;
+		try{
+			pstat = conn.prepareStatement("SELECT id, discount_rate, price FROM sale_transaction");
+			rs = pstat.executeQuery();
+			while (rs.next()) {
+				st = new ezSaleTransaction();
+				st.setTicketNumber(rs.getInt("id"));
+				st.setDiscountRate(rs.getDouble("discount_rate"));
+				st.setPrice(rs.getDouble("price"));
+				map.put(st.getTicketNumber(), st);
+			}
+			return map;
+		}
+		catch (SQLException e) {
+			throw new DAOexception("Error while ReadAll() Sale transactions.");
+		} finally {
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
+			
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
+			return map;
+		}
+	}	
 	
 
 }
