@@ -67,7 +67,7 @@ public class Debit implements BalanceOperation {
     public Debit(Integer balanceId, LocalDate date, double money) {
         this.balanceId = balanceId;
         this.date = date;
-        this.money = money;
+        this.money = money <= 0 ? money : -money;
         this.type = "debit";
     }
 

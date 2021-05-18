@@ -23,7 +23,7 @@ public class AccountBook {
 		newBO.setBalanceId(balance_id);
 		newBO.setDate(LocalDate.now());
 		newBO.setMoney(money);
-		newBO.setType(money < 0 ? "debit" : "credit");
+		newBO.setType(money < 0 ? "debit" : "credit"); //if =0 then credit
 		DAObalanceOperation.Create(newBO);
 		balance += money;
 		return true;

@@ -33,7 +33,7 @@ public class DAOloyaltyCard {
 			    generatedKey = rs.getString(1);
 			}
 		}catch(SQLException e){
-			throw new DAOexception("product error " + e.getMessage());
+			throw new DAOexception("loyalty card error " + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating loyalty card "+ e.getMessage());}
 		}
@@ -46,7 +46,7 @@ public class DAOloyaltyCard {
 			rs = pstat.executeQuery();
 			generatedKey = rs.getString("card_id");
 		}catch(SQLException e){
-			throw new DAOexception("product error " + e.getMessage());
+			throw new DAOexception("loyalty card error" + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating loyalty card " + e.getMessage());}
 		}
@@ -78,9 +78,9 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				card.setCustomer(rs.getInt("customer"));
 				card.setPoints(rs.getInt("card_points"));
 			}
-			pstat.close();
+			
 		}catch(SQLException e){
-			throw new DAOexception("error while reading product" + e.getMessage());
+			throw new DAOexception("error while reading loyalty card" + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
 			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
@@ -107,9 +107,8 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				card.setCustomer(rs.getInt("customer"));
 				card.setPoints(rs.getInt("card_points"));
 			}
-			pstat.close();
 		}catch(SQLException e){
-			throw new DAOexception("error while reading product " + e.getMessage());
+			throw new DAOexception("error while reading customer from loyalty card " + e.getMessage());
 		}finally {
 			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
 			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
@@ -128,17 +127,20 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 	public static void Update(LoyaltyCard card) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		int result = 0;
 		try{
 			pstat = conn.prepareStatement("UPDATE loyalty_card SET card_points=?,customer=? WHERE card_id=?");
 			pstat.setInt(1, card.getPoints());
 			pstat.setInt(2, card.getCustomer());
 			pstat.setString(3, card.getCardID());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
 			throw new DAOexception("error while updating loyalty_card "+card.getCardID() + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating loyalty_card "+card.getCardID() + e.getMessage()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating loyalty_card "+ card.getCardID() + e.getMessage()); }
 		}
 		
 		//get the related customer
@@ -148,7 +150,9 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				pstat = conn.prepareStatement("UPDATE customer SET customer_points=? WHERE customer_id=?");
 				pstat.setInt(1, card.getPoints());
 				pstat.setInt(2, card.getCustomer());
-				pstat.executeUpdate();
+				result = pstat.executeUpdate();
+				if(result == 0)
+					throw new SQLException("entry not found");
 				
 			}catch(SQLException e){
 				throw new DAOexception("error while updating loyalty_card "+card.getCardID() + e.getMessage());
@@ -180,7 +184,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 			pstat1.setString(1,card.getCardID());
 			pstat1.executeUpdate();
 		}catch(SQLException e){
-			throw new DAOexception("error while deleting Customer" + card.getCardID() + e.getMessage());
+			throw new DAOexception("error while deleting loyalty card" + card.getCardID() + e.getMessage());
 		}finally {
 			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting loyalty_card" + card.getCardID() + e.getMessage()); }
 		}

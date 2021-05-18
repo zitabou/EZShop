@@ -97,13 +97,16 @@ public class DAOsaleTransaction {
 	public static void Update(SaleTransaction sale) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		int result = 0;
 		
 		try{
 			pstat = conn.prepareStatement("UPDATE sale_transaction SET discount_rate=?, price =? WHERE id=?");
 			pstat.setDouble(1, sale.getDiscountRate());
 			pstat.setDouble(2, sale.getPrice());
 			pstat.setInt(3, sale.getTicketNumber());
-			pstat.executeUpdate();
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
 			throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage());

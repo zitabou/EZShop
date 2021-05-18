@@ -65,7 +65,7 @@ public class Credit implements BalanceOperation {
     public Credit(Integer balanceId, LocalDate date, double money) {
         this.balanceId = balanceId;
         this.date = date;
-        this.money = money;
+        this.money = money >= 0 ? money : -money;
         this.type = "credit";
     }
 }

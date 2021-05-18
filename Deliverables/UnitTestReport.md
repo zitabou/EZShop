@@ -75,6 +75,53 @@ Version:
 ||Invalid|prod = DAOproductType.read(10);|testReadMissingProductId()
 |||
 
+### **Class *DAObalanceOperation* - method *Create(BalanceOperation bo)***
+
+
+**Criteria for method *Create(BalanceOperation bo)*:**
+ - Insert BalanceOperation into DB 
+
+
+**Predicates for method *read(Integer prodId)*:**
+
+| Criteria | Predicate |
+| -------- | --------- |
+| balance Id     |    duplicate balance id       |
+||unique balance id|
+| money sign     |    money >= 0       |
+||money <0|
+
+
+**Combination of predicates**:
+
+
+| balance id | money sign | Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|-------|-------|
+|duplicate|*|Invalid|DAObalanceOperation.Create(credit)|testCreateBOWithWrongId()
+|unique|>= 0|Valid|DAObalanceOperation.Create(credit)|testCreateBOWith0Money(), testCreateCredit()
+|unique|< 0|Valid|DAObalanceOperation.Create(debit)|testCreateDebit()
+|||
+
+
+### **Class *DAObalanceOperation* - method *readAll()***
+
+
+**Criteria for method *readAll()*:**
+ - read all Balance operations from DB
+
+
+**Predicates for method *readAll()*:**
+
+No criteria because there is no input
+<br>
+
+**Combination of predicates**:
+
+
+| Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|
+|Valid|DAObalanceOperation.readAll()|testReadAllBalanceOperation()
+|||
 
  ### **Class *class_name* - method *name***
 

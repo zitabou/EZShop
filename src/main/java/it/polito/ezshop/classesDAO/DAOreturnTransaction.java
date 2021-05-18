@@ -122,8 +122,9 @@ public class DAOreturnTransaction {
             pstat.setString(2, r.getProdId());
             pstat.setDouble(3, r.getMoney());
             pstat.setInt(4, r.getBalanceId());
-            pstat.executeUpdate();
-
+            int result = pstat.executeUpdate();
+            if(result == 0)
+				throw new SQLException("entry not found");
         }catch(SQLException e){
             throw new DAOexception("error while updating return transaction " +  r.getBalanceId());
         }finally {
@@ -131,5 +132,19 @@ public class DAOreturnTransaction {
         }
 
 
+    }
+
+    public static void Delete(Integer return_id) throws DAOexception{
+        Connection conn = DBManager.getConnection();
+        PreparedStatement pstat1 = null;
+        try{
+            pstat1 = conn.prepareStatement("DELETE FROM return_transaction WHERE return_id=?");
+            pstat1.setInt(1,return_id);
+            pstat1.executeUpdate();
+        }catch(SQLException e){
+            throw new DAOexception("error while deleting Return Transaction " + return_id + e.getMessage());
+        }finally {
+            try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + return_id + e.getMessage()); }
+        }
     }
 }
