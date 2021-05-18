@@ -75,13 +75,13 @@ public class DBManager {
 			//Customer
 			stat = conn.createStatement();
 			if(!existsTable("customer")) { //no such table in DB
-				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id));");
+				stat.execute("CREATE TABLE customer (customer_id integer not null, customer_name varchar (30), customer_card varchar (10), customer_points Integer, primary key(customer_id),CHECK(customer_points >= 0));");
 			}
 			stat.close();
 			//Loyalty Card
 			stat = conn.createStatement();
 			if(!existsTable("loyalty_card")) { //no such table in DB
-				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS ('card_' || SUBSTR('00000' || id,-5,5)), card_points Integer, customer Integer, primary key(id));");
+				stat.execute("CREATE TABLE loyalty_card (id integer not null, card_id AS (SUBSTR('0000000000' || id,-10,10)), card_points Integer, customer Integer, primary key(id),CHECK(card_points >= 0),CHECK(customer>0));");
 			}
 			stat.close();
 

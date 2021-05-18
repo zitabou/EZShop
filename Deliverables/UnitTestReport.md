@@ -39,19 +39,17 @@ Version:
 | -------- | --------- |
 | Insert product in DB    |    use unique barcode       |
 |          |    use not unique barcode       |
-|          |    use non negative quanity       |
-|          |    use negative quantity       |
+|          |    quantity >= 0    |
+|          |    quantity < 0    |
 
 **Combination of predicates**:
 
 
-| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
-|-------|-------|-------|-------|
-|*|Valid|prod5 = new ezProductType(1, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");|testCreateProduct()
-||Invalid|prod5 = new ezProductType(0, "testProd5", "123456789011", 5.0, 5, "testNote5", "5-5-5");|testCreateProductWithDuplicateBarCode()
-||Invalid|prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, -5, "testNote5", "5-5-5");|testCreateProductWithNegativeQuantity()
-|||
-
+| Criteria | Predicate | Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|-------|-------|
+| * | Unique barcode, quantity>=0 | Valid | DAOproductType.Create(prod); | testCreateProduct() |
+|  | not unique barcode | Invalid | DAOproductType.Create(prod); | testCreateProductWithDuplicateBarCode() |
+|  | quantity < 0 | Invalid | DAOproductType.Create(prod); | testCreateProductWithNegativeQuantity() |
  ### **Class *DAOproductType* - method *read(Integer prodId)***
 
 
@@ -64,16 +62,173 @@ Version:
 | Criteria | Predicate |
 | -------- | --------- |
 | Read product from DB     |    product present in DB       |
-||product missing from DB|
+||product not present in DB|
 
 **Combination of predicates**:
 
 
-| Criteria 1 | Valid / Invalid | Description of the test case | JUnit test case |
-|-------|-------|-------|-------|
-|*|Valid|prod = DAOproductType.read(1)|testReadProductId()
-||Invalid|prod = DAOproductType.read(10);|testReadMissingProductId()
-|||
+| Criteria | Predicate | Valid / Invalid | Description of the test case | JUnit test case |
+|-------|-------|-------|-------|-------|
+| * | product present | Valid | prod = DAOproductType.read(1) | testReadProductId() |
+|          | product missing | Invalid | prod = DAOproductType.read(10) | testReadMissingProductId() |
+ ### **Class *DAOproductType* - method *Update(prod)***
+
+**Criteria for method *Update(prod)*:**
+
+ - Update product in DB 
+
+**Predicates for method *Update(prod)*:**
+
+| Criteria             | Predicate                 |
+| -------------------- | ------------------------- |
+| Update product in DB | product present in DB     |
+|                      | product not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate       | Valid / Invalid | Description of the test case | JUnit test case            |
+| -------- | --------------- | --------------- | ---------------------------- | -------------------------- |
+| *        | product present | Valid           | DAOproductType.Update(prod); | testReadProductId()        |
+|          | product missing | Invalid         | DAOproductType.Update(prod); | testReadMissingProductId() |
+
+
+
+ ### **Class *DAOproductType* - method *Delete(prod)***
+
+**Criteria for method *Delete(prod)*:**
+
+ - Delete product from DB 
+
+**Predicates for method *Delete(prod)*:**
+
+| Criteria               | Predicate                 |
+| ---------------------- | ------------------------- |
+| Delete product from DB | product present in DB     |
+|                        | product not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate       | Valid / Invalid | Description of the test case | JUnit test case                |
+| -------- | --------------- | --------------- | ---------------------------- | ------------------------------ |
+| *        | product present | Valid           | DAOproductType.Delete(prod)  | testDeleteProductById()        |
+|          | product missing | Invalid         | DAOproductType.Delete(prod)  | testDeleteProductByMissingId() |
+
+ ### **Class *DAOloyaltyCard* - method *Create(card)***
+
+**Criteria for method *Create(card)*:**
+
+ - Insert loyalty card in DB 
+
+**Predicates for method *Create(card)*:**
+
+| Criteria                  | Predicate       |
+| ------------------------- | --------------- |
+| Insert loyalty card in DB | card points >=0 |
+|                           | card points <0  |
+|                           | customer Id >=0 |
+|                           | customer Id <0  |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate                       | Valid / Invalid | Description of the test case | JUnit test case                                |
+| -------- | ------------------------------- | --------------- | ---------------------------- | ---------------------------------------------- |
+| *        | card points >=0, customer id >0 | Valid           | DAOloyaltyCard.Create(card)  | testCreateProduct()                            |
+|          | card points <0                  | Invalid         | DAOloyaltyCard.Create(card)  | testCreateLoyaltyaCardWithNegativePoints()     |
+|          | customer id <=0                 | Invalid         | DAOloyaltyCard.Create(card)  | testCreateLoyaltyaCardWithNegativeCustomerId() |
+
+
+
+
+
+ ### **Class *DAOloyaltyCard* - method *Read(String cardId)***
+
+**Criteria for method *Read(String cardId)*:**
+
+ - read loyalty card from DB 
+
+**Predicates for method *Read(String cardId)*:**
+
+| Criteria                  | Predicate              |
+| ------------------------- | ---------------------- |
+| read loyalty card from DB | card present in DB     |
+|                           | card not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate              | Valid / Invalid | Description of the test case | JUnit test case              |
+| -------- | ---------------------- | --------------- | ---------------------------- | ---------------------------- |
+| *        | card present in DB     | Valid           | DAOloyaltyCard.Read(card_id) | testReadLoyaltyCard()        |
+|          | card not present in DB | Invalid         | DAOloyaltyCard.Read(card_id) | testReadMissingLoyaltyCard() |
+
+
+
+
+
+ ### **Class *DAOloyaltyCard* - method *Update(card)***
+
+**Criteria for method *Update(card)*:**
+
+ - update loyalty card in DB 
+
+**Predicates for method *Update(card)*:**
+
+| Criteria                  | Predicate              |
+| ------------------------- | ---------------------- |
+| update loyalty card in DB | card present in DB     |
+|                           | card not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate              | Valid / Invalid | Description of the test case | JUnit test case              |
+| -------- | ---------------------- | --------------- | ---------------------------- | ---------------------------- |
+| *        | card present in DB     | Valid           | DAOloyaltyCard.Update(card)  | testReadLoyaltyCard()        |
+|          | card not present in DB | Invalid         | DAOloyaltyCard.Update(card)  | testReadMissingLoyaltyCard() |
+
+
+
+ ### **Class *DAOloyaltyCard* - method *Delete(card)***
+
+**Criteria for method *Delete(card)*:**
+
+ - Delete loyalty card from DB 
+
+**Predicates for method *Delete(card)*:**
+
+| Criteria                    | Predicate              |
+| --------------------------- | ---------------------- |
+| Delete loyalty card from DB | card present in DB     |
+|                             | card not present in DB |
+
+**Combination of predicates**:
+
+
+| Criteria | Predicate              | Valid / Invalid | Description of the test case | JUnit test case         |
+| -------- | ---------------------- | --------------- | ---------------------------- | ----------------------- |
+| *        | card present in DB     | Valid           | DAOloyaltyCard.Delete(card); | testDeleteLoyaltyCard() |
+|          | card not present in DB | Valid           | DAOloyaltyCard.Delete(card); | testDeleteLoyaltyCard() |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### **Class *DAObalanceOperation* - method *Create(BalanceOperation bo)***
 
@@ -174,7 +329,7 @@ No criteria because there is no input
 # White Box Unit Tests
 
 ### Test cases definition
-    
+
     <JUnit test classes must be in src/test/java/it/polito/ezshop>
     <Report here all the created JUnit test cases, and the units/classes under test >
     <For traceability write the class and method name that contains the test case>

@@ -45,7 +45,7 @@ public class TestDAOproductType {
 		prod4.setId(DAOproductType.Create(prod4));
 	}
 	
-	
+
 //create product
 // Test create	
 	@Test
@@ -91,7 +91,7 @@ public class TestDAOproductType {
 		ProductType prod = DAOproductType.read(1);
 		Assert.assertTrue(prod.getProductDescription().equals("testProd1"));
 	}
-// ONE ID
+// ONE missingProduct ID
 	@Test
 	public void testReadMissingProductId() {
 		
@@ -110,7 +110,25 @@ public class TestDAOproductType {
 		Assert.assertTrue(prods.get(1).getBarCode().equals("123456789022"));
 	}
 	
+//ALL missing
+	@Test
+	public void testReadAllProductsMissing() {
+		
+		DAOproductType.DeleteAll();
+		List<ProductType> prods = new ArrayList<ProductType>(DAOproductType.readAll().values());
+		
+		Assert.assertEquals(0, prods.size());
+	}
+	
 // ALL BY DESCRIPTION	
+	@Test
+	public void testReadAllByDescriptionMissing() {
+		List<ProductType> prods = new ArrayList<ProductType>(DAOproductType.readAll("testProd10").values());
+		
+		Assert.assertEquals(0, prods.size());
+	}
+
+// ALL BY DESCRIPTION	missing
 	@Test
 	public void testReadAllByDescription() {
 		
@@ -119,8 +137,11 @@ public class TestDAOproductType {
 		Assert.assertEquals(2, prods.size());
 		Assert.assertTrue(prods.get(0).getBarCode().equals("123456789011"));
 		Assert.assertTrue(prods.get(1).getBarCode().equals("123456789044"));
-	}
-
+	}	
+	
+	
+	
+	
 	
 	
 //Update product	
@@ -131,14 +152,21 @@ public class TestDAOproductType {
 		prod4.setProductDescription("description_update");
 		DAOproductType.Update(prod4);
 		
-		
 		prod4 = DAOproductType.read("123456789044");
 		
 		Assert.assertTrue(prod4.getProductDescription().equals("description_update"));
 	}
+
+// by missing ID
+	@Test
+	public void testUpdateProdMissing() {
+		
+		ProductType prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");
+		try{DAOproductType.Update(prod5);Assert.fail("this shouldn't be printed");}
+		catch(DAOexception e) {System.out.println(e.getMessage());}
+	}
 	
-	
-	
+
 //  BY CODE
 	@Test
 	public void testUpdateProdByCode() {
@@ -149,19 +177,37 @@ public class TestDAOproductType {
 		
 		Assert.assertTrue(prod4.getProductDescription().equals("description_update"));
 	}
+	
+	
+// by missing CODE
+	@Test
+	public void testUpdateProdMissingCode() {
+		
+		ProductType prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");
+		try{DAOproductType.UpdateByCode(prod5);Assert.fail("this shouldn't be printed");}
+		catch(DAOexception e) {System.out.println(e.getMessage());}
+	}
 
+	
+	
 
 // Delete product
 // by ID
 	@Test
 	public void testDeleteProductById() {
-		
 		DAOproductType.Delete(prod4);
 		
 		Assert.assertEquals(3, DAOproductType.readAll().size());
 		Assert.assertNull(DAOproductType.read(prod4.getId()));
 	}
 
+// by missing ID
+	@Test
+	public void testDeleteProductByMissingId() {
+		ProductType prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");
+		DAOproductType.Delete(prod5);
+		Assert.assertEquals(4, DAOproductType.readAll().size());
+	}
 	
 // BY CODE
 	@Test
@@ -172,17 +218,26 @@ public class TestDAOproductType {
 		Assert.assertEquals(3, DAOproductType.readAll().size());
 		Assert.assertNull(DAOproductType.read(prod4.getBarCode()));
 	}
+
+//By missing Code@Test
+	
+	public void testDeleteProductByMissingCode() {
+		
+		ProductType prod5 = new ezProductType(0, "testProd5", "123456789055", 5.0, 5, "testNote5", "5-5-5");
+		DAOproductType.Delete(prod5.getBarCode());
+		
+		Assert.assertEquals(4, DAOproductType.readAll().size());
+	}
+	
+	
+	
 // ALL
 	@Test
 	public void testDeleteAll() {
 		
 		DAOproductType.DeleteAll();
-		
 		Assert.assertEquals(0, DAOproductType.readAll().size());
 	}
-	
-	
-	
 	
 	
 	@After
@@ -190,7 +245,6 @@ public class TestDAOproductType {
 		DAOproductType.DeleteAll();
 	}
 
-	
 	
 	
 	
