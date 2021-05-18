@@ -6,6 +6,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.polito.ezshop.classes.LoyaltyCard;
+import it.polito.ezshop.classesDAO.DAOcustomer;
 import it.polito.ezshop.classesDAO.DAOloyaltyCard;
 import it.polito.ezshop.classesDAO.DBManager;
 
@@ -43,5 +44,34 @@ public class TestloyaltyCard {
   		Assert.assertTrue(lcard1.getPoints().equals(150));
 	}
 	
+ 	//Update loyalty card	
+	// by ID
+ 	@Test
+ 	public void testUpdateLoyaltyCard() {
+ 		
+ 		loyalcard1.setPoints(200);
+ 		DAOloyaltyCard.Update(loyalcard1);
+ 		
+ 		
+ 		loyalcard1 = DAOloyaltyCard.Read("card_00001");
+ 		
+ 		Assert.assertTrue(loyalcard1.getPoints().equals(200));
+ 	}
+ 	
+	//Delete by card id
+ 	@Test
+ 	public void testDeleteLoyaltyCard() {
+ 		DAOloyaltyCard.Delete(loyalcard1);
+ 		Assert.assertNull(DAOloyaltyCard.Read(loyalcard1.getCardID()));
+ 	}
+ 	
+ 	
+ 	//Delete All
+	@Test
+ 	public void testDeleteAllLoyaltyCard() {
+		DAOloyaltyCard.DeleteAll();
+		Assert.assertNull(DAOloyaltyCard.Read(loyalcard1.getCardID()));
+		Assert.assertNull(DAOloyaltyCard.Read(loyalcard2.getCardID()));
+ 	}
 	
 }
