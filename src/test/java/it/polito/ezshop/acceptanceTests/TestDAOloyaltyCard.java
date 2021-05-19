@@ -61,11 +61,8 @@ public class TestDAOloyaltyCard {
 	@Test
 	public void testCreateLoyaltyaCardWithNegativeCustomerId() {
 		LoyaltyCard card3= new LoyaltyCard("0000000003",3,-3);
-		LoyaltyCard card4= new LoyaltyCard("0000000004",4,0);
 		
 		try {DAOloyaltyCard.Create(card3); Assert.fail("This shouldn't be printed");}
-		catch(DAOexception e) {System.out.println(e.getMessage());}
-		try {DAOloyaltyCard.Create(card4); Assert.fail("This shouldn't be printed");}
 		catch(DAOexception e) {System.out.println(e.getMessage());}
 	}
 
