@@ -632,6 +632,10 @@ public class EZShop implements EZShopInterface {
 
 
         try {
+            Customer cust = DAOcustomer.Read(id);
+        	LoyaltyCard card = DAOloyaltyCard.ReadCustomer(cust);
+        	
+        	DAOloyaltyCard.Delete(card);
             DAOcustomer.Delete(id);
         } catch (DAOexception e) {
             return false;
