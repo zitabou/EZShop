@@ -310,6 +310,12 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
+         Location loc = DAOlocation.Read(id);
+        if(loc !=null) {
+        	loc.setProduct(0);
+        	DAOlocation.Update(loc);
+        }
+
         ProductType prod = new ezProductType();
         prod.setId(id);
         try {
@@ -423,18 +429,20 @@ public class EZShop implements EZShopInterface {
         }
         
         //check if new position exists and if so is it available
-        Location newLoc = DAOlocation.Read(newPos);
-        if(newLoc != null && newLoc.getProduct() != 0) {  //if the position exists and it is not occupied
-        	newLoc.setProduct(productId);
-        	DAOlocation.Update(newLoc);
-        }
-        else {
-        	newLoc = new Location();
-        	newLoc.setAisleByExtract(newPos);
-        	newLoc.setRackByExtract(newPos);
-        	newLoc.setLevelByExtract(newPos);
-        	newLoc.setProduct(productId);
-        	DAOlocation.Create(newLoc);
+        if(!newPos.equals("0-0-0")){
+        	Location newLoc = DAOlocation.Read(newPos);
+        	if(newLoc == null){                           //if it doesn't exist create it
+        		newLoc = new Location();
+        		newLoc.setAisleByExtract(newPos);
+        		newLoc.setRackByExtract(newPos);
+        		newLoc.setLevelByExtract(newPos);
+        		newLoc.setProduct(productId);
+        		DAOlocation.Create(newLoc);
+        	}
+        	else if(newLoc.getProduct() == 0) {  //if the position exists and it is not occupied update it
+        		newLoc.setProduct(productId);
+        		DAOlocation.Update(newLoc);
+        	}
         }
 
 
@@ -444,12 +452,7 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;                        // old product
         try {
             prod = DAOproductType.read(productId);        // read necessary to leave other fields unchanged
-        } catch (DAOexception e) {
-            return false;
-        }
-
-        prod.setLocation(newPos);            //assign new value
-        try {
+            prod.setLocation(newPos);            //assign new value
             DAOproductType.Update(prod);    //update
         } catch (DAOexception e) {
             return false;
