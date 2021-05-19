@@ -663,7 +663,6 @@ public class EZShop implements EZShopInterface {
     public List<Customer> getAllCustomers() throws UnauthorizedException {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-        System.out.println("----------");
         try {
             customers = DAOcustomer.readAll();
         } catch (DAOexception e) {
@@ -688,9 +687,7 @@ public class EZShop implements EZShopInterface {
     }
 
     @Override
-    // TODO WHEN IS THIS FUNCTION CALLED
     public boolean attachCardToCustomer(String customerCard, Integer customerId) throws InvalidCustomerIdException, InvalidCustomerCardException, UnauthorizedException {
-        System.out.println("ATTACH CARD TO CUSTOMER is called");
 
         if (customerId == null)
             throw new InvalidCustomerIdException("customer id is null");
@@ -718,8 +715,6 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
-	System.out.println("Modifying points on card: " + customerCard);
-	System.out.println("Points to be added: " + pointsToBeAdded);
         if (customerCard == null)
             throw new InvalidCustomerCardException("customer card is null");
         if (customerCard.equals(""))
@@ -729,33 +724,15 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        /*
-        LoyaltyCard lc = cards.get(customerCard);
-        if( lc != null && (pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) ) {  //check that the points are positive and if they are negative check that the card points are not less
-            lc.setPoints(pointsToBeAdded);
-            return true;
-        }
-
-         * TODO Not sure I respected the logic, check if right. Here is the previous code
-        for(LoyaltyCard lc : cards)
-            if(lc.getcardID().equals(customerCard)) {		 					   //get the card
-                if(pointsToBeAdded >0 || lc.getPoints() >= pointsToBeAdded) {  //check that the points are positive and if they are negative check that the card points are not less
-                    lc.setPoints(pointsToBeAdded);
-                    return true;
-                }
-        } */
-
         //we get the card so that we will increase the already accumulated points
         LoyaltyCard card;//old card points
         try {
             	card = DAOloyaltyCard.Read(customerCard); //old card points
-		//System.out.println(card.getCardID() + "|" + "|"  );
 		if (card == null) {
 			return false;
 		}
             	card.setPoints(card.getPoints() + pointsToBeAdded); //new card points
             	DAOloyaltyCard.Update(card);
-		System.out.println("Points modified successfully!");
         } catch (DAOexception e) {
             return false;
         }
@@ -793,7 +770,6 @@ public class EZShop implements EZShopInterface {
 
         ProductType prod = null;
         TicketEntry entry = new ezReceiptEntry();
-        System.out.println("amount: " + amount);
         try {
             prod = DAOproductType.read(productCode);
             if (amount > prod.getQuantity()) return false;
@@ -809,19 +785,16 @@ public class EZShop implements EZShopInterface {
                 prod = prodsToUpdate.get(productCode);
             prod.setQuantity(prod.getQuantity() - amount);
             prodsToUpdate.put(productCode, prod);
-            System.out.println("price_before1 " + openSale.getPrice());
             //entries
             for (int i = 0; i < openSale.getEntries().size(); i++) {
                 if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {                                            // get entry if exists
                     openSale.getEntries().get(i).setAmount(amount + openSale.getEntries().get(i).getAmount());                // set amount in entries
                     openSale.setPrice(openSale.getPrice() + openSale.getEntries().get(i).getPricePerUnit() * amount);        // pricePerUnit is the discounted price
-                    System.out.println("price_before2.1 " + openSale.getPrice());
                     return true;
                 }
             }
             openSale.setPrice(openSale.getPrice() + entry.getPricePerUnit() * amount);
             openSale.getEntries().add(entry);                                                                   // or create a new one if it doesn't,  pricePerUnit is the product's price per unit with 0% discount
-            System.out.println("price_before2.2 " + openSale.getPrice());
         } catch (DAOexception e) {
             e.getMessage();
             return false;
@@ -880,7 +853,6 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        System.out.println("%%%%%");
         if (transactionId == last_sale_id) {
             try {
                 DAOproductType.read(productCode);
@@ -888,7 +860,6 @@ public class EZShop implements EZShopInterface {
                 e.getMessage();
                 return false;
             }
-            System.out.println("price_after1 " + openSale.getPrice());
             //TODO check the price change
             for (int i = 0; i < openSale.getEntries().size(); i++) {
                 if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {
@@ -898,7 +869,6 @@ public class EZShop implements EZShopInterface {
                     openSale.getEntries().get(i).setDiscountRate(discountRate);
                     openSale.getEntries().get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit() * (1 - discountRate));                            //update discounted price per unit
                     openSale.setPrice(openSale.getPrice() + openSale.getEntries().get(i).getPricePerUnit() * openSale.getEntries().get(i).getAmount());            //compute new price
-                    System.out.println("price_after1 " + openSale.getPrice());
                     return true;
                 }
             }
@@ -930,16 +900,11 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public int computePointsForSale(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-      	System.out.println("Computing points for sale with ID: " + transactionId); 
 	if (transactionId <= 0 || transactionId == null)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-	/*
-        if (transactionId == last_sale_id)
-            return (int) (openSale.getPrice() / 10.0);
-        return -1;
-	*/
+
 	//Check if transaction exists
 	
 	Map<Integer, SaleTransaction> sts = null;
@@ -947,7 +912,6 @@ public class EZShop implements EZShopInterface {
 	try {
 		sts= DAOsaleTransaction.ReadAll();
 		for (SaleTransaction st : sts.values()) {
-			System.out.println();
 			if(st.getTicketNumber() == transactionId){
 				System.out.println("SaleTransction found, computing points...");
 				System.out.println(st.getTicketNumber() + "|" +  st.getPrice() + "|" + st.getDiscountRate());
@@ -978,7 +942,6 @@ public class EZShop implements EZShopInterface {
 
             //create the transaction
             Integer saleId = DAOsaleTransaction.Create(openSale);
-            System.out.println("saleId: " + saleId);
             for (int i = 0; i < openSale.getEntries().size(); i++) {
                 System.out.println("entry(" + i + ") ");
                 DAOsaleEntry.Create(saleId, openSale.getEntries().get(i));
