@@ -1107,7 +1107,7 @@ public class EZShop implements EZShopInterface {
 	        ret.setAmount(amount);
 	        ret.setProdId(productCode);
 	        //ret.setMoney(money.get());
-	        ret.setMoney(money.get()*(1-referingSale.getDiscountRate()));
+	        ret.setMoney(ret.getMoney() + money.get()*(1-referingSale.getDiscountRate()));
 		DAOreturnTransaction.Update(ret);
 
     	}catch(Exception e) {
