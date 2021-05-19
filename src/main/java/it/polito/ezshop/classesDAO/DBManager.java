@@ -112,6 +112,14 @@ public class DBManager {
 			}
 			stat.close();
 			
+			//return transaction
+			stat = conn.createStatement();
+			if(!existsTable("return_transaction")) { //no such table in DB
+				stat.execute("CREATE TABLE return_transaction (return_id INTEGER not null, sale_reference INTEGER, returned_value REAL, returned_product VARCHAR(30), returned_amount INTEGER, primary key(return_id));");
+			}
+			stat.close();
+			
+			
 			//Orders
 			stat = conn.createStatement();
 			if(!existsTable("orders")) { //no such table in DB
