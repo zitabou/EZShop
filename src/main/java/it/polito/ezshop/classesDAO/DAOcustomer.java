@@ -167,6 +167,7 @@ public class DAOcustomer {
 		}
 	
 		//attach new card to customer and update points
+		card = new LoyaltyCard();
 		card.setCardID(cust.getCustomerCard());
 		card.setPoints(cust.getPoints());
 		card.setCustomer(cust.getId());
