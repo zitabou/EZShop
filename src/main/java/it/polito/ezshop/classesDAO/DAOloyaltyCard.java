@@ -81,7 +81,6 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				card.setPoints(rs.getInt("card_points"));
 			}
 			
-			return card;
 		}catch(SQLException e){
 			throw new DAOexception("error while reading loyalty card" + e.getMessage());
 		}finally {
@@ -90,7 +89,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 			if(rs != null)
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
 		}
-		
+		return card;
 	}
 
 	public static LoyaltyCard ReadCustomer(Customer cust) throws DAOexception{
@@ -111,7 +110,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 				card.setCustomer(rs.getInt("customer"));
 				card.setPoints(rs.getInt("card_points"));
 			}
-			return card;
+
 		}catch(SQLException e){
 			throw new DAOexception("error while reading customer from loyalty card " + e.getMessage());
 		}finally {
@@ -120,6 +119,7 @@ public static LoyaltyCard Read(String cardId) throws DAOexception{
 			if(rs != null)
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading loyalty_card " + e.getMessage()); }
 		}
+		return card;
 	}
 	
 	
