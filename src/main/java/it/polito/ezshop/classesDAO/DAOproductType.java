@@ -37,9 +37,9 @@ public class DAOproductType {
 			throw new DAOexception(e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating productType " + prod.getId() + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating productType " + prod.getId() + e.getMessage()); }
 		}
 		
 		return generatedKey;
@@ -78,9 +78,9 @@ public class DAOproductType {
 			throw new DAOexception("error while reading product" + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prod.getId() + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prod.getId() + e.getMessage()); }
 		}
 		
 		return prod;
@@ -220,10 +220,10 @@ public class DAOproductType {
 				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
-			throw new DAOexception("[error while updating productType] " + e.getMessage());
+			throw new DAOexception("error while updating product " + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating product " + e.getMessage()); }
 		}
 	}
 	
@@ -245,10 +245,10 @@ public class DAOproductType {
 				throw new SQLException("entry not found");
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while updating productType " + e.getMessage());
+			throw new DAOexception("error while updating product " + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId() + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating product " + prod.getId() + e.getMessage()); }
 		}
 	}
 	
