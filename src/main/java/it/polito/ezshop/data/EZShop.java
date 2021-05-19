@@ -555,6 +555,7 @@ public class EZShop implements EZShopInterface {
 
 
             prod.setQuantity(prod.getQuantity() + o.getQuantity());
+            DAOproductType.Update(prod);
             o.setStatus("COMPLETED");
             DAOorder.Update(o);
         }

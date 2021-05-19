@@ -9,7 +9,6 @@ import it.polito.ezshop.classesDAO.DAOproductType;
 import it.polito.ezshop.classesDAO.DBManager;
 import it.polito.ezshop.data.BalanceOperation;
 import it.polito.ezshop.data.ProductType;
-import net.bytebuddy.asm.Advice;
 import org.junit.*;
 
 import java.sql.SQLException;
