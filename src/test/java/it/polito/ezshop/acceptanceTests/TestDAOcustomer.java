@@ -3,6 +3,7 @@ package it.polito.ezshop.acceptanceTests;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -101,6 +102,9 @@ public class TestDAOcustomer {
  		DAOcustomer.DeleteAll();
  		Assert.assertEquals(0,DAOcustomer.readAll().size());
  	}
-
+	@AfterClass
+	public static void endConnection() {
+		DBManager.closeConnection();
+	}
 
 }
