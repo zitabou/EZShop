@@ -40,6 +40,9 @@ public class EZShop implements EZShopInterface {
     private SaleTransaction openSale = null;
     private Map<String, ProductType> prodsToUpdate = null;
 
+    private List<TicketEntry> retEntries = null;
+    private Map<String, ProductType> prodsToReturn = null;
+
 
     public EZShop() {
 
@@ -1034,6 +1037,7 @@ public class EZShop implements EZShopInterface {
         returns.put(ret_id, ret);
         ret.setSaleID(saleNumber);
         SaleTransaction referingSale = getSaleTransaction(saleNumber);
+        retEntries = new ArrayList<>();
 
         DAOreturnTransaction.Create(ret);
         //referingSale.add(ReturnTransaction);
@@ -1046,6 +1050,8 @@ public class EZShop implements EZShopInterface {
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i=0;
 
+
+
     	try {
     		//retrieve return transaction and referring sale transaction
 	    	ReturnTransaction ret =DAOreturnTransaction.Read(returnId);
@@ -1055,6 +1061,33 @@ public class EZShop implements EZShopInterface {
 	    	//return false if amount to be returned > amount bought
 
 			List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
+
+
+            /*entry*/
+			/**/
+			ProductType prod = null;
+			TicketEntry entry = new ezReceiptEntry();
+	    	for(TicketEntry te : saleEntries) {
+	    		if(te.getBarCode().equals(productCode)) {
+	    			entry.setProductDescription(te.getProductDescription());
+	    			entry.setBarCode(productCode);
+	    			entry.setAmount(amount);
+	    			entry.setPricePerUnit(te.getPricePerUnit());
+	    			System.out.println(entry.getProductDescription());
+	    			retEntries.add(entry);
+	    		}
+		    	
+	    	}
+	    	prod = DAOproductType.read(productCode);
+	    	if (prodsToReturn.containsKey(productCode)) {
+	    		prod = prodsToReturn.get(productCode);
+	    	}
+            prod.setQuantity(prod.getQuantity() + amount);
+            System.out.println(prod.getBarCode());
+            prodsToUpdate.put(productCode, prod);
+	    	
+	    	/**/
+			/*entry*/
 
 			AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
 			AtomicReference<Double> money= new AtomicReference<>((double) 0);
@@ -1138,6 +1171,29 @@ public class EZShop implements EZShopInterface {
             ezSaleTransaction referingSale = (ezSaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
 
             if (commit) {
+
+                /*entry*/
+            	/**/
+                for (int j = 0; j< retEntries.size(); j++) {
+                    System.out.println("entry(" + j + ") ");
+                    DAOreturnEntry.Create(returnId, retEntries.get(j));
+                    System.out.println(retEntries.get(j));
+                }
+
+                //update the products
+                for (ProductType prod : prodsToReturn.values()) {
+                    System.out.println("product ");
+                    DAOproductType.UpdateByCode(prod);
+                    System.out.println(prod.getBarCode());
+                }
+
+                //get ready for next sale
+                last_sale_id = 0;
+                retEntries = null;
+                prodsToReturn.clear();
+            	/**/
+                /*entry*/
+                
                 //increase quantity available
                 ProductType prodType = DAOproductType.read(ret.getProdId());
                 prodType.setQuantity(prodType.getQuantity() + ret.getAmount());
