@@ -1246,7 +1246,73 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean receiveCreditCardPayment(Integer ticketNumber, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
-        return false;
+        
+	if (ticketNumber <= 0 || ticketNumber == null) {
+		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
+	}
+	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
+	       	throw new UnauthorizedException("The active user is not authorized. receiveCashPayment(,)");
+	}
+	// Check if credit card is in the system
+	ezCreditCard cc = null;
+	boolean ccFound = false;
+	try {
+		for (ezCreditCard ccc : DAOcc.readAll().values()){
+			if (ccc.getCCNumber().equals(creditCard)){
+				ccFound = true;
+				cc = ccc;
+				break;
+			}
+		}
+	} catch (DAOexception e) {
+		return false;
+	}
+	// If cc not found create credit card and Create record in database 
+	if (!ccFound) {
+		cc = new ezCreditCard();
+		cc.setCCNumber(creditCard);
+		if ( creditCard == null || creditCard.equals("")|| !cc.checkLuhn(creditCard)){
+			throw new InvalidCreditCardException("The credit card is invalid!");
+		}
+		System.out.println("Validez: " + cc.getValidity());
+
+		//Record on the DB a new CC if the number is valid
+		if (cc.getValidity()) {
+			System.out.println("CC is valid!");
+			try{
+			cc.setValidity(true);
+			cc.setId(DAOcc.Create(cc));
+			} catch(DAOexception e) {
+			return false;
+			}
+		}
+	} else{
+		//Check if CC is valid using Luhn's algorithm
+		if ( creditCard == null || creditCard.equals("")|| !cc.checkLuhn(creditCard)){
+			throw new InvalidCreditCardException("The credit card is invalid!");
+		}
+		System.out.println("Validez: " + cc.getValidity());
+	}
+
+	if (cc.getValidity()){
+		try {
+		SaleTransaction st = getSaleTransaction(ticketNumber);
+		if (st == null) { return false;}
+		//Record balance operation
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+				if(id > balance_id)
+					balance_id = id;
+			});
+			
+		balance_id++;
+		accountBook.recordBalanceUpdate(st.getPrice(), balance_id);
+		} catch (DAOexception e) {
+		return false;
+		}
+		return true;
+	} else {
+		return false;
+	}
     }
 
     @Override
@@ -1281,7 +1347,40 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public double returnCreditCardPayment(Integer returnId, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
-        return 0;
+	//Exceptions
+	if (returnId <= 0 || returnId== null) {
+		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
+	}
+	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
+	       	throw new UnauthorizedException("The active user is not authorized. receiveCashPayment(,)");
+	}
+
+	ezCreditCard cc = DAOcc.Read(creditCard);
+	if (cc == null) {
+		return -1;
+	}
+	if ( creditCard == null || creditCard.equals("")|| !cc.checkLuhn(creditCard)){
+		throw new InvalidCreditCardException("The credit card is invalid!");
+	}
+	
+	double money_returned = 0; 
+	try {
+		ReturnTransaction rt = DAOreturnTransaction.Read(returnId);
+		if (rt == null) { return -1;}
+
+		money_returned = rt.getReturnedValue();
+		//Record balance operation
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+				if(id > balance_id)
+					balance_id = id;
+			});
+		balance_id++;
+		accountBook.recordBalanceUpdate(0-money_returned, balance_id);
+	} catch(DAOexception e) {
+		return -1;
+	}
+	System.out.println("Money returned: " + money_returned);
+        return money_returned;
     }
 
     @Override

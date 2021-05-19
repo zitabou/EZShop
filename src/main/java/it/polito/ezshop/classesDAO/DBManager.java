@@ -119,7 +119,11 @@ public class DBManager {
 			}
 			stat.close();
 			
-			
+			//Credit cards
+			stat = conn.createStatement();
+			if(!existsTable("credit_card")) { //no such table in DB
+				stat.execute("CREATE TABLE credit_card (id INTEGER primary key autoincrement, cc_number varchar(30), owner_name varchar(30), secure_code varchar(30), validity INTEGER);");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
@@ -188,12 +192,19 @@ public class DBManager {
 			}
 			stat.close();
 
+			//Return transaction
 			stat = conn.createStatement();
 			if(existsTable("return_transaction")) { //no such table in DB
 				stat.execute("DROP TABLE return_transaction;");
 			}
 			stat.close();
 
+			//Credit card
+			stat = conn.createStatement();
+			if(existsTable("credit_card")) { //no such table in DB
+				stat.execute("DROP TABLE credit_card;");
+			}
+			stat.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
