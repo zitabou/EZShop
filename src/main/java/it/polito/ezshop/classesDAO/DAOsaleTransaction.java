@@ -80,7 +80,6 @@ public class DAOsaleTransaction {
 				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
 				sale.setPrice(rs.getDouble("price"));
-				//entries still left it will be done later
 			}
 			pstat.close();
 		}catch(SQLException e){
