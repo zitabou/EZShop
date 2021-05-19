@@ -40,7 +40,7 @@ public class TestloyaltyCard {
 	@Test
 	public void testReadLoyaltyCard() {
 					
-		LoyaltyCard lcard1 = DAOloyaltyCard.Read("card_00001");
+		LoyaltyCard lcard1 = DAOloyaltyCard.Read("0000000001");
   		Assert.assertTrue(lcard1.getPoints().equals(150));
 	}
 	
@@ -53,7 +53,7 @@ public class TestloyaltyCard {
  		DAOloyaltyCard.Update(loyalcard1);
  		
  		
- 		loyalcard1 = DAOloyaltyCard.Read("card_00001");
+ 		loyalcard1 = DAOloyaltyCard.Read("0000000001");
  		
  		Assert.assertTrue(loyalcard1.getPoints().equals(200));
  	}
