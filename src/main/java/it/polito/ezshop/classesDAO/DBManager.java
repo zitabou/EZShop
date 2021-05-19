@@ -125,7 +125,12 @@ public class DBManager {
 				stat.execute("CREATE TABLE return_transaction (return_id INTEGER not null, sale_reference INTEGER, returned_value REAL, returned_product VARCHAR(30), returned_amount INTEGER, primary key(return_id));");
 			}
 			stat.close();
-			
+			//entries of sale transaction
+			stat = conn.createStatement();
+			if(!existsTable("return_entries")) { //no such table in DB
+				stat.execute("CREATE TABLE return_entries (return_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL);");
+			}
+			stat.close();
 			
 			//Orders
 			stat = conn.createStatement();
