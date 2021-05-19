@@ -52,27 +52,28 @@ public class DAOcc{
 		ResultSet rs = null;
 		
 		try {
-			pstat = conn.prepareStatement("SELECT * FROM credit_card WHERE credit_card=?");
+			pstat = conn.prepareStatement("SELECT * FROM credit_card WHERE cc_number=?");
 			pstat.setString(1, cc_number);
 			rs = pstat.executeQuery();
 			if (rs.next() == true) {
 				
 				cc.setId(rs.getInt("id"));
 				cc.setCCNumber(rs.getString("cc_number"));
-				cc.setOwnerName(rs.getString("owner_name"));
-				cc.setSecureCode(rs.getString("secure_code"));
+				//cc.setOwnerName(rs.getString("owner_name"));
+				//cc.setSecureCode(rs.getString("secure_code"));
 				if (rs.getInt("validity") == 0) { cc.setValidity(false);} else 
 				{cc.setValidity(true);}
 			}
-			//pstat.close();
+			
 		}catch(SQLException e){
 			throw new DAOexception("error while reading Credit Card"  + cc_number );
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc.getId()); }
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
+
+			return cc;
 		}
 		
-		return cc;
 	}
 	
 /*	

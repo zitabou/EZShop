@@ -1347,7 +1347,40 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public double returnCreditCardPayment(Integer returnId, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
-        return 0;
+	//Exceptions
+	if (returnId <= 0 || returnId== null) {
+		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
+	}
+	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
+	       	throw new UnauthorizedException("The active user is not authorized. receiveCashPayment(,)");
+	}
+
+	ezCreditCard cc = DAOcc.Read(creditCard);
+	if (cc == null) {
+		return -1;
+	}
+	if ( creditCard == null || creditCard.equals("")|| !cc.checkLuhn(creditCard)){
+		throw new InvalidCreditCardException("The credit card is invalid!");
+	}
+	
+	double money_returned = 0; 
+	try {
+		ReturnTransaction rt = DAOreturnTransaction.Read(returnId);
+		if (rt == null) { return -1;}
+
+		money_returned = rt.getReturnedValue();
+		//Record balance operation
+		accountBook.getCreditsAndDebits().stream().map(bo -> bo.getBalanceId() ).forEach(id -> {
+				if(id > balance_id)
+					balance_id = id;
+			});
+		balance_id++;
+		accountBook.recordBalanceUpdate(0-money_returned, balance_id);
+	} catch(DAOexception e) {
+		return -1;
+	}
+	System.out.println("Money returned: " + money_returned);
+        return money_returned;
     }
 
     @Override
