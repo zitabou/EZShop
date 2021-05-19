@@ -91,7 +91,7 @@ public class DAOorder {
         ResultSet rs = null;
 
         try {
-            pstat = conn.prepareStatement("SELECT * FROM orders WHERE ID=?");
+            pstat = conn.prepareStatement("SELECT * FROM orders WHERE order_id=?");
             pstat.setInt(1, ordedId);
             rs = pstat.executeQuery();
             if (rs.next() == true) {
