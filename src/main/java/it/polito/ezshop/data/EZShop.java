@@ -406,11 +406,38 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        String pattern = "^\\d+\\-\\d+\\-\\d+$";  // TODO be sure about the regex
+        String pattern = "^\\d+\\-\\d+\\-\\d+$";
         Pattern regex = Pattern.compile(pattern);
         Matcher check = regex.matcher(newPos);
         if (!check.matches())
             throw new InvalidLocationException();
+
+
+		 
+        //define position
+        //reset old position if oldPos exists
+        Location oldLoc = DAOlocation.Read(productId);
+        if(oldLoc != null ) {
+        	oldLoc.setProduct(0);
+        	DAOlocation.Update(oldLoc);
+        }
+        
+        //check if new position exists and if so is it available
+        Location newLoc = DAOlocation.Read(newPos);
+        if(newLoc != null && newLoc.getProduct() != 0) {  //if the position exists and it is not occupied
+        	newLoc.setProduct(productId);
+        	DAOlocation.Update(newLoc);
+        }
+        else {
+        	newLoc = new Location();
+        	newLoc.setAisleByExtract(newPos);
+        	newLoc.setRackByExtract(newPos);
+        	newLoc.setLevelByExtract(newPos);
+        	newLoc.setProduct(productId);
+        	DAOlocation.Create(newLoc);
+        }
+
+
 
 
         // real operations

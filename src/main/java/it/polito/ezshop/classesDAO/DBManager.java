@@ -92,6 +92,13 @@ public class DBManager {
 			}
 			stat.close();
 			
+			//location
+			stat = conn.createStatement();
+			if(!existsTable("location")) { //no such table in DB
+				stat.execute("CREATE TABLE location (full_position VARCHAR not null, aisle INTEGER, rack INTEGER, level INTEGER, product INTEGER, primary key(full_position));");
+			}
+			stat.close();
+			
 			//Sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("sale_transaction")) { //no such table in DB
