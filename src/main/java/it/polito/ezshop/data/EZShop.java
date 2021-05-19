@@ -1047,7 +1047,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-//<<<<<<< HEAD
+
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
     	int i=0;
 
@@ -1089,7 +1089,6 @@ public class EZShop implements EZShopInterface {
 	    	
 	    	/**/
 			/*entry*/
-
 			AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
 			AtomicReference<Double> money= new AtomicReference<>((double) 0);
 			saleEntries.forEach( e -> {
@@ -1114,45 +1113,7 @@ public class EZShop implements EZShopInterface {
     		//return false if the transaction do not exist
     		return false;
     	}
-/*=======
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
-            throw new UnauthorizedException();
-        int i = 0;
 
-        try {
-            //retrieve return transaction and referring sale transaction
-            ReturnTransaction ret = DAOreturnTransaction.Read(returnId);
-
-            SaleTransaction referingSale = (SaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
-
-            //return false if amount to be returned > amount bought
-
-            List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
-
-            AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
-            AtomicReference<Double> money = new AtomicReference<>((double) 0);
-            saleEntries.forEach(e -> {
-                if (e.getBarCode().equals(productCode))
-                    if (e.getAmount() < amount)
-                        amountReturnedIsHigherThanAmountBought.set(true);
-                    else
-                        money.set(e.getPricePerUnit() * e.getAmount());
-
-            });
-            if (amountReturnedIsHigherThanAmountBought.get())
-                return false;
-
-            ret.setAmount(amount);
-            ret.setProdId(productCode);
-            ret.setMoney(money.get());
-            DAOreturnTransaction.Update(ret);
-
-        } catch (Exception e) {
-            //return false if the transaction do not exist
-            return false;
-        }
->>>>>>> 510813cc0e481d08f30fe703819b8fd1818312a8
-*/
         return true;
     }
 
@@ -1194,11 +1155,16 @@ public class EZShop implements EZShopInterface {
                 prodsToReturn.clear();
             	/**/
                 /*entry*/
+
+                List<TicketEntry> returnedProducts = DAOreturnEntry.Read(returnId);
                 
-                //increase quantity available
-                ProductType prodType = DAOproductType.read(ret.getProdId());
-                prodType.setQuantity(prodType.getQuantity() + ret.getAmount());
-                DAOproductType.Update(prodType);
+                //increase quantity available :TODO for all products
+                for (TicketEntry rp : returnedProducts){
+                    ProductType prodType = DAOproductType.read(rp.getBarCode());
+                    prodType.setQuantity(prodType.getQuantity() + rp.getAmount());
+                    DAOproductType.Update(prodType);
+                }
+
 
                 //decrease amount spent on the Sale
                 referingSale.setPrice(referingSale.getPrice() - ret.getReturnedValue());
@@ -1206,10 +1172,12 @@ public class EZShop implements EZShopInterface {
 
                 //remove returned items from sale transaction
                 List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
-                saleEntries.forEach(e -> {
-                    if (e.getBarCode().equals(ret.getProdId()))
-                        e.setAmount(e.getAmount() - ret.getAmount());
-                });
+                for (TicketEntry rp : returnedProducts) {
+                    saleEntries.forEach(e -> {
+                        if (e.getBarCode().equals(rp.getBarCode())) //TODO: not ret.getProdId ma il prod id delle ret entries
+                            e.setAmount(e.getAmount() - rp.getAmount());
+                    });
+                }
                 //update (remove old entries and recreate new entries)
                 DAOsaleEntry.DeleteFromSale(ret.getSaleID());
                 saleEntries.forEach(e -> {
