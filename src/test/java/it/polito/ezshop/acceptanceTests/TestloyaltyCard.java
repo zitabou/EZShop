@@ -33,7 +33,7 @@ public class TestloyaltyCard {
 		LoyaltyCard loyalcard = new LoyaltyCard("4716258050958645",10);
 		
 		String outcome = DAOloyaltyCard.Create(loyalcard);
-		Assert.assertEquals("card_00003", outcome); 
+		Assert.assertEquals("0000000003", outcome);
 	}
 	
 	
