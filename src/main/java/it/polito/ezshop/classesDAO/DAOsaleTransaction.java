@@ -187,7 +187,6 @@ public class DAOsaleTransaction {
 			if(pstat != null)
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
 		}
-		return map;
 	}	
 	
 
