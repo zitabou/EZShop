@@ -278,30 +278,6 @@ Version:
 
 
 
- ### **Class *DAOcustomer* - method *Update(customer)***
-
-**Criteria for method *Update(customer)*:**
-
- - Update customer in DB
-
-**Predicates for method *Update(customer)*:**
-
-| Criteria              | Predicate                  |
-| --------------------- | -------------------------- |
-| Update customer in DB | Customer id >0             |
-|                       | Customer id<=0             |
-|                       | Customer not present in DB |
-
-**Combination of predicates**:
-
-
-| Criteria | Predicate                        | Valid / Invalid | Description of the test case | JUnit test case             |
-| -------- | -------------------------------- | --------------- | ---------------------------- | --------------------------- |
-| *        | Customer id>0                    | Valid           | DAOcustomer.Update(customer) | testUpdateCustomer()        |
-|          | Customer id<0, not present in DB | Invalid         | DAOcustomer.Update(customer) | testUpdateCustomerNotInDB() |
-
-
-
 ### **Class *DAObalanceOperation* - method *Create(BalanceOperation bo)***
 
 
