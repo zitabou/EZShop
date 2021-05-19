@@ -76,19 +76,6 @@ public class TestDAOcustomer {
  		Assert.assertTrue(custs.get(1).getCustomerName().equals("testcus2"));
  	}
  	
- 	//Update customer	
- // by ID
- 	@Test
- 	public void testUpdateCustomer() {
- 		
- 		cus4.setCustomerName("testcus4_Updated");
- 		DAOcustomer.Update(cus4);
- 		
- 		
- 		cus4 = DAOcustomer.Read(4);
- 		
- 		Assert.assertTrue(cus4.getCustomerName().equals("testcus4_Updated"));
- 	}
  	
  	@Test
  	public void testDeleteCustomer() {
