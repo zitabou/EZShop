@@ -1218,6 +1218,9 @@ public class EZShop implements EZShopInterface {
                 });
 
 
+            }else{
+                DAOreturnTransaction.Delete(returnId);
+
             }
         } catch (Exception e) {
             //return false if the returnTransaction is not found or if problem with DB
