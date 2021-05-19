@@ -28,10 +28,10 @@ public class DAOsaleEntry {
 			pstat.executeUpdate();
 			
 		}catch(SQLException e){
-			throw new DAOexception("error while creating receipt entry for sale " + saleId + e.getMessage());
+			throw new DAOexception("error while creating sale entry for sale " + saleId + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating receipt entry for sale " + saleId + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating sale entry for sale " + saleId + e.getMessage()); }
 		}
 	}
 	
@@ -60,12 +60,12 @@ public class DAOsaleEntry {
                 list.add(entry);
             }
         }catch(SQLException e){
-			throw new DAOexception("error while getting all customers " + e.getMessage());
+			throw new DAOexception("error while getting sale entries " + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting sale entries " + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting sale entries " + e.getMessage()); }
 		}
         return list;
 
@@ -100,7 +100,7 @@ public class DAOsaleEntry {
 			throw new DAOexception("error while deleting all entries " + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all entrie " + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all entries " + e.getMessage()); }
 		}
 	}
 	
