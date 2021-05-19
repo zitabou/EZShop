@@ -77,8 +77,10 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("error while reading product" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer" + prod.getId() + e.getMessage()); }
 		}
 		
 		return prod;
@@ -111,8 +113,10 @@ public class DAOproductType {
         }catch(SQLException e){
 			throw new DAOexception("error while getting all products by barcode" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by barcode " + e.getMessage()); }
 		}
         return prod;
 	}
@@ -144,8 +148,10 @@ public class DAOproductType {
         }catch(SQLException e){
 			throw new DAOexception("error while getting all products " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products " + e.getMessage()); }
 		}
         return map;
 	}
@@ -179,8 +185,10 @@ public class DAOproductType {
         }catch(SQLException e){
 			throw new DAOexception("error while getting all products by description "  + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all products by description " + e.getMessage()); }
 		}
         return map;
 	}
@@ -214,7 +222,8 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("[error while updating productType] " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + e.getMessage()); }
 		}
 	}
 	
@@ -238,7 +247,8 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("error while updating productType " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId() + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating productType " + prod.getId() + e.getMessage()); }
 		}
 	}
 	
@@ -261,7 +271,8 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting Product" + prod.getId());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product" + prod.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product" + prod.getId()); }
 		}
 	}
 	
@@ -275,7 +286,8 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting Product with code" + barcode + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product with code" + barcode + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Product with code" + barcode + e.getMessage()); }
 		}
 	}
 	
@@ -288,7 +300,8 @@ public class DAOproductType {
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting all Products " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Products " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Products " + e.getMessage()); }
 		}
 	}
 	

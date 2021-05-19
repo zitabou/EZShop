@@ -62,8 +62,10 @@ public class DAOsaleEntry {
         }catch(SQLException e){
 			throw new DAOexception("error while getting all customers " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers " + e.getMessage()); }
 		}
         return list;
 
@@ -75,28 +77,30 @@ public class DAOsaleEntry {
 
 	public static void DeleteFromSale(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM receipt_entries WHERE sale_id=?");
-			pstat1.setInt(1,saleId);
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM receipt_entries WHERE sale_id=?");
+			pstat.setInt(1,saleId);
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage() );
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage()); }
 		}
 	}
 	
 	public static void DeleteAll() throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM receipt_entries");
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM receipt_entries");
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting all entries " + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all entrie " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all entrie " + e.getMessage()); }
 		}
 	}
 	

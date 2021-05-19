@@ -41,8 +41,10 @@ public class DAOreturnTransaction {
         }catch(SQLException e){
             throw new DAOexception("error while creating BalanceOperation" + e.getMessage());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + r.getBalanceId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + r.getBalanceId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + r.getBalanceId()); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + r.getBalanceId()); }
         }
         return generatedKey;
     }
@@ -73,8 +75,10 @@ public class DAOreturnTransaction {
         }catch(SQLException e){
             throw new DAOexception("error while reading balance operation " + returnId);
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading balance operation" + returnId); }
         }
 
         return r;
@@ -105,8 +109,10 @@ public class DAOreturnTransaction {
         }catch(SQLException e){
             throw new DAOexception("error while getting all return transactions");
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all return transactions"); }
         }
         return map;
 
@@ -128,7 +134,8 @@ public class DAOreturnTransaction {
         }catch(SQLException e){
             throw new DAOexception("error while updating return transaction " +  r.getBalanceId());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating return transaction " +  r.getBalanceId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating return transaction " +  r.getBalanceId()); }
         }
 
 
@@ -136,15 +143,16 @@ public class DAOreturnTransaction {
 
     public static void Delete(Integer return_id) throws DAOexception{
         Connection conn = DBManager.getConnection();
-        PreparedStatement pstat1 = null;
+        PreparedStatement pstat = null;
         try{
-            pstat1 = conn.prepareStatement("DELETE FROM return_transaction WHERE return_id=?");
-            pstat1.setInt(1,return_id);
-            pstat1.executeUpdate();
+            pstat = conn.prepareStatement("DELETE FROM return_transaction WHERE return_id=?");
+            pstat.setInt(1,return_id);
+            pstat.executeUpdate();
         }catch(SQLException e){
             throw new DAOexception("error while deleting Return Transaction " + return_id + e.getMessage());
         }finally {
-            try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + return_id + e.getMessage()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting Customer " + return_id + e.getMessage()); }
         }
     }
 }

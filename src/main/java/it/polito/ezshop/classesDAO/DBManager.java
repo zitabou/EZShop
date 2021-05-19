@@ -127,7 +127,8 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			try {stat.close();} catch (SQLException e) {e.getMessage();}
+			if(stat != null)
+				try {stat.close();} catch (SQLException e) {e.getMessage();}
 		}
 		
 		
@@ -208,7 +209,8 @@ public class DBManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}finally {
-			try {stat.close();} catch (SQLException e) {e.getMessage();}
+			if(stat != null)
+				try {stat.close();} catch (SQLException e) {e.getMessage();}
 		}
 
 

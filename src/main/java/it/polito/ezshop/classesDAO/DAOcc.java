@@ -37,8 +37,10 @@ public class DAOcc{
 		}catch(SQLException e){
 			throw new DAOexception("error while creating Credit Card" + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Credit Card" + cc.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Credit Card" + cc.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating Credit Card" + cc.getId()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating Credit Card" + cc.getId()); }
 		}
 
 		return generatedKey;
@@ -68,8 +70,10 @@ public class DAOcc{
 		}catch(SQLException e){
 			throw new DAOexception("error while reading Credit Card"  + cc_number );
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading Credit Card" + cc_number); }
 
 			return cc;
 		}
@@ -140,8 +144,10 @@ public class DAOcc{
         }catch(SQLException e){
 			throw new DAOexception("[error while getting all credit cards] ");
 	}finally {
-		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all credit cards"); }
-		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all credit cards"); }
+		if(pstat != null)
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all credit cards"); }
+		if(rs != null)
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all credit cards"); }
 		return map;
 	}
 

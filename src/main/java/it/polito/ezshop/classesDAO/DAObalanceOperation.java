@@ -41,8 +41,10 @@ public class DAObalanceOperation {
         }catch(SQLException e){
             throw new DAOexception("error while creating BalanceOperation" + e.getMessage());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + bo.getBalanceId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + bo.getBalanceId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + bo.getBalanceId()); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation" + bo.getBalanceId()); }
         }
         return generatedKey;
     }
@@ -73,8 +75,10 @@ public class DAObalanceOperation {
         }catch(SQLException e){
             throw new DAOexception("error while getting all customers");
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all customers"); }
         }
         return map;
 
@@ -82,14 +86,15 @@ public class DAObalanceOperation {
 
     public static void DeleteAll() throws DAOexception{
         Connection conn = DBManager.getConnection();
-        PreparedStatement pstat1 = null;
+        PreparedStatement pstat = null;
         try{
-            pstat1 = conn.prepareStatement("DELETE FROM balance_operation");
-            pstat1.executeUpdate();
+            pstat = conn.prepareStatement("DELETE FROM balance_operation");
+            pstat.executeUpdate();
         }catch(SQLException e){
             throw new DAOexception("error while deleting all Balance Operation ");
         }finally {
-            try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Balance Operation "); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all Balance Operation "); }
         }
 
     }

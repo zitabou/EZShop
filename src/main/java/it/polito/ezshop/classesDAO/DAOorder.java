@@ -40,8 +40,10 @@ public class DAOorder {
         }catch(SQLException e){
             throw new DAOexception("error while creating BalanceOperation " + e.getMessage());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating BalanceOperation " + o.getOrderId()); }
         }
         return generatedKey;
     }
@@ -72,8 +74,10 @@ public class DAOorder {
         }catch(SQLException e){
             throw new DAOexception("error while getting all orders ");
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all order"); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all orders"); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all order"); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all orders"); }
         }
         return map;
 
@@ -103,8 +107,10 @@ public class DAOorder {
         }catch(SQLException e){
             throw new DAOexception("error while reading order " + ordedId);
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
-            try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
+        	if(rs != null)
+        		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading order" + o.getOrderId()); }
         }
 
         return o;
@@ -131,7 +137,8 @@ public class DAOorder {
         }catch(SQLException e){
             throw new DAOexception("[error while updating order] " + o.getOrderId());
         }finally {
-            try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating order" + o.getOrderId()); }
+        	if(pstat != null)
+        		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating order" + o.getOrderId()); }
         }
 
     }

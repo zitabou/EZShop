@@ -36,8 +36,10 @@ public class DAOuser {
 		}catch(SQLException e){
 			throw new DAOexception("error while creating User " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating User " + usr.getId()); }
 		}
 
 		return generatedKey;
@@ -65,8 +67,10 @@ public class DAOuser {
 		}catch(SQLException e){
 			throw new DAOexception("error while reading User" + userId);
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
 		}
 		
 		return usr;
@@ -93,7 +97,8 @@ public class DAOuser {
 		}catch(SQLException e){
 			throw new DAOexception("error while updating User" + usr.getId());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating User" + usr.getId()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating User" + usr.getId()); }
 		}
 		
 		
@@ -101,15 +106,16 @@ public class DAOuser {
 	
 	public static void Delete(Integer user_id) throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM user WHERE user_id=?");
-			pstat1.setInt(1,user_id);
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM user WHERE user_id=?");
+			pstat.setInt(1,user_id);
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting User " + user_id);
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting User " + user_id); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting User " + user_id); }
 		}
 
 	}
@@ -137,8 +143,10 @@ public class DAOuser {
         }catch(SQLException e){
 			throw new DAOexception("[error while getting all user] ");
 	}finally {
-		try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all users  "); }
-		try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all users "); }
+		if(pstat != null)
+			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting all users  "); }
+		if(rs != null)
+			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while getting all users "); }
 		return map;
 	}
 

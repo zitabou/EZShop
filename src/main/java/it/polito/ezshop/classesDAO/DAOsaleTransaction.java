@@ -29,7 +29,8 @@ public class DAOsaleTransaction {
 		}catch(SQLException e){
 			throw new DAOexception("error while getting sale transaction id " + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting sale transaction id " + generatedKey + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while getting sale transaction id " + generatedKey + e.getMessage()); }
 		}
 		return generatedKey;
 		
@@ -85,8 +86,10 @@ public class DAOsaleTransaction {
 		}catch(SQLException e){
 			throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
 		}
 		
 		sale.setEntries(DAOsaleEntry.Read(saleId));
@@ -112,7 +115,8 @@ public class DAOsaleTransaction {
 		}catch(SQLException e){
 			throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage());
 		}finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage()); }
 		}
 		
 		
@@ -124,35 +128,37 @@ public class DAOsaleTransaction {
 // DELETE
 	public static void Delete(Integer saleId) throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		
 		DAOsaleEntry.DeleteFromSale(saleId);
 		
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM sale_transaction WHERE id=?");
-			pstat1.setInt(1,saleId);
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM sale_transaction WHERE id=?");
+			pstat.setInt(1,saleId);
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting sale transaction " + saleId + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting sale transaction  " + saleId + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting sale transaction  " + saleId + e.getMessage()); }
 		}
 	}
 	
 	
 	public static void DeleteAll() throws DAOexception{
 		Connection conn = DBManager.getConnection();
-		PreparedStatement pstat1 = null;
+		PreparedStatement pstat = null;
 		
 		DAOsaleEntry.DeleteAll();
 		
 		try{
-			pstat1 = conn.prepareStatement("DELETE FROM sale_transaction");
-			pstat1.executeUpdate();
+			pstat = conn.prepareStatement("DELETE FROM sale_transaction");
+			pstat.executeUpdate();
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting all sale transactions " + e.getMessage());
 		}finally {
-			try {pstat1.close();} catch (SQLException e) {throw new DAOexception("error while deleting all sale transactions  " + e.getMessage()); }
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all sale transactions  " + e.getMessage()); }
 		}
 	}
 	public static Map<Integer, SaleTransaction> ReadAll() throws DAOexception{
@@ -176,11 +182,12 @@ public class DAOsaleTransaction {
 		catch (SQLException e) {
 			throw new DAOexception("Error while ReadAll() Sale transactions.");
 		} finally {
-			try {pstat.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
-			
-			try {rs.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
-			return map;
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
+			if(pstat != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("Error while ReadAll() Sale transactions");}
 		}
+		return map;
 	}	
 	
 
