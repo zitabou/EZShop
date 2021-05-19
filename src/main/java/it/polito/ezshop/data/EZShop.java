@@ -1097,7 +1097,7 @@ public class EZShop implements EZShopInterface {
 					if (e.getAmount() < amount)
 						amountReturnedIsHigherThanAmountBought.set(true);
 					else
-						money.set(e.getPricePerUnit() * amount ); //* (1-e.getDiscountRate()) is already considered in e.getPricePerUnit
+						money.set(e.getPricePerUnit() * amount * (1-e.getDiscountRate())); // is already considered in e.getPricePerUnit
 						//money.set(e.getPricePerUnit() * e.getAmount());
 
 			});
