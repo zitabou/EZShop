@@ -4,6 +4,7 @@ import it.polito.ezshop.classes.Credit;
 import it.polito.ezshop.classes.Debit;
 import it.polito.ezshop.classes.ezProductType;
 import it.polito.ezshop.classesDAO.DAObalanceOperation;
+import it.polito.ezshop.classesDAO.DAOexception;
 import it.polito.ezshop.classesDAO.DAOproductType;
 import it.polito.ezshop.classesDAO.DBManager;
 import it.polito.ezshop.data.BalanceOperation;
@@ -61,7 +62,7 @@ public class TestDAObalanceOperation {
 
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test (expected = DAOexception.class)
     public void testCreateBOWithWrongId() {
         int newId = DAObalanceOperation.readAll().size() +1;
         BalanceOperation debit = new Debit(newId , LocalDate.now(), 0);
