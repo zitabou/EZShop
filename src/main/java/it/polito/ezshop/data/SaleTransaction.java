@@ -6,7 +6,7 @@ public interface SaleTransaction {
 
     Integer getTicketNumber();
 
-    void setTicketNumber(Integer ticketNumber);
+    void setTicketNumber(Integer receiptNumber);
 
     List<TicketEntry> getEntries();
 
