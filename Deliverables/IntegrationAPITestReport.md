@@ -1,14 +1,14 @@
 # Integration and API Test Documentation
 
-Authors:
+Authors: Marcelo Coronel, Mostafa Asadollahy, Tommaso Natta, Zissis Tabouras 
 
-Date:
+Date: 27/05/2021
 
 Version:
 
 # Contents
 
-- [Dependency graph](#dependency graph)
+- [Dependency graph](#dependency-graph)
 
 - [Integration approach](#integration)
 
@@ -24,6 +24,10 @@ Version:
 # Dependency graph 
 
      <report the here the dependency graph of the classes in EzShop, using plantuml>
+
+<img src="./images/IntegrationTesting/dependencyGraph.png" alt="Login Manager" width="1200"/>
+
+    
      
 # Integration approach
 
@@ -31,7 +35,7 @@ Version:
     (ex: step1: class A, step 2: class A+B, step 3: class A+B+C, etc)> 
     <Some steps may  correspond to unit testing (ex step1 in ex above), presented in other document UnitTestReport.md>
     <One step will  correspond to API testing>
-    
+
 
 
 #  Tests
@@ -39,9 +43,23 @@ Version:
    <define below a table for each integration step. For each integration step report the group of classes under test, and the names of
      JUnit test cases applied to them> JUnit test classes should be here src/test/java/it/polito/ezshop
 
+     Approach : Bottom-up
+
 ## Step 1
 | Classes  | JUnit test cases |
 |--|--|
+|DAObalanceOperation|TestDAObalanceOperation|
+|DAOcustomer|TestDAOcustomer|
+|DAOloyaltyCard|TestDAOloyaltyCard|
+|DAOorder|TestDAOorder|
+|DAOproductType|TestDAOproductType|
+|DAOlocation||
+|DAOreturnEntry||
+|DAOreturnTransaction||
+|DAOsaleEntry||
+|DAOsaleTransaction||
+|DAOuser||
+|DAOcc||
 |||
 
 
