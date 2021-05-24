@@ -54,8 +54,8 @@ Version:
 |DAOorder|TestDAOorder|
 |DAOproductType|TestDAOproductType|
 |DAOlocation||
-|DAOreturnEntry||
-|DAOreturnTransaction||
+|DAOreturnEntry|testDAOReturnTransaction|
+|DAOreturnTransaction|testDAOReturnTransaction|
 |DAOsaleEntry||
 |DAOsaleTransaction||
 |DAOuser||
