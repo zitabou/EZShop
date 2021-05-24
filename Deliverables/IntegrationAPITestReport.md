@@ -66,6 +66,10 @@ Version:
 ## Step 2
 | Classes  | JUnit test cases |
 |--|--|
+|EzShop, DAObalanceOperation| testBalanceOperationApi|
+|EzShop, DAOorder|testOrderApi|
+|||
+|||
 |||
 
 
