@@ -68,7 +68,7 @@ Version:
 |--|--|
 |EzShop, DAObalanceOperation| testBalanceOperationApi|
 |EzShop, DAOorder|testOrderApi|
-|||
+|EzShop, DAOReturnTramsaction, DAOreturnEntry| testReturnTransactionApi|
 |||
 |||
 

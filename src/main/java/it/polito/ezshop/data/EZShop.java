@@ -1050,6 +1050,10 @@ public class EZShop implements EZShopInterface {
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
 
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+		if(returnId == null || returnId <= 0) throw new InvalidTransactionIdException();
+        if (productCode == null || productCode.equals("") || !validBarCode(productCode)) throw new InvalidProductCodeException();
+        if (amount <= 0) throw new InvalidQuantityException();
+
     	int i=0;
 
 
