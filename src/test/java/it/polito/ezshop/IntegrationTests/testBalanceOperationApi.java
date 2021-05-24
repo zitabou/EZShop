@@ -56,7 +56,7 @@ public class testBalanceOperationApi {
     @Test
     public void testKOCases() throws UnauthorizedException, InvalidPasswordException, InvalidUsernameException {
         ezShop.logout();
-        
+
        // List<BalanceOperation> list = ezShop.getCreditsAndDebits(LocalDate.MIN, LocalDate.MAX);
         double qty = 2;
 
