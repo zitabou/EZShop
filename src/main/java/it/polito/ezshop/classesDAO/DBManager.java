@@ -102,7 +102,7 @@ public class DBManager {
 			//Sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("sale_transaction")) { //no such table in DB
-				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, primary key(id));");
+				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, primary key(id), CHECK(discount_rate>=0), CHECK(price>=0));");
 			}
 			stat.close();
 			//entries of sale transaction
@@ -125,7 +125,7 @@ public class DBManager {
 				stat.execute("CREATE TABLE return_transaction (return_id INTEGER not null, sale_reference INTEGER, returned_value REAL, returned_product VARCHAR(30), returned_amount INTEGER, primary key(return_id));");
 			}
 			stat.close();
-			//entries of sale transaction
+			//entries of return transaction
 			stat = conn.createStatement();
 			if(!existsTable("return_entries")) { //no such table in DB
 				stat.execute("CREATE TABLE return_entries (return_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL);");

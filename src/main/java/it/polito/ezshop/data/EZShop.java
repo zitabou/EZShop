@@ -780,8 +780,15 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;
         TicketEntry entry = new ezReceiptEntry();
         try {
+        	
+        	if (transactionId != last_sale_id)
+        		return false;
+        	
             prod = DAOproductType.read(productCode);
-            if (amount > prod.getQuantity()) return false;
+            if(prod == null) return false;
+            if (amount > prod.getQuantity()){
+            	throw new InvalidQuantityException();
+            }
 
             entry.setAmount(amount);
             entry.setDiscountRate(0.0);
@@ -846,7 +853,7 @@ public class EZShop implements EZShopInterface {
                     return true;
                 }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -869,7 +876,7 @@ public class EZShop implements EZShopInterface {
                 e.getMessage();
                 return false;
             }
-            //TODO check the price change
+
             for (int i = 0; i < openSale.getEntries().size(); i++) {
                 if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {
 
@@ -883,7 +890,7 @@ public class EZShop implements EZShopInterface {
             }
         }
 
-        return true;
+        return false;
     }
 
     @Override
