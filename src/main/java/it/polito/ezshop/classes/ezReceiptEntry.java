@@ -3,6 +3,22 @@ package it.polito.ezshop.classes;
 import it.polito.ezshop.data.TicketEntry;
 
 public class ezReceiptEntry implements TicketEntry{
+	
+	public ezReceiptEntry(){
+		this.barcode = null;
+		this.productDescription = null;
+		this.amount = 0;
+		this.pricePerUnit = 0.0;
+		this.discountRate = 0.0;
+	}
+	
+	public ezReceiptEntry(String barcode, String productDescription, int amount, double pricePerUnit, double discountRate){
+		this.barcode = barcode;
+		this.productDescription = productDescription;
+		this.amount = amount;
+		this.pricePerUnit = pricePerUnit;
+		this.discountRate = discountRate;
+	}
 
 	@Override
 	public String getBarCode() {return this.barcode;}
