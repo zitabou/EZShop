@@ -9,27 +9,41 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 	
 	
 	public ezSaleTransaction() {
-		saleID = 0;
-		discountRate = 0.0;
-		price = 0.0;
-		//customer = new ezCustomer();
+		this.saleID = 0;
+		this.discountRate = 0.0;
+		this.price = 0.0;
+		this.entries = null;
 	    
 	}
 	
 	public ezSaleTransaction(Integer saleID) {
 		this.saleID = saleID;
-		discountRate = 0.0;
-		price = 0.0;
-		//customer = new ezCustomer();
+		this.discountRate = 0.0;
+		this.price = 0.0;
+		this.entries = null;
 	    
+	}
+	
+	public ezSaleTransaction(double discountRate, double price) {
+		this.saleID = 0;
+		this.discountRate = discountRate;
+		this.price = price;
+		this.entries = null;
 	}
 	
 	public ezSaleTransaction(int saleId, double discountRate, double price) {
 		this.saleID = saleId;
 		this.discountRate = discountRate;
 		this.price = price;
-		//this.customer = new ezCustomer();
-		
+		this.entries = null;
+	}
+	
+	
+	public ezSaleTransaction(int saleId, double discountRate, double price, List<TicketEntry> entries) {
+		this.saleID = saleId;
+		this.discountRate = discountRate;
+		this.price = price;
+		this.entries = entries;
 	}
 	
 
