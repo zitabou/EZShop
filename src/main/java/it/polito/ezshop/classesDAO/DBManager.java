@@ -108,7 +108,7 @@ public class DBManager {
 			//entries of sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("receipt_entries")) { //no such table in DB
-				stat.execute("CREATE TABLE receipt_entries (sale_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL, discount_rate REAL );");
+				stat.execute("CREATE TABLE receipt_entries (sale_id INTEGER not null, barcode VARCHAR(14), product_description VARCHAR, amount INTEGER, price_per_unit REAL, discount_rate REAL, CHECK(amount>=0), CHECK(price_per_unit>=0), CHECK(discount_rate>=0));");
 			}
 			stat.close();
 
