@@ -132,13 +132,16 @@ public class EZShop implements EZShopInterface {
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
 	User usr = null;
+	if ( id <= 0 || id == null) {
+		throw new InvalidUserIdException("Invalid User ID. getUser(id)");
+	}
+	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+		throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
+	}
 	try {
 		usr = DAOuser.Read(id);
 		if (usr==null || id <= 0 || id == null) {
 			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
-		}
-		if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
-			throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
 		}
 	} catch (DAOexception e) {
 		return null;
@@ -200,6 +203,12 @@ public class EZShop implements EZShopInterface {
 	if (validate_username == false) {
 		throw new InvalidUsernameException("Username does not exist.");
 	}	
+	/*if(aux_usr.getPassword().equals(password)) {
+		activeUser = (ezUser) aux_usr;
+		return aux_usr;
+	} else {
+		throw new InvalidPasswordException("Password is incorrect.");
+	}*/
 	try {
     		if(aux_usr.getPassword().equals(password)) {
     			activeUser = (ezUser) aux_usr;
@@ -207,8 +216,9 @@ public class EZShop implements EZShopInterface {
 	    	} else {
 			throw new InvalidPasswordException("Password is incorrect.");
 		}
-	}catch (Exception e) {
+	}catch (DAOexception e) {
 		return null;
+		//throw new InvalidPasswordException("Password is incorrect.");	
 	}
     }
 
