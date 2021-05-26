@@ -71,8 +71,31 @@ Version:
 |EzShop, DAOproductType, DAOlocation|TestProductTypeAPI|
 |EzShop, DAOsaleTransaction, DAOproductType, DAOsaleEntry|TestSaleTransactionApi|
 
+## Step 3
+| Classes  | JUnit test cases |
+|--|--|
+|EzShop, User,accountBook|recordBalanceUpdate|
 
-## Step n 
+
+## Step 4
+| Classes  | JUnit test cases |
+|--|--|
+|EzShop, User,DAOCustomer, LoyaltyCard|defineCustomer, modifyCustomer , deleteCustomer , getCustomer, getAllCustomer|
+|EzShop, User, DAOSaleTransaction, accountBook|receiveCashPayment, returnCashPayment|
+
+## Step 5 
+| Classes  | JUnit test cases |
+|--|--|
+
+|EzShop, User, DAOreturnTransaction, DAOcc, accountBook|returnCreditCardPayment|
+
+## Step 6
+| Classes  | JUnit test cases |
+|--|--|
+
+|EzShop, User, DAOreturnTransaction,DAOSaleTransaction, DAOcc, accountBook|receiveCreditCardPayment|
+
+
 
    
 
