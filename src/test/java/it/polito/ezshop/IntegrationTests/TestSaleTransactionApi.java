@@ -1,10 +1,5 @@
 package it.polito.ezshop.IntegrationTests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -13,16 +8,13 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.polito.ezshop.classes.ezProductType;
-import it.polito.ezshop.classes.ezReceiptEntry;
 import it.polito.ezshop.classes.ezSaleTransaction;
-import it.polito.ezshop.classesDAO.DAOexception;
 import it.polito.ezshop.classesDAO.DAOproductType;
 import it.polito.ezshop.classesDAO.DAOsaleTransaction;
 import it.polito.ezshop.classesDAO.DBManager;
 import it.polito.ezshop.data.EZShopInterface;
 import it.polito.ezshop.data.ProductType;
 import it.polito.ezshop.data.SaleTransaction;
-import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.exceptions.InvalidDiscountRateException;
 import it.polito.ezshop.exceptions.InvalidPasswordException;
 import it.polito.ezshop.exceptions.InvalidPricePerUnitException;

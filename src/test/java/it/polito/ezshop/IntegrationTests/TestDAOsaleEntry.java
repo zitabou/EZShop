@@ -2,10 +2,7 @@ package it.polito.ezshop.IntegrationTests;
 
 import static org.junit.Assert.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
