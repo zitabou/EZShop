@@ -571,9 +571,9 @@ FR completed: FR4, FR8
 |  1.1     | FR 3.1                        | TestProductTypeAPI |
 |  1.2      | FR 4.2                        | TestProductTypeAPI |
 | 1.3         | FR 3.1                          | TestProductTypeAPI          |
-| 2.1 | FR 1.1 |  |
-| 2.2 | FR 1.2 |  |
-| 2.3 | FR 1.1 |  |
+| 2.1 | FR 1.1 | TestUserApi |
+| 2.2 | FR 1.2 | TestUserApi |
+| 2.3 | FR 1.1 | TestUserApi |
 | 3.1         | FR 4.3, FR 4.5, FR 4.7       | testOrderApi          |
 | 3.2         | FR 4.4 , FR 4.2         | testOrderApi          |
 | 3.3         | FR 4.6 , FR 4.1                 | testOrderApi          |
@@ -581,8 +581,8 @@ FR completed: FR4, FR8
 | 4.2      | FR 5.1, FR 5.3, FR 5.4, , FR 5.5, FR 5.6 | TestCustomerApi |
 | 4.3 | FR 5.1, FR 5.3, FR 5.4 | TestCustomerApi |
 | 4.4       | FR 5.1, FR 5.3, FR 5.4 | TestCustomerApi |
-| 5.1 | FR 1.4, FR 1.5 |  |
-| 5.2 | FR 1.5 |  |
+| 5.1 | FR 1.4, FR 1.5 | TestUserApi |
+| 5.2 | FR 1.5 | TestUserApi |
 | 6.1 | FR 3.4, FR 4.1, FR 6.1, FR 6.2, FR 6.8, FR 6.10 | TestSaleTransactionApi, TestProductTypeAPI, ... (balance update, manage payment, print receipt ) |
 | 6.2 | FR 3.4, FR 4.1, FR 6.1, FR 6.2, FR 6.5, FR 6.8, FR 6.10 | TestSaleTransactionApi, TestProductTypeAPI,... (balance update, manage payment, print receipt ) |
 | 6.3 | FR 3.4, FR 4.1, FR 6.1, FR 6.2, FR 6.4, FR 6.6, FR 6.8, FR 6.10 | TestSaleTransactionApi, TestProductTypeAPI,... (balance update, manage payment, print receipt ) |
