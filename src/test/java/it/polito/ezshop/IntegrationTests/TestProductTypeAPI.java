@@ -1,8 +1,5 @@
 package it.polito.ezshop.IntegrationTests;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
