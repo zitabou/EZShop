@@ -58,7 +58,7 @@ Version:
 |DAOreturnTransaction|testDAOReturnTransaction|
 |DAOsaleEntry|TestDAOsaleEntry|
 |DAOsaleTransaction|TestDAOsaleTransaction|
-|DAOuser||
+|DAOuser|TestDAOuser|
 |DAOcc||
 
 
@@ -70,6 +70,7 @@ Version:
 |EzShop, DAOReturnTramsaction, DAOreturnEntry| testReturnTransactionApi|
 |EzShop, DAOproductType, DAOlocation|TestProductTypeAPI|
 |EzShop, DAOsaleTransaction, DAOproductType, DAOsaleEntry|TestSaleTransactionApi|
+|EzShop, DAOuser, TestUserApi|
 
 ## Step 3
 | Classes  | JUnit test cases |
