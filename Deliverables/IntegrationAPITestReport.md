@@ -589,15 +589,15 @@ FR completed: FR4, FR8
 | 6.4 | FR 3.4, FR 4.1, FR 5.7, FR 6.1, FR 6.2, FR 6.8, FR 6.10 | TestSaleTransactionApi, TestProductTypeAPI,... (balance update, manage payment, modify points of loyalty Card, print receipt  ) |
 | 6.5 | FR 3.4, FR 4.1, FR 6.1, FR 6.2, FR 6.10, FR 6.11, FR 8.2 | TestSaleTransactionApi, TestProductTypeAPI, testBalanceOperationApi... |
 | 6.6 | FR 3.4, FR 4.1 FR 6.1, FR 6.2, FR 6.7, FR 6.8, FR 6.10, FR 7.1 | TestSaleTransactionApi, TestProductTypeAPI, ... (balance update, manage payment, print receipt ) |
-| 7.1 | FR 7.2, FR 8.2 |  |
-| 7.2 | FR 6.11 |  |
-| 7.3 | FR 6.11 |  |
-| 7.4 | FR 7.1, FR 8.2 |  |
+| 7.1 | FR 7.2, FR 8.2 | TestPaymentApi |
+| 7.2 | FR 6.11 | TestPaymentApi |
+| 7.3 | FR 6.11 | TestPaymentApi |
+| 7.4 | FR 7.1, FR 8.2 | TestPaymentApi |
 | 8.1 | FR 6.12, FR 6.13, FR 6.14, FR6.15, FR8.1 | testReturnTransactionApi, testBalanceOperationApi |
 | 8.2 | FR 6.7, FR 6.8, FR 6.9, FR 6.12, FR 6.13, FR 6.14, FR 6.15 | testReturnTransactionApi |
 | 9.1 | FR 8.3, FR 8.4 | testBalanceOperationApi |
-| 10.1 | RF 7.4 | |
-| 10.2 | RF 7.3 | |
+| 10.1 | RF 7.4 | TestReturnPaymentApi |
+| 10.2 | RF 7.3 | TestReturnPaymentApi |
 |  | 1.3, 3.2, 3.3, 5.2, 6.3 | |
 
 
