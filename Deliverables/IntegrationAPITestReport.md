@@ -292,7 +292,7 @@ Report also for each of the scenarios the (one or more) API JUnit tests that cov
 | Scenario ID | Functional Requirements covered | JUnit  Test(s) |
 | ----------- | ------------------------------- | ----------- |
 |  1.1     | FR 3.1                        | TestProductTypeAPI |
-|  1.2      | FR 4.2                        |             |
+|  1.2      | FR 4.2                        | TestProductTypeAPI |
 | 1.3         | FR 3.1                          | TestProductTypeAPI          |
 | 4.1      | FR 5.1 | TestCustomerApi |
 | 4.2      | FR 5.6 |             |
