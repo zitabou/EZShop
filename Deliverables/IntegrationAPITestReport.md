@@ -66,7 +66,7 @@ Version:
 ## Step 2
 | Classes  | JUnit test cases |
 |--|--|
-|EzShop, DAObalanceOperation| testBalanceOperationApi|
+|EzShop, DAObalanceOperation, AccountBook| testBalanceOperationApi|
 |EzShop, DAOorder|testOrderApi|
 |EzShop, DAOReturnTramsaction, DAOreturnEntry| testReturnTransactionApi|
 |EzShop, DAOproductType, DAOlocation|TestProductTypeAPI|
@@ -131,6 +131,53 @@ Version:
 |  3    |  C inserts a new price > 0 |
 |  4   |  C confirms the update |
 |  5   |  X is updated |
+
+##### Scenario 3-1
+
+| Scenario |  Order of product type X issued |
+| ------------- |:-------------:| 
+|  Precondition     | ShopManager S exists and is logged in |
+| | Product type X exists |
+|  Post condition     | Order O exists and is in ISSUED state  |
+| | Balance not changed |
+| | X.units not changed |
+| Step#        | Description  |
+|  1    | S creates order O |
+|  1    |  S fills  quantity of product to be ordered and the price per unit |  
+|  3    |  O is recorded in the system in ISSUED state |
+
+##### Scenario 3-2
+
+| Scenario |  Order of product type X payed |
+| ------------- |:-------------:| 
+|  Precondition     | ShopManager S exists and is logged in |
+| | Product type X exists |
+| | Balance >= Order.units * Order.pricePerUnit |
+| | Order O exists | 
+|  Post condition     | Order O is in PAYED state  |
+| | Balance -= Order.units * Order.pricePerUnit |
+| | X.units not changed |
+| Step#        | Description  |
+|  1    |  S search for Order O |  
+|  2    |  S register payment done for O |
+|  3    |  O's state is updated to PAYED |
+
+##### Scenario 3-3
+
+| Scenario |  Record order of product type X arrival |
+| ------------- |:-------------:| 
+|  Precondition     | ShopManager S exists and is logged in |
+| | Product type X exists |
+| | X.location is valid |
+| | Order O exists and is in PAYED state  |
+|  Post condition     | O is in COMPLETED state  |
+| | X.units += O.units |
+| Step#        | Description  |
+|  1    |  O arrives to the shop |  
+|  2    |  S records O arrival in the system  |
+|  3    |  The system updates X available quantity |
+|  4    |  O is updated in the system in COMPLETED state |
+
 
 ##### Scenario 4-1
 
@@ -280,20 +327,80 @@ Version:
 |  8    |  Sale transaction aborted |
 |  9   |  Sale ticket deleted, no change will be recorded |
 
+
+##### Scenario 8-1
+
+| Scenario |  Return transaction of product type X completed, credit card |
+| ------------- |:-------------:| 
+|  Precondition     | Cashier C exists and is logged in |
+| | Product Type X exists |
+| | Ticket T exists and has at least N units of X |
+| | Ticket T was paid with credit card |
+|  Post condition     | Balance -= N*T.priceForProductX  |
+| | X.quantity += N |
+| Step#        | Description  |
+|  1    |  C inserts T.ticketNumber |
+|  2    |  Return transaction starts |  
+|  3    |  C reads bar code of X |
+|  4    |  C adds N units of X to the return transaction |
+|  5    |  X available quantity is increased by N |
+|  6    |  Manage credit card return  (go to UC 10 ) |
+|  7   |  Return successful, C closes the return transaction |
+|  8   |  Balance is updated |
+
+##### Scenario 8-2
+
+| Scenario |  Return transaction of product type X completed, cash |
+| ------------- |:-------------:| 
+|  Precondition     | Cashier C exists and is logged in |
+| | Product Type X exists |
+| | Ticket T exists and has at least N units of X |
+| | Ticket T was paid cash |
+|  Post condition     | Balance -= N*T.priceForProductX  |
+| | X.quantity += N |
+| Step#        | Description  |
+|  1    |  C inserts T.ticketNumber |
+|  2    |  Return transaction starts |  
+|  3    |  C reads bar code of X |
+|  4    |  C adds N units of X to the return transaction |
+|  5    |  X available quantity is increased by N |
+|  6    |  Manage cash return (go to UC 10) |
+|  7   |  Return  successful |
+|  8   |  C confirms the return transaction and closes it  |
+|  9   |  Sale Ticket is updated |
+|  10   |  Balance is updated |
+
+##### Scenario 9-1
+
+| Scenario |  List credits and debits |
+| ------------- |:-------------:| 
+|  Precondition     | Manager C exists and is logged in |
+|  Post condition     | Transactions list displayed  |
+| Step#        | Description  |
+|  1    |  C selects a start date |  
+|  2    |  C selects an end date |
+|  3    |  C sends transaction list request to the system |
+|  4    |  The system returns the transactions list |
+|  5    |  The list is displayed  |
+
+
+
 # Coverage of Scenarios and FR
 
 
 <Report in the following table the coverage of  scenarios (from official requirements and from above) vs FR. 
 Report also for each of the scenarios the (one or more) API JUnit tests that cover it. >
 
-
-
+FR completed: FR4, FR8
 
 | Scenario ID | Functional Requirements covered | JUnit  Test(s) |
 | ----------- | ------------------------------- | ----------- |
 |  1.1     | FR 3.1                        | TestProductTypeAPI |
 |  1.2      | FR 4.2                        | TestProductTypeAPI |
 | 1.3         | FR 3.1                          | TestProductTypeAPI          |
+| 3.1         | FR 4.3, FR 4.5   , FR 4.7       | testOrderApi          |
+| 3.2         | FR 4.4 , FR 4.2                 | testOrderApi          |
+| 3.3         | FR 4.6 , FR 4.1                 | testOrderApi          |
 | 4.1      | FR 5.1 | TestCustomerApi |
 | 4.2      | FR 5.6 |             |
 | 4.3 |  | |
@@ -302,7 +409,10 @@ Report also for each of the scenarios the (one or more) API JUnit tests that cov
 | 6.2 | FR 6.1, FR 6.2, FR 6.5, FR 6.10 | TestSaleTransactionApi |
 | 6.3 | FR 6.1, FR 6.2, FR 6.6, FR 6.10 | TestSaleTransactionApi |
 | 6.4 | FR 5.7, FR 6.1, FR 6.2, FR 6.10 | TestSaleTransactionApi, ... |
-| 6.5 | FR 6.1, FR 6.2, FR 6.10, FR6.11 | TestSaleTransactionApi, ... |
+| 6.5 | FR 6.1, FR 6.2, FR 6.10, FR6.11, FR8.2 | TestSaleTransactionApi, testBalanceOperationApi... |
+| 8.1 | FR 6.12, FR 6.13, FR 6.14, FR6.15, FR8.1 | testReturnTransactionApi, testBalanceOperationApi |
+| 8.2 | FR 6.7, FR 6.8, FR 6.9, FR 6.12, FR 6.13, FR 6.14, FR6.15 | testReturnTransactionApi |
+| 9.1 | FR 8.3, FR 8.4 | testBalanceOperationApi |
 |  | | |
 |  | | |
 |  | | |
