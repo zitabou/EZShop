@@ -48,7 +48,7 @@ public class TestSaleTransactionApi {
 		
 		sale2 = new ezSaleTransaction(0.2, 23.0);
 		sale2.setTicketNumber(DAOsaleTransaction.Create(sale2));
-				
+		
 	}
 	
     @Test

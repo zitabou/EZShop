@@ -3,8 +3,6 @@ package it.polito.ezshop.IntegrationTests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.AfterClass;
@@ -12,11 +10,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-
+import it.polito.ezshop.classesDAO.DBManager;
 import it.polito.ezshop.data.Customer;
 import it.polito.ezshop.data.EZShopInterface;
-import it.polito.ezshop.data.Order;
-import it.polito.ezshop.data.ProductType;
 import it.polito.ezshop.exceptions.InvalidCustomerCardException;
 import it.polito.ezshop.exceptions.InvalidCustomerIdException;
 import it.polito.ezshop.exceptions.InvalidCustomerNameException;
@@ -51,13 +47,68 @@ public class testCustomerApi {
 	    assertEquals(card, customer.getCustomerCard());
 		assertTrue(isModified);
 		
+		customer = ezShop.getCustomer(id);
+		
+		assertEquals(customer.getCustomerCard(), card);
+		assertEquals(customer.getId(), id);
+		assertEquals(customer.getCustomerName(), "mostafa asad");
+		
 		boolean isDeleted = ezShop.deleteCustomer(id);
 		assertTrue(isDeleted);
-//		
-//		List<Customer> custs =  ezShop.getAllCustomers();
 		
+		 Assert.assertEquals(previousQuantityOfCustomers  , ezShop.getAllCustomers().size());	
 		
 	}
+    
+    @Test
+    public void testKOCases() throws InvalidCustomerIdException, UnauthorizedException, InvalidUsernameException, InvalidPasswordException {
+     
+    	ezShop.logout();
+        
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.getAllCustomers();
+        });
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.getCustomer(1);
+        });
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.deleteCustomer(1);
+        });
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.defineCustomer("mostafa");
+        });
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.modifyCustomer(1, "mostafa","0000000001");
+        });
+
+  
+        ezShop.login("a","a");
+        
+        Assert.assertThrows(InvalidCustomerIdException.class, () -> {
+            ezShop.getCustomer(0);
+        });
+
+        Assert.assertThrows(InvalidCustomerNameException.class, () -> {
+            ezShop.defineCustomer(null);
+        });
+
+        Assert.assertThrows(InvalidCustomerNameException.class, () -> {
+            ezShop.modifyCustomer(1, null, "0000000001");
+        });
+        Assert.assertThrows(InvalidCustomerCardException.class, () -> {
+            ezShop.modifyCustomer(1, "mostafa", null);
+        });
+      
+        Assert.assertThrows(InvalidCustomerIdException.class, () -> {
+            ezShop.deleteCustomer(0);
+        });
+    }
+    
+
+    @AfterClass
+    public static void endConnection() {
+        DBManager.closeConnection();
+    }
 	
 
 }
