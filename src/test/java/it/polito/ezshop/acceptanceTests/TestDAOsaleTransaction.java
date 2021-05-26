@@ -1,4 +1,4 @@
-package it.polito.ezshop.IntegrationTests;
+package it.polito.ezshop.acceptanceTests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
