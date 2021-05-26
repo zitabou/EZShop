@@ -24,6 +24,8 @@ public class TestDAOuser{
 	User usr1 = null;
 	User usr2 = null;
 	User usr3 = null;
+	User admin = null;
+	User a = null;
 
 	@BeforeClass
 	public static void establishConnection() {
@@ -39,6 +41,10 @@ public class TestDAOuser{
 		usr2.setId(DAOuser.Create(usr2));
 		usr3 = new ezUser("man1", "1234", "ShopManager");
 		usr3.setId(DAOuser.Create(usr3));
+		admin = new ezUser("admin", "admin", "Administrator");
+		admin.setId(DAOuser.Create(admin));
+		a = new ezUser("a", "a", "Administrator");
+		a.setId(DAOuser.Create(a));
 	}
 	@Test
 	public void testCreateUser() {
