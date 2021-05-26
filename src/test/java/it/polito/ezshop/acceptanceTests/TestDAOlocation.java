@@ -1,8 +1,5 @@
 package it.polito.ezshop.acceptanceTests;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,11 +7,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.polito.ezshop.classes.Location;
-import it.polito.ezshop.classes.ezCustomer;
-import it.polito.ezshop.classesDAO.DAOcustomer;
 import it.polito.ezshop.classesDAO.DAOlocation;
 import it.polito.ezshop.classesDAO.DBManager;
-import it.polito.ezshop.data.Customer;
 
 public class TestDAOlocation {
 

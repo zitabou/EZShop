@@ -174,8 +174,8 @@ public class TestProductTypeAPI {
 		prod3.setId(DAOproductType.Create(prod3));
     	
     	Integer outcome;	
-		//outcome = ezShop.createProductType("prod3", "62910415002134", 3.0,"note3");
-		//Assert.assertEquals((Integer)(-1), outcome);	
+		outcome = ezShop.createProductType("prod3", "62910415002134", 3.0,"note3");
+		Assert.assertEquals((Integer)(-1), outcome);	
     }
     
     

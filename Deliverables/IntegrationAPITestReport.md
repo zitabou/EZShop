@@ -53,7 +53,7 @@ Version:
 |DAOloyaltyCard|TestDAOloyaltyCard|
 |DAOorder|TestDAOorder|
 |DAOproductType|TestDAOproductType|
-|DAOlocation||
+|DAOlocation|TestDAOlocation|
 |DAOreturnEntry|testDAOReturnTransaction|
 |DAOreturnTransaction|testDAOReturnTransaction|
 |DAOsaleEntry|TestDAOsaleEntry|
