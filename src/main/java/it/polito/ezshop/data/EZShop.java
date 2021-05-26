@@ -272,6 +272,7 @@ public class EZShop implements EZShopInterface {
             ezProductType prod = new ezProductType(0, description, productCode, pricePerUnit, 0, note, "N/A");
             prod_id = DAOproductType.Create(prod);
         } catch (DAOexception e) {
+        	System.out.println(e.getMessage());
             return -1;
         }
 
@@ -294,6 +295,8 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;                    // new product
         try {
             prod = DAOproductType.read(id);                // read necessary to leave other fields unchanged
+            if(prod == null)
+            	return false;
             prod.setProductDescription(newDescription);
             prod.setBarCode(newCode);
             prod.setPricePerUnit(newPrice);
@@ -314,7 +317,7 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-         Location loc = DAOlocation.Read(id);
+        Location loc = DAOlocation.Read(id);
         if(loc !=null) {
         	loc.setProduct(0);
         	DAOlocation.Update(loc);
@@ -388,6 +391,10 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;                        // new product
         try {
             prod = DAOproductType.read(productId);        // read necessary to leave other fields unchanged
+            if(prod == null) {
+            	System.out.println("product not found");
+            	return false;
+            }
             if ((prod.getQuantity() + toBeAdded < 0)) {
                 System.out.println("Unacceptable quantity");
                 return false;

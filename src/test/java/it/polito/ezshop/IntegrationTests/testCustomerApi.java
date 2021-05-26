@@ -37,22 +37,18 @@ public class testCustomerApi {
     
     @Test
 	public void testOKCases() throws InvalidCustomerNameException, UnauthorizedException, InvalidCustomerCardException, InvalidCustomerIdException {
-//		Integer id = ezShop.defineCustomer("mostafa");
-//		assertTrue(id == -1 ? false : true);
-//    	boolean isDeleted3 =ezShop.deleteCustomer(4);
-//    	boolean isDeleted4 =ezShop.deleteCustomer(8);
     	
         int previousQuantityOfCustomers = ezShop.getAllCustomers().size();
         Integer id = ezShop.defineCustomer("mostafa");
         Assert.assertEquals(previousQuantityOfCustomers +1 , ezShop.getAllCustomers().size());
-        
-        
-		
-		boolean isModified = ezShop.modifyCustomer(id, "mostafa asad", "1234567890");
+
+
+        String card = ezShop.createCard();
+		boolean isModified = ezShop.modifyCustomer(id, "mostafa asad", card);
 		
 		Customer customer = ezShop.getAllCustomers().stream().filter(o -> o.getId().equals(id)).collect(Collectors.toList()).get(0);
 	    assertEquals("mostafa asad", customer.getCustomerName());
-	    assertEquals("1234567890", customer.getCustomerCard());
+	    assertEquals(card, customer.getCustomerCard());
 		assertTrue(isModified);
 		
 		boolean isDeleted = ezShop.deleteCustomer(id);

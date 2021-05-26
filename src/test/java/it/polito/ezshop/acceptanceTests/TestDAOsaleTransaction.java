@@ -1,11 +1,7 @@
-package it.polito.ezshop.IntegrationTests;
+package it.polito.ezshop.acceptanceTests;
 
-import static org.junit.Assert.*;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.AfterClass;
@@ -19,10 +15,8 @@ import it.polito.ezshop.classes.ezSaleTransaction;
 import it.polito.ezshop.classesDAO.DAOexception;
 import it.polito.ezshop.classesDAO.DAOsaleTransaction;
 import it.polito.ezshop.classesDAO.DBManager;
-import it.polito.ezshop.data.BalanceOperation;
 import it.polito.ezshop.data.SaleTransaction;
 import it.polito.ezshop.data.TicketEntry;
-import it.polito.ezshop.exceptions.UnauthorizedException;
 
 public class TestDAOsaleTransaction {
 	SaleTransaction sale1 = null;	
