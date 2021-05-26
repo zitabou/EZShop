@@ -14,7 +14,6 @@ import it.polito.ezshop.data.User;
 public class DAOuser {
 	
 	public static int Create(User usr) throws DAOexception {
-		if (usr == null) { throw new NullPointerException();}
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
