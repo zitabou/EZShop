@@ -588,7 +588,10 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer defineCustomer(String customerName) throws InvalidCustomerNameException, UnauthorizedException {
-        if (customerName == null)
+         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+               throw new UnauthorizedException();
+    	
+    	if (customerName == null)
             throw new InvalidCustomerNameException("customer name is null ");
         if (customerName.equals(""))
             throw new InvalidCustomerNameException("customer name is empty ");
@@ -606,7 +609,10 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        if (newCustomerName == null)
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	
+    	if (newCustomerName == null)
             throw new InvalidCustomerNameException("customer name is null ");
         if (newCustomerName.equals(""))
             throw new InvalidCustomerNameException("customer name is empty ");
@@ -620,8 +626,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("customer card is empty");
         if (newCustomerCard.length() > 10)
             throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
-            throw new UnauthorizedException();
+//        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+//            throw new UnauthorizedException();
 
 
         try {
