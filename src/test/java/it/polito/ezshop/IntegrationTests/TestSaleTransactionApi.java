@@ -41,7 +41,8 @@ public class TestSaleTransactionApi {
 		DAOsaleTransaction.DeleteAll();
 		
 		ezShop = new it.polito.ezshop.data.EZShop();
-        ezShop.login("admin","admin");
+        //ezShop.login("admin","admin");
+		ezShop.login("a","a");
 
 		sale1 = new ezSaleTransaction(0.1, 1.0);
 		sale1.setTicketNumber(DAOsaleTransaction.Create(sale1));

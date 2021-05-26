@@ -50,8 +50,8 @@ public class TestProductTypeAPI {
 		DAOproductType.DeleteAll();
 		
 		ezShop = new it.polito.ezshop.data.EZShop();
-        ezShop.login("admin","admin");
-
+        //ezShop.login("admin","admin");
+		ezShop.login("a","a");
 		prod1 = new ezProductType("prod1", "629104150024", 1.0, 10, "note1", "1-1-1");
 		prod1.setId(DAOproductType.Create(prod1));
 		

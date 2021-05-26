@@ -541,7 +541,6 @@ Version:
 <Report in the following table the coverage of  scenarios (from official requirements and from above) vs FR. 
 Report also for each of the scenarios the (one or more) API JUnit tests that cover it. >
 
-FR completed: FR4, FR8
 
 | Scenario ID | Functional Requirements covered | JUnit  Test(s) |
 | ----------- | ------------------------------- | ----------- |
@@ -589,5 +588,9 @@ FR completed: FR4, FR8
 
 | Non Functional Requirement | Test name |
 | -------------------------- | --------- |
-|                            |           |
+|  NFR2       |   GUI unit     |
+|  NFR3       |   DBmanager     |
+|  NFR4       |  TestProductTypeAPI     |
+|  NFR5       |  TestPaymentApi     |
+|  NFR6       |  TestPaymentApi     |
 
