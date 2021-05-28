@@ -26,6 +26,8 @@ public class DAOuser {
 			pstat.setString(2,usr.getPassword());
 			pstat.setString(3,usr.getRole());
 			
+			//System.out.println(pstat.toString());
+			
 			pstat.executeUpdate();
 			
 			rs = pstat.getGeneratedKeys();
@@ -150,5 +152,18 @@ public class DAOuser {
 		return map;
 	}
 
+	}
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		try{
+			pstat = conn.prepareStatement("DELETE FROM user");
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all users" + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all users" + e.getMessage()); }
+		}
 	}
 }

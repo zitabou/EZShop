@@ -14,11 +14,11 @@ import it.polito.ezshop.data.ProductType;
 public class DAOlocation {
 
 	
-	public static String Create(Location loc) throws DAOexception {
+	public static Integer Create(Location loc) throws DAOexception {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
-		String generatedKey = null;
+		Integer generatedKey = null;
 		try {
 			pstat = conn.prepareStatement("INSERT INTO location (full_position, aisle, rack, level, product) VALUES (?,?,?,?,?)");
 			pstat.setString(1, loc.getPosition());
@@ -31,7 +31,7 @@ public class DAOlocation {
 			
 			rs = pstat.getGeneratedKeys();
 			if (rs.next()) {
-			    generatedKey = rs.getString(1);
+			    generatedKey = rs.getInt(1);
 			}
 
 		}catch(SQLException e){

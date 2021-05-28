@@ -132,13 +132,16 @@ public class EZShop implements EZShopInterface {
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
 	User usr = null;
+	if ( id <= 0 || id == null) {
+		throw new InvalidUserIdException("Invalid User ID. getUser(id)");
+	}
+	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
+		throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
+	}
 	try {
 		usr = DAOuser.Read(id);
 		if (usr==null || id <= 0 || id == null) {
 			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
-		}
-		if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
-			throw new UnauthorizedException("The active user is not authorized to getUser(id), or there is no logged user.");
 		}
 	} catch (DAOexception e) {
 		return null;
@@ -200,6 +203,12 @@ public class EZShop implements EZShopInterface {
 	if (validate_username == false) {
 		throw new InvalidUsernameException("Username does not exist.");
 	}	
+	/*if(aux_usr.getPassword().equals(password)) {
+		activeUser = (ezUser) aux_usr;
+		return aux_usr;
+	} else {
+		throw new InvalidPasswordException("Password is incorrect.");
+	}*/
 	try {
     		if(aux_usr.getPassword().equals(password)) {
     			activeUser = (ezUser) aux_usr;
@@ -207,8 +216,9 @@ public class EZShop implements EZShopInterface {
 	    	} else {
 			throw new InvalidPasswordException("Password is incorrect.");
 		}
-	}catch (Exception e) {
+	}catch (DAOexception e) {
 		return null;
+		//throw new InvalidPasswordException("Password is incorrect.");	
 	}
     }
 
@@ -272,6 +282,7 @@ public class EZShop implements EZShopInterface {
             ezProductType prod = new ezProductType(0, description, productCode, pricePerUnit, 0, note, "N/A");
             prod_id = DAOproductType.Create(prod);
         } catch (DAOexception e) {
+        	System.out.println(e.getMessage());
             return -1;
         }
 
@@ -294,6 +305,8 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;                    // new product
         try {
             prod = DAOproductType.read(id);                // read necessary to leave other fields unchanged
+            if(prod == null)
+            	return false;
             prod.setProductDescription(newDescription);
             prod.setBarCode(newCode);
             prod.setPricePerUnit(newPrice);
@@ -314,7 +327,7 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-         Location loc = DAOlocation.Read(id);
+        Location loc = DAOlocation.Read(id);
         if(loc !=null) {
         	loc.setProduct(0);
         	DAOlocation.Update(loc);
@@ -388,6 +401,10 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;                        // new product
         try {
             prod = DAOproductType.read(productId);        // read necessary to leave other fields unchanged
+            if(prod == null) {
+            	System.out.println("product not found");
+            	return false;
+            }
             if ((prod.getQuantity() + toBeAdded < 0)) {
                 System.out.println("Unacceptable quantity");
                 return false;
@@ -581,7 +598,10 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer defineCustomer(String customerName) throws InvalidCustomerNameException, UnauthorizedException {
-        if (customerName == null)
+         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+               throw new UnauthorizedException();
+    	
+    	if (customerName == null)
             throw new InvalidCustomerNameException("customer name is null ");
         if (customerName.equals(""))
             throw new InvalidCustomerNameException("customer name is empty ");
@@ -599,7 +619,10 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        if (newCustomerName == null)
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	
+    	if (newCustomerName == null)
             throw new InvalidCustomerNameException("customer name is null ");
         if (newCustomerName.equals(""))
             throw new InvalidCustomerNameException("customer name is empty ");
@@ -613,8 +636,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerCardException("customer card is empty");
         if (newCustomerCard.length() > 10)
             throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
-            throw new UnauthorizedException();
+//        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+//            throw new UnauthorizedException();
 
 
         try {
@@ -639,8 +662,8 @@ public class EZShop implements EZShopInterface {
         try {
             Customer cust = DAOcustomer.Read(id);
         	LoyaltyCard card = DAOloyaltyCard.ReadCustomer(cust);
-        	
-        	DAOloyaltyCard.Delete(card);
+        	if (card != null)
+        		DAOloyaltyCard.Delete(card);
             DAOcustomer.Delete(id);
         } catch (DAOexception e) {
             return false;
@@ -780,8 +803,15 @@ public class EZShop implements EZShopInterface {
         ProductType prod = null;
         TicketEntry entry = new ezReceiptEntry();
         try {
+        	
+        	if (transactionId != last_sale_id)
+        		return false;
+        	
             prod = DAOproductType.read(productCode);
-            if (amount > prod.getQuantity()) return false;
+            if(prod == null) return false;
+            if (amount > prod.getQuantity()){
+            	throw new InvalidQuantityException();
+            }
 
             entry.setAmount(amount);
             entry.setDiscountRate(0.0);
@@ -846,7 +876,7 @@ public class EZShop implements EZShopInterface {
                     return true;
                 }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -869,7 +899,7 @@ public class EZShop implements EZShopInterface {
                 e.getMessage();
                 return false;
             }
-            //TODO check the price change
+
             for (int i = 0; i < openSale.getEntries().size(); i++) {
                 if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {
 
@@ -883,7 +913,7 @@ public class EZShop implements EZShopInterface {
             }
         }
 
-        return true;
+        return false;
     }
 
     @Override
@@ -1050,6 +1080,10 @@ public class EZShop implements EZShopInterface {
     public boolean returnProduct(Integer returnId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
 
 		if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
+		if(returnId == null || returnId <= 0) throw new InvalidTransactionIdException();
+        if (productCode == null || productCode.equals("") || !validBarCode(productCode)) throw new InvalidProductCodeException();
+        if (amount <= 0) throw new InvalidQuantityException();
+
     	int i=0;
 
 
