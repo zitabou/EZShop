@@ -74,10 +74,10 @@ public class EZShop implements EZShopInterface {
     	DAOsaleTransaction.DeleteAll();
     	DAOsaleEntry.DeleteAll();
     	DAObalanceOperation.DeleteAll();
-    	//DAOreturnTransaction.DeleteAll();
+    	DAOreturnTransaction.DeleteAll();
     	DAOreturnEntry.DeleteAll();
-    	//DAOorder.DeleteAll();
-    	//DAOcc.DeleteAll();
+    	DAOorder.DeleteAll();
+    	DAOcc.DeleteAll();
     }
 
     @Override

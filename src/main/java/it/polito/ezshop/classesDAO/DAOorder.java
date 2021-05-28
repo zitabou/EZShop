@@ -142,4 +142,27 @@ public class DAOorder {
         }
 
     }
+    
+    
+    
+    
+    public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		
+		DAOsaleEntry.DeleteAll();
+		
+		try{
+			pstat = conn.prepareStatement("DELETE FROM orders");
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all orders " + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all orders  " + e.getMessage()); }
+		}
+	}
+    
+    
+    
 }
