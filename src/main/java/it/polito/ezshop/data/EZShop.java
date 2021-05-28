@@ -282,7 +282,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException("Wrong product barcode format");
         if (pricePerUnit <= 0)
             throw new InvalidPricePerUnitException("price per unit cannot be <=0");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
 
@@ -300,7 +300,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean updateProduct(Integer id, String newDescription, String newCode, double newPrice, String newNote) throws InvalidProductIdException, InvalidProductDescriptionException, InvalidProductCodeException, InvalidPricePerUnitException, UnauthorizedException {
-        if (id <= 0 || id == null)
+        if (id == null || id <= 0)
             throw new InvalidProductIdException("product id is null or <=0");
         if (newDescription == null || newDescription.equals(""))
             throw new InvalidProductDescriptionException("product description is null or empty");
@@ -310,6 +310,8 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException("Wrong product barcode format");
         if (newPrice <= 0)
             throw new InvalidPricePerUnitException("Invalid price value (<=0)");
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
+            throw new UnauthorizedException();
 
         ProductType prod = null;                    // new product
         try {
@@ -331,9 +333,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteProductType(Integer id) throws InvalidProductIdException, UnauthorizedException {
-        if (id <= 0 || id == null)
+    	if (id == null || id <= 0)
             throw new InvalidProductIdException("product id is null or <=0");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
         Location loc = DAOlocation.Read(id);
@@ -371,7 +373,7 @@ public class EZShop implements EZShopInterface {
             throw new InvalidProductCodeException("product barcode is null or empty");
         if (!validBarCode(barCode))
             throw new InvalidProductCodeException("Wrong product barcode format");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
         ProductType prod = null;
@@ -387,7 +389,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public List<ProductType> getProductTypesByDescription(String description) throws UnauthorizedException {
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
 
@@ -402,9 +404,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean updateQuantity(Integer productId, int toBeAdded) throws InvalidProductIdException, UnauthorizedException {
-        if (productId <= 0 || productId == null)
+        if (productId == null || productId <= 0)
             throw new InvalidProductIdException("product id is null or <=0");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
         ProductType prod = null;                        // new product
@@ -435,11 +437,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean updatePosition(Integer productId, String newPos) throws InvalidProductIdException, InvalidLocationException, UnauthorizedException {
-
-
-        if (productId <= 0 || productId == null)
+    	if (productId == null || productId <= 0)
             throw new InvalidProductIdException("product id is null or <=0");
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
         String pattern = "^\\d+\\-[A-Z]\\-\\d+$";
@@ -628,9 +628,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean modifyCustomer(Integer id, String newCustomerName, String newCustomerCard) throws InvalidCustomerNameException, InvalidCustomerCardException, InvalidCustomerIdException, UnauthorizedException {
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+        
+    	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-    	
     	if (newCustomerName == null)
             throw new InvalidCustomerNameException("customer name is null ");
         if (newCustomerName.equals(""))
@@ -641,12 +641,14 @@ public class EZShop implements EZShopInterface {
             throw new InvalidCustomerIdException("customer id is less or equal to zero");     // some clients may have a zero id if the constructor used is the one without parameter. Those customers cannot be modified, searched or deleted
         if (newCustomerCard == null)
             throw new InvalidCustomerCardException("customer card is null");
+        if (!StringUtils.isNumeric(newCustomerCard))
+        	throw new InvalidCustomerCardException("customer card is not numeric");
         if (newCustomerCard.equals(""))
             throw new InvalidCustomerCardException("customer card is empty");
         if (newCustomerCard.length() > 10)
             throw new InvalidCustomerCardException("Wrong customer card format (must be 10 digits string)");
-//        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
-//            throw new UnauthorizedException();
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
 
 
         try {
@@ -745,14 +747,13 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
 
 
-        Customer cust = null;
-        cust = DAOcustomer.Read(customerId);   //get customer from DB
-        cust.setCustomerCard(customerCard);     //change the card
-        DAOcustomer.Update(cust);               //update the customer(this will update the card info as well)
-        /*
-        if DB is unreachable return false
-         */
-        return true;
+        Customer cust = DAOcustomer.Read(customerId);    //get customer from DB
+        if(cust != null) {
+        	cust.setCustomerCard(customerCard);     //change the card
+        	DAOcustomer.Update(cust);               //update the customer(this will update the card info as well)
+        	return true;
+        }
+        return false;
     }
 
     @Override
@@ -802,7 +803,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean addProductToSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0 )
             throw new InvalidTransactionIdException();
         if (productCode == null || productCode.equals(""))
             throw new InvalidProductCodeException("product barcode is null or empty");
@@ -814,19 +815,25 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
 
 
-        ProductType prod = null;
-        TicketEntry entry = new ezReceiptEntry();
-        SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
+        
+        
         try {
+        	ProductType prod = null;
+            TicketEntry entry = new ezReceiptEntry();
+        	SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
         	
-        	if (transactionId != DAOsaleTransaction.getId())
+        	
+        	if (transactionId != DAOsaleTransaction.getId() || DAOsaleTransaction.getStatus(transactionId).equals("close"))
         		return false;
         	
+        	
             prod = DAOproductType.read(productCode);
-            if(prod == null) return false;
-            if (amount > prod.getQuantity()){
-            	throw new InvalidQuantityException();
-            }
+            if(prod == null)
+            	return false;
+            if(!prodsToUpdate.containsKey(productCode))
+            	prodsToUpdate.put(productCode, prod);
+            if (amount > prodsToUpdate.get(productCode).getQuantity())
+            	return false;
 
             entry.setAmount(amount);
             entry.setDiscountRate(0.0);
@@ -835,8 +842,7 @@ public class EZShop implements EZShopInterface {
             entry.setProductDescription(prod.getProductDescription());
 
             //products
-            if (prodsToUpdate.containsKey(productCode))
-                prod = prodsToUpdate.get(productCode);
+            prod = prodsToUpdate.get(productCode);
             prod.setQuantity(prod.getQuantity() - amount);
             prodsToUpdate.put(productCode, prod);
             //entries
@@ -863,7 +869,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteProductFromSale(Integer transactionId, String productCode, int amount) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidQuantityException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
         if (productCode == null || productCode.equals(""))
             throw new InvalidProductCodeException("product barcode is null or empty");
@@ -874,6 +880,9 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
+        
+        if (transactionId != DAOsaleTransaction.getId() || DAOsaleTransaction.getStatus(transactionId).equals("close"))
+    		return false;
         
         try {
         	SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
@@ -904,7 +913,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean applyDiscountRateToProduct(Integer transactionId, String productCode, double discountRate) throws InvalidTransactionIdException, InvalidProductCodeException, InvalidDiscountRateException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0 )
             throw new InvalidTransactionIdException();
         if (productCode == null || productCode.equals(""))
             throw new InvalidProductCodeException("product barcode is null or empty");
@@ -920,7 +929,7 @@ public class EZShop implements EZShopInterface {
         
         
         SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
-        if (transactionId == DAOsaleTransaction.getId()) {
+        if (transactionId == DAOsaleTransaction.getId() && DAOsaleTransaction.getStatus(transactionId).equals("open")) {
             try {
                 DAOproductType.read(productCode);
             } catch (DAOexception e) {
@@ -949,7 +958,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean applyDiscountRateToSale(Integer transactionId, double discountRate) throws InvalidTransactionIdException, InvalidDiscountRateException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0 )
             throw new InvalidTransactionIdException();
         if (discountRate < 0 || discountRate >= 1)
             throw new InvalidDiscountRateException();
@@ -957,7 +966,7 @@ public class EZShop implements EZShopInterface {
             throw new UnauthorizedException();
         try {
         	SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
-        		if (transactionId != DAOsaleTransaction.getId())
+        		if (transactionId != DAOsaleTransaction.getId() || DAOsaleTransaction.getStatus(transactionId).equals("close"))
         			return false;
         		if (sale.getDiscountRate() != 0)
         			sale.setPrice(sale.getPrice() / (1 - sale.getDiscountRate()));
@@ -975,9 +984,9 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public int computePointsForSale(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-	if (transactionId <= 0 || transactionId == null)
+	if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
-        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+    if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
 	//Check if transaction exists
@@ -987,7 +996,7 @@ public class EZShop implements EZShopInterface {
 	try {
 		sts= DAOsaleTransaction.ReadAll();
 		for (SaleTransaction st : sts.values()) {
-			if(st.getTicketNumber() == transactionId){
+			if(st.getTicketNumber() == transactionId && DAOsaleTransaction.getStatus(transactionId).equals("open")) {
 				System.out.println("SaleTransction found, computing points...");
 				System.out.println(st.getTicketNumber() + "|" +  st.getPrice() + "|" + st.getDiscountRate());
 				computed_points = (int)(st.getPrice()/10.0);
@@ -1003,7 +1012,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean endSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
@@ -1011,9 +1020,8 @@ public class EZShop implements EZShopInterface {
 
         try {
 
-            if (transactionId != DAOsaleTransaction.getId())
+            if (transactionId != DAOsaleTransaction.getId() || DAOsaleTransaction.getStatus(transactionId).equals("close"))
                 return false;
-
 
             //update the products
             for (ProductType prod : prodsToUpdate.values()) {
@@ -1034,7 +1042,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean deleteSaleTransaction(Integer saleNumber) throws InvalidTransactionIdException, UnauthorizedException {
-        if (saleNumber <= 0 || saleNumber == null)
+        if (saleNumber == null || saleNumber <= 0)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
@@ -1067,7 +1075,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public SaleTransaction getSaleTransaction(Integer transactionId) throws InvalidTransactionIdException, UnauthorizedException {
-        if (transactionId <= 0 || transactionId == null)
+        if (transactionId == null || transactionId <= 0)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();

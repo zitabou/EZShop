@@ -165,6 +165,7 @@ public static String getStatus(Integer saleId) throws DAOexception{
 				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
 				sale.setPrice(rs.getDouble("price"));
+				sale.setEntries(DAOsaleEntry.Read(saleId));
 			}
 			pstat.close();
 		}catch(SQLException e){
@@ -175,8 +176,6 @@ public static String getStatus(Integer saleId) throws DAOexception{
 			if(rs != null)
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
 		}
-		
-		sale.setEntries(DAOsaleEntry.Read(saleId));
 		
 		return sale;
 	}
