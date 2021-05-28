@@ -65,7 +65,19 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public void reset() {
-
+    	
+    	DAOuser.DeleteAll();
+    	DAOcustomer.DeleteAll();
+    	DAOloyaltyCard.DeleteAll();
+    	DAOproductType.DeleteAll();
+    	DAOlocation.DeleteAll();
+    	DAOsaleTransaction.DeleteAll();
+    	DAOsaleEntry.DeleteAll();
+    	DAObalanceOperation.DeleteAll();
+    	//DAOreturnTransaction.DeleteAll();
+    	DAOreturnEntry.DeleteAll();
+    	//DAOorder.DeleteAll();
+    	//DAOcc.DeleteAll();
     }
 
     @Override
@@ -82,11 +94,11 @@ public class EZShop implements EZShopInterface {
 	Integer user_id = 0;
 	try {
 		// Check if the username is not being used already
-		for (User u : getAllUsers()) {
+		/*for (User u : getAllUsers()) {
 			if ( u.getUsername().equals(username) ) {
 				throw new InvalidUsernameException("The username is already in use.");
 			}
-		}
+		}*/
 		User usr = new ezUser(username, password, role);
 		user_id = DAOuser.Create(usr);	
 	} catch (DAOexception e){
