@@ -10,6 +10,7 @@ public class ezReceiptEntry implements TicketEntry{
 		this.amount = 0;
 		this.pricePerUnit = 0.0;
 		this.discountRate = 0.0;
+		this.id = 0;
 	}
 	
 	public ezReceiptEntry(String barcode, String productDescription, int amount, double pricePerUnit, double discountRate){
@@ -18,6 +19,7 @@ public class ezReceiptEntry implements TicketEntry{
 		this.amount = amount;
 		this.pricePerUnit = pricePerUnit;
 		this.discountRate = discountRate;
+		this.id = 0;
 	}
 
 	@Override
@@ -50,11 +52,16 @@ public class ezReceiptEntry implements TicketEntry{
 	@Override
 	public void setDiscountRate(double discountRate) {this.discountRate = discountRate;}
 	
+	public Integer getId() { return id; }
+
+	public void setId(Integer id) {this.id = id;}
+
 	private String barcode;
 	private String productDescription;
 	private int amount;
 	private double pricePerUnit;
 	private double discountRate;
+	private Integer id;
 	
 
 }

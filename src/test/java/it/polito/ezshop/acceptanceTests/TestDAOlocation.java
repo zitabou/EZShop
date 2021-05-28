@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import it.polito.ezshop.classes.Location;
+import it.polito.ezshop.classesDAO.DAOexception;
 import it.polito.ezshop.classesDAO.DAOlocation;
 import it.polito.ezshop.classesDAO.DBManager;
 
@@ -24,27 +25,26 @@ public class TestDAOlocation {
 	public void populateDB() {   //String customerName, Integer id, String customerCard, Integer points
 		DAOlocation.DeleteAll();
 		
-		loc1 = new Location(1, 1, 1, 11);
+		loc1 = new Location(1, "A", 1, 11);
 		DAOlocation.Create(loc1);
-		loc2 = new Location(2, 2, 2, 22);
+		loc2 = new Location(2, "B", 2, 22);
 		DAOlocation.Create(loc2);
 	}
 	
     @Test
     public void testCreateLocation() {  	
-    	Location loc3 = new Location(3, 3, 3, 33);
+    	Location loc3 = new Location(3, "C", 3, 33);
     	Integer outcome;	
 		outcome = DAOlocation.Create(loc3);
 		Assert.assertEquals((Integer)3, outcome);  	
     }
     
-
   	@Test
   	public void testReadLocation() {
   		
   		Location loc = DAOlocation.Read(22);
   		Assert.assertNotNull(loc);
-  		Assert.assertEquals("2-2-2", loc.getPosition());
+  		Assert.assertEquals("2-B-2", loc.getPosition());
   	}
   	
   	@Test
@@ -57,7 +57,7 @@ public class TestDAOlocation {
   	@Test
   	public void testReadLocationByPosition() {
   		
-  		Location loc = DAOlocation.Read("1-1-1");
+  		Location loc = DAOlocation.Read("1-A-1");
   		Assert.assertNotNull(loc);
   		Assert.assertEquals((Integer)11, loc.getProduct());
   	}
@@ -65,16 +65,20 @@ public class TestDAOlocation {
   	@Test
   	public void testReadMissingLocationByPosition_1() {
   		
-  		Location loc = DAOlocation.Read("4-4-4");
+  		Location loc = DAOlocation.Read("4-D-4");
   		Assert.assertNull(loc);
   	}
   	
   	@Test
-  	public void testReadMissingLocationByPosition_2() {
+  	public void testReadInvalidLocationByPosition_1() {
   		
-  		Location loc = DAOlocation.Read("4/4-a");
+  		Location loc = DAOlocation.Read("4-4-4");
   		Assert.assertNull(loc);
   	}
+  
+
+  	
+  	
     
   	
   	@Test
@@ -84,7 +88,7 @@ public class TestDAOlocation {
   		
   		DAOlocation.Update(loc1);
   		
-  		Assert.assertEquals((Integer)5, DAOlocation.Read("1-1-1").getProduct());
+  		Assert.assertEquals((Integer)5, DAOlocation.Read("1-A-1").getProduct());
   	}
  	
  	

@@ -95,14 +95,14 @@ public class DBManager {
 			//location
 			stat = conn.createStatement();
 			if(!existsTable("location")) { //no such table in DB
-				stat.execute("CREATE TABLE location (full_position VARCHAR not null, aisle INTEGER, rack INTEGER, level INTEGER, product INTEGER, primary key(full_position));");
+				stat.execute("CREATE TABLE location (full_position VARCHAR not null, aisle INTEGER, rack VARCHAR(1), level INTEGER, product INTEGER, primary key(full_position));");
 			}
 			stat.close();
 			
 			//Sale transaction
 			stat = conn.createStatement();
 			if(!existsTable("sale_transaction")) { //no such table in DB
-				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, primary key(id), CHECK(discount_rate>=0), CHECK(price>=0));");
+				stat.execute("CREATE TABLE sale_transaction (id INTEGER not null, discount_rate REAL, price REAL, status VARCHAR(5), primary key(id), CHECK(discount_rate>=0), CHECK(price>=0));");
 			}
 			stat.close();
 			//entries of sale transaction

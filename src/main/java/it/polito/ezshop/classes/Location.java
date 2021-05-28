@@ -12,7 +12,7 @@ public class Location {
 		product = 0;
 	}
 	
-	public Location(Integer aisleID, Integer rackID, Integer levelID, Integer product) {
+	public Location(Integer aisleID, String rackID, Integer levelID, Integer product) {
 		this.aisleID = aisleID;
 		this.rackID = rackID;
 		this.levelID = levelID;
@@ -24,15 +24,15 @@ public class Location {
 	
 	public void setAisleID(Integer aisleID) {this.aisleID = aisleID;}
 
-	public Integer getRackID() {return rackID;}
+	public String getRackID() {return rackID;}
 	
-	public void setRackID(Integer rackID) { this.rackID = rackID;}
+	public void setRackID(String rackID) { this.rackID = rackID;}
 
 	public Integer getLevelID() { return levelID;}
 
 	public void setLevelID(Integer levelID) { this.levelID = levelID;}
 
-	public String getPosition() {return Integer.toString(aisleID) + "-"+ Integer.toString(rackID) + "-" + Integer.toString(levelID); }
+	public String getPosition() {return Integer.toString(aisleID) + "-"+ rackID + "-" + Integer.toString(levelID); }
 
 	public Integer getProduct() {return product;}
 
@@ -50,11 +50,11 @@ public class Location {
 	
 	public boolean setRackByExtract(String position) {
 		
-		Pattern pattern = Pattern.compile("\\-\\d+\\-");
+		Pattern pattern = Pattern.compile("\\-[A-Z]\\-");
 		Matcher m = pattern.matcher(position);
 		
 		boolean found = m.find();
-		this.rackID = Integer.parseInt(m.group(0).substring(1, m.group(0).length() -1));
+		this.rackID = m.group(0).substring(1, m.group(0).length() -1);
 		return found;
 	}
 	
@@ -72,7 +72,7 @@ public class Location {
 
 
 	private Integer aisleID;
-	private Integer rackID;
+	private String rackID;
 	private Integer levelID;
 	private Integer product;
 }

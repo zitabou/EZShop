@@ -3,7 +3,6 @@ package it.polito.ezshop.data;
 import it.polito.ezshop.exceptions.*;
 import it.polito.ezshop.classes.*;
 import it.polito.ezshop.classesDAO.*;
-import it.polito.ezshop.classesDAO.DBManager;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -36,8 +35,6 @@ public class EZShop implements EZShopInterface {
     private Integer balance_id = 0;
     private Integer order_id = 0;
 
-    private Integer last_sale_id = 0;
-    private SaleTransaction openSale = null;
     private Map<String, ProductType> prodsToUpdate = null;
 
     private List<TicketEntry> retEntries = null;
@@ -54,7 +51,7 @@ public class EZShop implements EZShopInterface {
         orders = new HashMap<>();
         activeUser = null;
         //	users.put(0, new ezUser(0, "admin", "admin", "Administrator"));
-        prodsToUpdate = new HashMap<>();
+        
         prodsToReturn = new HashMap<>();
 
         DBManager.getConnection();
@@ -248,7 +245,7 @@ public class EZShop implements EZShopInterface {
 
         if (!StringUtils.isNumeric(productCode) || productCode.length() < 12 || productCode.length() > 14)
             return false;
-
+      
         char[] char_digits = productCode.toCharArray();
         int check_digit = 0;
         int mul = 0;
@@ -312,7 +309,7 @@ public class EZShop implements EZShopInterface {
         if (!validBarCode(newCode))
             throw new InvalidProductCodeException("Wrong product barcode format");
         if (newPrice <= 0)
-            throw new InvalidProductCodeException("Invalid price value (<=0)");
+            throw new InvalidPricePerUnitException("Invalid price value (<=0)");
 
         ProductType prod = null;                    // new product
         try {
@@ -421,10 +418,10 @@ public class EZShop implements EZShopInterface {
                 System.out.println("Unacceptable quantity");
                 return false;
             }
-            if (prod.getLocation() == null) {
+            /*if (prod.getLocation() == null) {
                 System.out.println("No location specified for product: " + prod.getId());
                 return false;
-            }
+            }*/
             prod.setQuantity(prod.getQuantity() + toBeAdded);    //assign new value
 
             DAOproductType.Update(prod);                //update
@@ -445,7 +442,7 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        String pattern = "^\\d+\\-\\d+\\-\\d+$";
+        String pattern = "^\\d+\\-[A-Z]\\-\\d+$";
         Pattern regex = Pattern.compile(pattern);
         Matcher check = regex.matcher(newPos);
         if (!check.matches())
@@ -673,6 +670,7 @@ public class EZShop implements EZShopInterface {
 
         try {
             Customer cust = DAOcustomer.Read(id);
+            if(cust == null)	return false;
         	LoyaltyCard card = DAOloyaltyCard.ReadCustomer(cust);
         	if (card != null)
         		DAOloyaltyCard.Delete(card);
@@ -761,6 +759,8 @@ public class EZShop implements EZShopInterface {
     public boolean modifyPointsOnCard(String customerCard, int pointsToBeAdded) throws InvalidCustomerCardException, UnauthorizedException {
         if (customerCard == null)
             throw new InvalidCustomerCardException("customer card is null");
+        if (!StringUtils.isNumeric(customerCard))
+        	throw new InvalidCustomerCardException("customer card is not numeric");
         if (customerCard.equals(""))
             throw new InvalidCustomerCardException("customer card is empty");
         if (customerCard.length() > 10)
@@ -790,12 +790,14 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        last_sale_id = DAOsaleTransaction.getId() + 1; // it will be updated once the transaction is closed
-        openSale = new ezSaleTransaction(last_sale_id);
-        List<TicketEntry> entry = new ArrayList<>();
-        openSale.setEntries(entry);
-
-        return last_sale_id;
+        //create empty instance in DB
+        SaleTransaction openSale = new ezSaleTransaction();
+        Integer sale_id = DAOsaleTransaction.Create(openSale);
+        
+        prodsToUpdate = new HashMap<>();
+        DAOsaleTransaction.Open(sale_id);
+        
+        return sale_id;
     }
 
     @Override
@@ -814,9 +816,10 @@ public class EZShop implements EZShopInterface {
 
         ProductType prod = null;
         TicketEntry entry = new ezReceiptEntry();
+        SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
         try {
         	
-        	if (transactionId != last_sale_id)
+        	if (transactionId != DAOsaleTransaction.getId())
         		return false;
         	
             prod = DAOproductType.read(productCode);
@@ -837,15 +840,19 @@ public class EZShop implements EZShopInterface {
             prod.setQuantity(prod.getQuantity() - amount);
             prodsToUpdate.put(productCode, prod);
             //entries
-            for (int i = 0; i < openSale.getEntries().size(); i++) {
-                if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {                                            // get entry if exists
-                    openSale.getEntries().get(i).setAmount(amount + openSale.getEntries().get(i).getAmount());                // set amount in entries
-                    openSale.setPrice(openSale.getPrice() + openSale.getEntries().get(i).getPricePerUnit() * amount);        // pricePerUnit is the discounted price
+            List<TicketEntry> entries = DAOsaleEntry.Read(transactionId);
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getBarCode().equals(productCode)) {                                  // get entry if exists
+                    entries.get(i).setAmount(amount + entries.get(i).getAmount());                		// set amount in entries
+                    DAOsaleEntry.Update(entries.get(i));												// update the entry
+                    sale.setPrice(sale.getPrice() + entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * amount);         // pricePerUnit is NOT the discounted price
+                    DAOsaleTransaction.Update(sale);
                     return true;
                 }
             }
-            openSale.setPrice(openSale.getPrice() + entry.getPricePerUnit() * amount);
-            openSale.getEntries().add(entry);                                                                   // or create a new one if it doesn't,  pricePerUnit is the product's price per unit with 0% discount
+            sale.setPrice(sale.getPrice() + entry.getPricePerUnit() * amount);
+            DAOsaleTransaction.Update(sale);
+            DAOsaleEntry.Create(transactionId, entry);                                                                   // or create a new one if it doesn't,  pricePerUnit is the product's price per unit with 0% discount
         } catch (DAOexception e) {
             e.getMessage();
             return false;
@@ -867,27 +874,31 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        /* IT DOESNT INFLUENCE THE GUI VALUES !!!!  */
-        /* IT IS ONLY USED FOR KEEPING TRACK INTERNALLY */
-
-        for (int i = 0; i < openSale.getEntries().size(); i++)
-            if (openSale.getEntries().get(i).getBarCode().equals(productCode))
-                if (openSale.getEntries().get(i).getAmount() < amount) {
-                    return false;
-                } else {
-                    openSale.setPrice(openSale.getPrice() - openSale.getEntries().get(i).getPricePerUnit() * amount);    //update price
-                    if (openSale.getEntries().get(i).getAmount() == amount) {                                            //if the amount is equal to the one requested then remove
-                        openSale.getEntries().remove(i);
-                        prodsToUpdate.remove(productCode);
-
-                    } else {                                                                                                //else increase quantity
-                        openSale.getEntries().get(i).setAmount(openSale.getEntries().get(i).getAmount() - amount);
-                        prodsToUpdate.get(productCode).setQuantity(prodsToUpdate.get(productCode).getQuantity() + amount);
-                    }
-
-                    return true;
-                }
-
+        
+        try {
+        	SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
+        	List<TicketEntry> entries = DAOsaleEntry.Read(transactionId);
+        	for (int i = 0; i < entries.size(); i++) {
+        		if (entries.get(i).getBarCode().equals(productCode))
+        			if (entries.get(i).getAmount() < amount) {
+        				return false;
+        			} else {
+        				sale.setPrice(sale.getPrice() - entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * amount);   			//compute price
+        				DAOsaleTransaction.Update(sale);																	//update sale
+        				if (entries.get(i).getAmount() == amount) {                                            				//if the amount is equal to the one requested then remove
+        					DAOsaleEntry.DeleteFromSale(productCode);
+        					prodsToUpdate.remove(productCode);
+        					
+        				} else {                                                                                                //else increase quantity
+        					entries.get(i).setAmount(entries.get(i).getAmount() - amount);
+        					prodsToUpdate.get(productCode).setQuantity(prodsToUpdate.get(productCode).getQuantity() + amount);
+        					DAOsaleEntry.Update(entries.get(i));
+        				}
+        				
+        				return true;
+        			}
+        	}
+        }catch(DAOexception e) {return false;}
         return false;
     }
 
@@ -904,22 +915,30 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        if (transactionId == last_sale_id) {
+        
+        
+        
+        
+        SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
+        if (transactionId == DAOsaleTransaction.getId()) {
             try {
                 DAOproductType.read(productCode);
             } catch (DAOexception e) {
                 e.getMessage();
                 return false;
             }
+        	List<TicketEntry> entries = DAOsaleEntry.Read(transactionId);
+            for (int i = 0; i < entries.size(); i++) {
+                if (entries.get(i).getBarCode().equals(productCode)) {
 
-            for (int i = 0; i < openSale.getEntries().size(); i++) {
-                if (openSale.getEntries().get(i).getBarCode().equals(productCode)) {
-
-                    openSale.setPrice(openSale.getPrice() - openSale.getEntries().get(i).getPricePerUnit() * openSale.getEntries().get(i).getAmount());            //reset price
-
-                    openSale.getEntries().get(i).setDiscountRate(discountRate);
-                    openSale.getEntries().get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit() * (1 - discountRate));                            //update discounted price per unit
-                    openSale.setPrice(openSale.getPrice() + openSale.getEntries().get(i).getPricePerUnit() * openSale.getEntries().get(i).getAmount());            //compute new price
+                    sale.setPrice(sale.getPrice() - entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * sale.getEntries().get(i).getAmount());            	//reset price
+                    
+                    entries.get(i).setDiscountRate(discountRate);
+                    //entries.get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit() * (1 - discountRate));                        //update discounted price per unit
+                    entries.get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit());                        //update price per unit
+                    sale.setPrice(sale.getPrice() + entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * entries.get(i).getAmount());            						//compute new price
+                    DAOsaleTransaction.Update(sale);																								//update entries
+                    DAOsaleEntry.Update(entries.get(i));																							//update sale
                     return true;
                 }
             }
@@ -936,17 +955,22 @@ public class EZShop implements EZShopInterface {
             throw new InvalidDiscountRateException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-
-
-        if (transactionId != last_sale_id)
-            return false;
-        if (openSale.getDiscountRate() != 0)
-            openSale.setPrice(openSale.getPrice() / (1 - openSale.getDiscountRate()));
-
-        openSale.setDiscountRate(discountRate);
-        openSale.setPrice(openSale.getPrice() * (1 - discountRate));
-
-        return true;
+        try {
+        	SaleTransaction sale = DAOsaleTransaction.Read(transactionId);
+        		if (transactionId != DAOsaleTransaction.getId())
+        			return false;
+        		if (sale.getDiscountRate() != 0)
+        			sale.setPrice(sale.getPrice() / (1 - sale.getDiscountRate()));
+        		
+        		sale.setDiscountRate(discountRate);
+        		sale.setPrice(sale.getPrice() * (1 - discountRate));
+        		DAOsaleTransaction.Update(sale);
+        		return true;
+        		
+        }catch(DAOexception e) {
+        	return false;
+        }
+        
     }
 
     @Override
@@ -987,17 +1011,9 @@ public class EZShop implements EZShopInterface {
 
         try {
 
-            if (transactionId != DAOsaleTransaction.getId() + 1)
+            if (transactionId != DAOsaleTransaction.getId())
                 return false;
 
-
-            //create the transaction
-            Integer saleId = DAOsaleTransaction.Create(openSale);
-            for (int i = 0; i < openSale.getEntries().size(); i++) {
-                System.out.println("entry(" + i + ") ");
-                DAOsaleEntry.Create(saleId, openSale.getEntries().get(i));
-                System.out.println(openSale.getEntries().get(i));
-            }
 
             //update the products
             for (ProductType prod : prodsToUpdate.values()) {
@@ -1005,12 +1021,8 @@ public class EZShop implements EZShopInterface {
                 DAOproductType.UpdateByCode(prod);
                 System.out.println(prod.getBarCode());
             }
-
-            //get ready for next sale
-            last_sale_id = 0;
-            openSale = null;
+            DAOsaleTransaction.Close(transactionId);
             prodsToUpdate.clear();
-
 
         } catch (DAOexception e) {
             e.printStackTrace();
@@ -1060,7 +1072,10 @@ public class EZShop implements EZShopInterface {
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
 
-        return DAOsaleTransaction.Read(transactionId);
+        if(DAOsaleTransaction.getStatus(transactionId) != null &&DAOsaleTransaction.getStatus(transactionId).equals("close"))
+        	return DAOsaleTransaction.Read(transactionId);
+
+        return null;
     }
 
 
@@ -1197,7 +1212,6 @@ public class EZShop implements EZShopInterface {
                 }
 
                 //get ready for next sale
-                last_sale_id = 0;
                 retEntries = null;
                 prodsToReturn.clear();
             	/**/

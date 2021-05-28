@@ -12,7 +12,7 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 		this.saleID = 0;
 		this.discountRate = 0.0;
 		this.price = 0.0;
-		this.entries = null;
+		this.entries = new ArrayList<>();
 	    
 	}
 	
@@ -20,7 +20,7 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 		this.saleID = saleID;
 		this.discountRate = 0.0;
 		this.price = 0.0;
-		this.entries = null;
+		this.entries = new ArrayList<>();
 	    
 	}
 	
@@ -28,14 +28,14 @@ public class ezSaleTransaction implements SaleTransaction{  //two methods are co
 		this.saleID = 0;
 		this.discountRate = discountRate;
 		this.price = price;
-		this.entries = null;
+		this.entries = new ArrayList<>();
 	}
 	
 	public ezSaleTransaction(int saleId, double discountRate, double price) {
 		this.saleID = saleId;
 		this.discountRate = discountRate;
 		this.price = price;
-		this.entries = null;
+		this.entries = new ArrayList<>();
 	}
 	
 	
