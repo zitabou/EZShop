@@ -543,7 +543,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean payOrder(Integer orderId) throws InvalidOrderIdException, UnauthorizedException {
-        if (orderId <= 0) throw new InvalidOrderIdException();
+        if (orderId == null || orderId <= 0) throw new InvalidOrderIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
@@ -564,18 +564,20 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean recordOrderArrival(Integer orderId) throws InvalidOrderIdException, UnauthorizedException, InvalidLocationException {
-        if (orderId <= 0) throw new InvalidOrderIdException();
+        if (orderId == null || orderId <= 0) throw new InvalidOrderIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
         ezOrder o = (ezOrder) orders.get(orderId);
+
+        if ( o==null ||  !(o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED"))) return false;
         ezProductType prod = (ezProductType) DAOproductType.readAll().values().stream().filter(p -> p.getBarCode().equals(o.getProductCode()))
                 .collect(Collectors.toList()).get(0);
 
 
         if (prod.getLocation() == null) throw new InvalidLocationException();
 
-        if (!(o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED"))) return false;
+
 
         if (o.getStatus().equals("PAYED")) {
 
@@ -1089,7 +1091,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer startReturnTransaction(Integer saleNumber) throws /*InvalidTicketNumberException,*/InvalidTransactionIdException, UnauthorizedException {
-        if (saleNumber <= 0 || saleNumber == null) throw new InvalidTransactionIdException();
+        if (saleNumber == null || saleNumber <= 0) throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
 
@@ -1138,6 +1140,11 @@ public class EZShop implements EZShopInterface {
 			/**/
 			ProductType prod = null;
 			TicketEntry entry = new ezReceiptEntry();
+
+			//if product to return is not in the refering sale transaction -> ret false
+			if(saleEntries== null || saleEntries.stream().map(se -> se.getBarCode()).filter( bc -> bc.equals(productCode)).count() < 1 )
+			    return false;
+
 	    	for(TicketEntry te : saleEntries) {
 	    		if(te.getBarCode().equals(productCode)) {
 	    			entry.setProductDescription(te.getProductDescription());
@@ -1190,7 +1197,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean endReturnTransaction(Integer returnId, boolean commit) throws InvalidTransactionIdException, UnauthorizedException {
-        if (returnId <= 0 || returnId == null)
+        if (returnId == null || returnId <= 0)
             throw new InvalidTransactionIdException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
             throw new UnauthorizedException();
