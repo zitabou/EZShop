@@ -79,13 +79,13 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public Integer createUser(String username, String password, String role) throws InvalidUsernameException, InvalidPasswordException, InvalidRoleException {
-	if (username.equalsIgnoreCase("") || username == null) {
+	if (username == null || username.equalsIgnoreCase("") ) {
 		throw new InvalidUsernameException("Username is empty or null at createUser(...).");
 	}
-	if (password.equalsIgnoreCase("") || password == null) {
+	if (password == null || password.equalsIgnoreCase("")) {
 		throw new InvalidPasswordException("Password is empty or null at createUser(...).");
 	}
-	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+	if (role == null || (role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
 		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. createUser(...)");
 	}
 	Integer user_id = 0;
@@ -110,7 +110,7 @@ public class EZShop implements EZShopInterface {
        	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
 	throw new UnauthorizedException("The active user is not authorized to deleteUser(id), or there is no logged user.");
 	}
-	if (id <= 0 || id == null) {
+	if (id == null || id <= 0 ) {
 	throw new InvalidUserIdException("Invalid User ID. deleteUser(id)");
 	}
        	try {
@@ -141,7 +141,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public User getUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
 	User usr = null;
-	if ( id <= 0 || id == null) {
+	if (id == null || id <= 0) {
 		throw new InvalidUserIdException("Invalid User ID. getUser(id)");
 	}
 	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
@@ -149,7 +149,7 @@ public class EZShop implements EZShopInterface {
 	}
 	try {
 		usr = DAOuser.Read(id);
-		if (usr==null || id <= 0 || id == null) {
+		if (usr==null || id == null || id <= 0 ) {
 			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
 		}
 	} catch (DAOexception e) {
@@ -165,7 +165,7 @@ public class EZShop implements EZShopInterface {
 	if (usr==null || id <= 0 || id == null) {
 		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
 	}
-	if ((role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
+	if (role == null || (role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
 		throw new InvalidRoleException("The role parameter is not Cashier, ShopManager or Administrator; or is empty. updateUserRights(,)");
 	}
 	if (activeUser == null || (activeUser.getRole().equals("Administrator") == false)) {
@@ -185,10 +185,10 @@ public class EZShop implements EZShopInterface {
     @Override
     public User login(String username, String password) throws InvalidUsernameException, InvalidPasswordException {
 	//Exceptions
-        if (username.equalsIgnoreCase("") || username == null) {
+        if (username == null || username.equalsIgnoreCase("") ) {
 		throw new InvalidUsernameException("Username is empty or null at login.");
 	}
-	if (password.equalsIgnoreCase("") || password == null) {
+	if (password == null || password.equalsIgnoreCase("")) {
 		throw new InvalidPasswordException("Password is empty or null at login.");
 	}	
 	//
@@ -1315,7 +1315,7 @@ public class EZShop implements EZShopInterface {
 	// TODO NumberFormatException: empty String
 	// when the textbox for cash is left empty.
 	// Exceptions
-	if (ticketNumber <= 0) {
+	if (ticketNumber == null || ticketNumber <= 0) {
 		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
 	}
        if (cash <= 0) {
@@ -1348,7 +1348,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean receiveCreditCardPayment(Integer ticketNumber, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
         
-	if (ticketNumber <= 0 || ticketNumber == null) {
+	if (ticketNumber == null || ticketNumber <= 0 ) {
 		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
 	}
 	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
@@ -1419,7 +1419,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public double returnCashPayment(Integer returnId) throws InvalidTransactionIdException, UnauthorizedException {
 	// Exceptions
-	if (returnId <= 0){
+	if (returnId == null || returnId <= 0){
 		throw new InvalidTransactionIdException("The returnId is not valid. returnCashPayment(id)");
 	}
 	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
@@ -1449,7 +1449,7 @@ public class EZShop implements EZShopInterface {
     @Override
     public double returnCreditCardPayment(Integer returnId, String creditCard) throws InvalidTransactionIdException, InvalidCreditCardException, UnauthorizedException {
 	//Exceptions
-	if (returnId <= 0 || returnId== null) {
+	if (returnId== null || returnId <= 0 ) {
 		throw new InvalidTransactionIdException("The ticketNumber (or id) is less or equal to 0. receiveCashPayment(,).");
 	}
 	if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager|Cashier"))){
