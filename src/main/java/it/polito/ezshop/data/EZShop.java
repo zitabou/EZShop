@@ -90,21 +90,21 @@ public class EZShop implements EZShopInterface {
 	}
 	Integer user_id = 0;
 	try {
-		// Check if the username is not being used already
-		/*for (User u : getAllUsers()) {
+		//Check if the username is not being used already
+		for (User u : DAOuser.readAll().values()) {
+			//System.out.println("User: " + u.getUsername() + " vs " + username);
 			if ( u.getUsername().equals(username) ) {
-				throw new InvalidUsernameException("The username is already in use.");
+				//System.out.println("User already exists: " + username);
+				return -1 ;
 			}
-		}*/
+		}
 		User usr = new ezUser(username, password, role);
-		user_id = DAOuser.Create(usr);	
+		user_id = DAOuser.Create(usr);
+		return user_id;
 	} catch (DAOexception e){
 		return -1;
-	} finally {
-		return user_id;
 	}
     }
-
     @Override
     public boolean deleteUser(Integer id) throws InvalidUserIdException, UnauthorizedException {
        	if (activeUser == null || activeUser.getRole().equals("Administrator") == false) {
@@ -115,10 +115,9 @@ public class EZShop implements EZShopInterface {
 	}
        	try {
 		DAOuser.Delete(id);
+		return true;
 	} catch ( DAOexception e ) {
 		return false;
-	} finally {
-		return true;
 	}	
     }
 
@@ -149,20 +148,15 @@ public class EZShop implements EZShopInterface {
 	}
 	try {
 		usr = DAOuser.Read(id);
-		if (usr==null || id == null || id <= 0 ) {
-			throw new InvalidUserIdException("Invalid User ID. getUser(id)");
-		}
+		return usr;
 	} catch (DAOexception e) {
 		return null;
-	} finally {
-		return usr;
 	}
     }
 
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
-	User usr = getUser(id);
-	if (usr==null || id <= 0 || id == null) {
+	if (id <= 0 || id == null) {
 		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
 	}
 	if (role == null || (role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
@@ -172,13 +166,14 @@ public class EZShop implements EZShopInterface {
 		throw new UnauthorizedException("The active user is not authorized to updateUserRights(,) or there is no logged user.");
 	}
 
-	usr.setRole(role);
 	try {
+		User usr = getUser(id);
+		if (usr == null) { return false; }
+		usr.setRole(role);
 		DAOuser.Update(usr);
+		return true;
 	} catch (DAOexception e) {
 		return false;	
-	} finally {
-		return true;
 	}
     }
 
@@ -202,7 +197,7 @@ public class EZShop implements EZShopInterface {
 	boolean validate_password = false;
 	User aux_usr = null;
     	for (User u : users.values()) {
-		//System.out.println(u.getId() + "-" + u.getUsername() + "-" + u.getPassword());
+		//System.out.println(u.getId() + "-" + u.getUsername() + "-" + u.getPassword() + " vs " + username);
 		validate_username = validate_username || u.getUsername().equals(username);
 		if (validate_username) {
 			aux_usr = u;
@@ -210,7 +205,7 @@ public class EZShop implements EZShopInterface {
 		}	
     	}
 	if (validate_username == false) {
-		throw new InvalidUsernameException("Username does not exist.");
+		return null;
 	}	
 	/*if(aux_usr.getPassword().equals(password)) {
 		activeUser = (ezUser) aux_usr;
@@ -221,20 +216,19 @@ public class EZShop implements EZShopInterface {
 	try {
     		if(aux_usr.getPassword().equals(password)) {
     			activeUser = (ezUser) aux_usr;
+			//System.out.println("Logged succesfully" + username +"-" + password);
 			return aux_usr;
 	    	} else {
-			throw new InvalidPasswordException("Password is incorrect.");
+			return null;
 		}
 	}catch (DAOexception e) {
 		return null;
-		//throw new InvalidPasswordException("Password is incorrect.");	
 	}
     }
 
     @Override
     public boolean logout() {
-        activeUser = null;
-        return true;
+	if (activeUser == null ) { return false ;} else { activeUser = null; return true;}
     }
 
 

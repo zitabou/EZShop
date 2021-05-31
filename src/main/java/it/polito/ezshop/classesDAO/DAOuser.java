@@ -50,21 +50,22 @@ public class DAOuser {
 	public static User Read(Integer userId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
-		User usr = new ezUser();
+		//User usr = new ezUser();
 		PreparedStatement pstat = null;
 		ResultSet rs = null;
-		
+		User usr = null;	
 		try {
 			pstat = conn.prepareStatement("SELECT * FROM user WHERE user_id=?");
 			pstat.setInt(1, userId);
 			rs = pstat.executeQuery();
 			if (rs.next() == true) {
-				
+				usr = new ezUser();
 				usr.setId(rs.getInt("user_id"));
 				usr.setUsername(rs.getString("user_username"));
 				usr.setPassword(rs.getString("user_password"));
 				usr.setRole(rs.getString("user_role"));
 			}
+			return usr;
 			//pstat.close();
 		}catch(SQLException e){
 			throw new DAOexception("error while reading User" + userId);
@@ -75,7 +76,7 @@ public class DAOuser {
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading User " + usr.getId()); }
 		}
 		
-		return usr;
+		//return usr;
 	}
 	
 	
@@ -109,10 +110,23 @@ public class DAOuser {
 	public static void Delete(Integer user_id) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		ResultSet rs = null;
 		try{
-			pstat = conn.prepareStatement("DELETE FROM user WHERE user_id=?");
+			pstat = conn.prepareStatement("SELECT COUNT(*) FROM user WHERE user_id=?");
 			pstat.setInt(1,user_id);
-			pstat.executeUpdate();
+			rs = pstat.executeQuery();
+			int count = 0;
+			rs.next();
+			count = rs.getInt(1);
+			//System.out.println("UserId exists: " + count);
+			if (count >= 1) {
+				//System.out.println("Deleting user_id: " + user_id);
+				pstat = conn.prepareStatement("DELETE FROM user WHERE user_id=?");
+				pstat.setInt(1,user_id);
+				pstat.executeUpdate();
+			}else {
+				throw new DAOexception("error while deleting User " + user_id);
+			}
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting User " + user_id);
 		}finally {
