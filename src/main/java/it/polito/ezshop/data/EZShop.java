@@ -156,7 +156,7 @@ public class EZShop implements EZShopInterface {
 
     @Override
     public boolean updateUserRights(Integer id, String role) throws InvalidUserIdException, InvalidRoleException, UnauthorizedException {
-	if (id <= 0 || id == null) {
+	if (id == null || id <= 0 ) {
 		throw new InvalidUserIdException("Invalid User ID. updateUserRights(,)");
 	}
 	if (role == null || (role.equals("Cashier") == true || role.equals("ShopManager") == true || role.equals("Administrator") == true)==false || role.equalsIgnoreCase("")){
