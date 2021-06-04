@@ -11,12 +11,13 @@ on April 30, discuss whether the design could be improved>
 <Applying Structure 101 to your project, version to be delivered on june 4, produce the Levelized structure map,
 with all elements explosed, all dependencies, NO tangles; and report it here as a picture>
 ```
+<img src="./images/structure101/LevelizedStructureMap.PNG">
 
 # Structural over complexity chart
 ```
 <Applying Structure 101 to your project, version to be delivered on june 4, produce the structural over complexity chart; and report it here as a picture>
 ```
-
+<img src="./images/structure101/structuralComplexity.PNG">
 
 
 # Size metrics
@@ -56,6 +57,7 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 <Report screen captures of the package-level tangles by opening the items in the "composition perspective" 
 (double click on the tangle from the Views->Complexity page)>
 ```
+<img src="./images/structure101/packageTangles.PNG">
 
 # Summary analysis
 ```
