@@ -6,6 +6,7 @@
 on April 30, discuss whether the design could be improved>
 ```
 
+
 # Levelized structure map
 ```
 <Applying Structure 101 to your project, version to be delivered on june 4, produce the Levelized structure map,
@@ -30,11 +31,11 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 
 | Metric                                    | Measure |
 | ----------------------------------------- | ------- |
-| Packages                                  |         |
-| Classes (outer)                           |         |
-| Classes (all)                             |         |
-| NI (number of bytecode instructions)      |         |
-| LOC (non comment non blank lines of code) |         |
+| Packages                                  |   8      |
+| Classes (outer)                           |  59       |
+| Classes (all)                             |  59       |
+| NI (number of bytecode instructions)      |  15K       |
+| LOC (non comment non blank lines of code) |  6K       |
 
 
 
