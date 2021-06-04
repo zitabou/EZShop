@@ -47,6 +47,7 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 
 | Item | Tangled | Fat  | Size | XS   |
 | ---- | ------- | ---- | ---- | ---- |
+| it.polito.ezshop     |  32%       | 10     |  15007    |    4085  |
 | it.polito.ezshop.data     |         | 143     |  4133    |    664  |
 | it.polito.ezshop.classesDAO     |         |  19    | 189     |  39    |
 
