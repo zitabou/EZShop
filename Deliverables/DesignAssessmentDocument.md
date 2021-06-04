@@ -5,7 +5,7 @@
 <The goal of this document is to analyse the structure of your project, compare it with the design delivered
 on April 30, discuss whether the design could be improved>
 ```
-If we were to put the classes contained in the classes package into the data package the tangles would be 0
+
 
 # Levelized structure map
 ```
@@ -47,8 +47,8 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 
 | Item | Tangled | Fat  | Size | XS   |
 | ---- | ------- | ---- | ---- | ---- |
-| ClassesDAO     |         |      |      |      |
-|      |         |      |      |      |
+| it.polito.ezshop.data     |         | 143     |  4133    |    664  |
+| it.polito.ezshop.classesDAO     |         |  19    | 189     |  39    |
 
 
 
@@ -65,3 +65,4 @@ with all elements explosed, all dependencies, NO tangles; and report it here as 
 <Discuss here main differences of the current structure of your project vs the design delivered on April 30>
 <Discuss if the current structure shows weaknesses that should be fixed>
 ```
+If we were to put the classes contained in the classes package into the data package the tangles would be 0
