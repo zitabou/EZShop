@@ -80,3 +80,4 @@ We can see the tangles between "classes" and "data" packages. But in reality the
 ```
 
 The tangles can be reduced without increasing the Fat% by performing some simple changes like moving the usage of DAO classes from the classes in "classes" and use them in the "EZShop" class in the "data" package. Then since the "data" package includes the interfaces implemented in the "classes" package we could use a new, different package for the interfaces. This way we would reduce both the Fat% and the tangle%.  
+
