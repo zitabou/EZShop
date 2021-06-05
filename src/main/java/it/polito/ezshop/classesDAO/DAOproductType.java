@@ -166,8 +166,11 @@ public class DAOproductType {
 		
         try {
 
-        	pstat = conn.prepareStatement("SELECT * FROM product WHERE description=?");
-        	pstat.setString(1, description);
+        	if(description == null)
+        		pstat = conn.prepareStatement("SELECT * FROM product");
+        	else
+        		pstat = conn.prepareStatement("SELECT * FROM product WHERE description LIKE '%"+description+"%'");
+        	//pstat.setString(1, description);
         	rs = pstat.executeQuery();
         	map = new HashMap<>();
         	
@@ -264,10 +267,14 @@ public class DAOproductType {
 	public static void Delete(ProductType prod) throws DAOexception{
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
+		int result = 0;
 		try{
 			pstat = conn.prepareStatement("DELETE FROM product WHERE ID=?");
 			pstat.setInt(1,prod.getId());
-			pstat.executeUpdate();
+			
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
 		}catch(SQLException e){
 			throw new DAOexception("error while deleting Product" + prod.getId());
 		}finally {

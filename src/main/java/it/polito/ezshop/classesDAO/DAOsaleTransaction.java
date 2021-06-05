@@ -34,7 +34,92 @@ public class DAOsaleTransaction {
 		}
 		return generatedKey;
 		
-	}	
+	}
+	
+	
+public static String getStatus(Integer saleId) throws DAOexception{
+		
+		Connection conn = DBManager.getConnection();
+		String sale_status = null;
+		PreparedStatement pstat = null;
+		ResultSet rs = null;
+		
+		try {
+			pstat = conn.prepareStatement("SELECT status FROM sale_transaction WHERE ID=?");
+			pstat.setInt(1, saleId);
+			rs = pstat.executeQuery();
+			
+			if (rs.next() == true) {
+				sale_status = (rs.getString("status"));
+			}
+		}catch(SQLException e){
+			throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
+		}
+		
+		return sale_status;
+	}
+	
+	
+	public static void Open(Integer saleId) throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		int result = 0;
+		
+		try{
+			pstat = conn.prepareStatement("UPDATE sale_transaction SET status =? WHERE id=?");
+			pstat.setString(1, "open");
+			pstat.setInt(2, saleId);
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
+			
+		}catch(SQLException e){
+			throw new DAOexception("error while updating sale transaction " +  saleId + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  saleId + e.getMessage()); }
+		}
+	}
+	
+	public static void Close(Integer saleId) throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		int result = 0;
+		
+		try{
+			pstat = conn.prepareStatement("UPDATE sale_transaction SET status =? WHERE id=?");
+			pstat.setString(1, "close");
+			pstat.setInt(2, saleId);
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
+			
+		}catch(SQLException e){
+			throw new DAOexception("error while updating sale transaction " +  saleId + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  saleId + e.getMessage()); }
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	public static int Create(SaleTransaction sale) throws DAOexception {
 		Connection conn = DBManager.getConnection();
@@ -80,6 +165,7 @@ public class DAOsaleTransaction {
 				sale.setTicketNumber(rs.getInt("id"));
 				sale.setDiscountRate(rs.getDouble("discount_rate"));
 				sale.setPrice(rs.getDouble("price"));
+				sale.setEntries(DAOsaleEntry.Read(saleId));
 			}
 			pstat.close();
 		}catch(SQLException e){
@@ -90,8 +176,6 @@ public class DAOsaleTransaction {
 			if(rs != null)
 				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading sale transaction " +  saleId + e.getMessage()); }
 		}
-		
-		sale.setEntries(DAOsaleEntry.Read(saleId));
 		
 		return sale;
 	}
@@ -117,8 +201,6 @@ public class DAOsaleTransaction {
 			if(pstat != null)
 				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating sale transaction " +  sale.getTicketNumber() + e.getMessage()); }
 		}
-		
-		
 	}
 
 

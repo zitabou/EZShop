@@ -152,4 +152,39 @@ public class DAOcc{
 	}
 
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static void DeleteAll() throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		
+		DAOsaleEntry.DeleteAll();
+		
+		try{
+			pstat = conn.prepareStatement("DELETE FROM credit_card");
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting all credit_cards " + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting all credit_cards  " + e.getMessage()); }
+		}
+	}
+	
+	
+	
+	
+	
 }

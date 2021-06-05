@@ -23,7 +23,7 @@ public class DAOlocation {
 			pstat = conn.prepareStatement("INSERT INTO location (full_position, aisle, rack, level, product) VALUES (?,?,?,?,?)");
 			pstat.setString(1, loc.getPosition());
 			pstat.setInt(2,loc.getAisleID());
-			pstat.setInt(3, loc.getRackID());
+			pstat.setString(3, loc.getRackID());
 			pstat.setInt(4, loc.getLevelID());
 			pstat.setInt(5, loc.getProduct());
 			
@@ -68,7 +68,7 @@ public static Location Read(Integer prodId) throws DAOexception{
 			if (rs.next() == true) {
 				loc = new Location();
 				loc.setAisleID(rs.getInt("aisle"));
-				loc.setRackID(rs.getInt("rack"));
+				loc.setRackID(rs.getString("rack"));
 				loc.setLevelID(rs.getInt("level"));
 				loc.setProduct(rs.getInt("product"));
 			}
@@ -99,7 +99,7 @@ public static Location Read(String position) throws DAOexception{
 		if (rs.next() == true) {
 			loc = new Location();
 			loc.setAisleID(rs.getInt("aisle"));
-			loc.setRackID(rs.getInt("rack"));
+			loc.setRackID(rs.getString("rack"));
 			loc.setLevelID(rs.getInt("level"));
 			loc.setProduct(rs.getInt("product"));
 		}
@@ -137,7 +137,7 @@ public static Location Read(String position) throws DAOexception{
 		try{
 			pstat = conn.prepareStatement("UPDATE location SET aisle= ?, rack = ?, level = ?, product =? WHERE full_position=?");
 			pstat.setInt(1, loc.getAisleID());
-			pstat.setInt(2, loc.getRackID());
+			pstat.setString(2, loc.getRackID());
 			pstat.setInt(3, loc.getLevelID());
 			pstat.setInt(4, loc.getProduct());
 			pstat.setString(5, loc.getPosition());

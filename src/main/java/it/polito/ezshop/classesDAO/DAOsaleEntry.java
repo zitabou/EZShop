@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import it.polito.ezshop.classes.Location;
 import it.polito.ezshop.classes.ezReceiptEntry;
 import it.polito.ezshop.data.TicketEntry;
 
@@ -15,7 +16,6 @@ public class DAOsaleEntry {
 	public static void Create(Integer saleId, TicketEntry entry) throws DAOexception {
 		Connection conn = DBManager.getConnection();
 		PreparedStatement pstat = null;
-		
 		try {
 			pstat = conn.prepareStatement("INSERT INTO receipt_entries (sale_id, barcode, product_description, amount, price_per_unit, discount_rate) VALUES (?,?,?,?,?,?)");
 			pstat.setInt(1,saleId);
@@ -72,7 +72,29 @@ public class DAOsaleEntry {
 	}
 	
 
-	/*No Updates can happen to an entry. They are bound to a saleTransaction*/
+	public static void Update(TicketEntry entry) throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		int result = 0;
+		try{
+			pstat = conn.prepareStatement("UPDATE receipt_entries SET product_description=?, amount=?, price_per_unit=?, discount_rate=? WHERE barcode=?");
+			pstat.setString(1, entry.getProductDescription());
+			pstat.setInt(2, entry.getAmount());
+			pstat.setDouble(3, entry.getPricePerUnit());
+			pstat.setDouble(4, entry.getDiscountRate());
+			pstat.setString(5, entry.getBarCode());
+			
+			result = pstat.executeUpdate();
+			if(result == 0)
+				throw new SQLException("entry not found");
+			
+		}catch(SQLException e){
+			throw new DAOexception("[error while updating entry] " + e.getMessage());
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while updating entry " + e.getMessage()); }
+		}
+	}
 	
 
 	public static void DeleteFromSale(Integer saleId) throws DAOexception{
@@ -87,6 +109,21 @@ public class DAOsaleEntry {
 		}finally {
 			if(pstat != null)
 				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + saleId + e.getMessage()); }
+		}
+	}
+	
+	public static void DeleteFromSale(String barcode) throws DAOexception{
+		Connection conn = DBManager.getConnection();
+		PreparedStatement pstat = null;
+		try{
+			pstat = conn.prepareStatement("DELETE FROM receipt_entries WHERE barcode=?");
+			pstat.setString(1,barcode);
+			pstat.executeUpdate();
+		}catch(SQLException e){
+			throw new DAOexception("error while deleting entry from sale " + barcode + e.getMessage() );
+		}finally {
+			if(pstat != null)
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while deleting entry from sale " + barcode + e.getMessage()); }
 		}
 	}
 	
