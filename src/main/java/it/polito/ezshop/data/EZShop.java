@@ -878,25 +878,24 @@ InvalidLocationException, InvalidRFIDException {
         	throw new InvalidRFIDException("RFID is not numeric");
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() > 12)
+        if (RFID.length() != 10 )
             throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
-    	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
-            throw new UnauthorizedException();
     	
     	
-    	String productCode;
+    	String productCode = null;
     	try {
     		
-    		productCode = DAOproduct.read(RFID);
-    		
-    	}catch(DAOexception e) {
+    		productCode = DAOproduct.readByRFID(RFID);
+    		if(productCode != null)
+    			return addProductToSale(transactionId, productCode, 1);
+
+    	}catch(DAOexception | InvalidProductCodeException e) {
     		 e.getMessage();
              return false;
     	}
-    	
-    	return addProductToSale(transactionId, productCode, amount);
+    	return false;
     }
     
     @Override
@@ -954,27 +953,27 @@ InvalidLocationException, InvalidRFIDException {
         	throw new InvalidRFIDException("RFID is not numeric");
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() > 12)
+        if (RFID.length() != 10 )
             throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
-        if (amount < 0)
-            throw new InvalidQuantityException();
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	
     	
-    	String productCode;
+    	String productCode = null;
     	try {
     		
-    		productCode = DAOproduct.read(RFID);
-    		
-    	}catch(DAOexception e) {
+    		productCode = DAOproduct.readByRFID(RFID);
+    		if(productCode != null)
+    			return deleteProductFromSale(transactionId, productCode, 1);
+    	
+    	}catch(DAOexception | InvalidProductCodeException e) {
     		 e.getMessage();
              return false;
     	}
     	
-    	return deleteProductFromoSale(transactionId, productCode, amount);
+    	return false;
     }
 
     @Override
@@ -1009,7 +1008,6 @@ InvalidLocationException, InvalidRFIDException {
                     sale.setPrice(sale.getPrice() - entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * sale.getEntries().get(i).getAmount());            	//reset price
                     
                     entries.get(i).setDiscountRate(discountRate);
-                    //entries.get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit() * (1 - discountRate));                        //update discounted price per unit
                     entries.get(i).setPricePerUnit(prodsToUpdate.get(productCode).getPricePerUnit());                        //update price per unit
                     sale.setPrice(sale.getPrice() + entries.get(i).getPricePerUnit()*(1-entries.get(i).getDiscountRate()) * entries.get(i).getAmount());            						//compute new price
                     DAOsaleTransaction.Update(sale);																								//update entries
