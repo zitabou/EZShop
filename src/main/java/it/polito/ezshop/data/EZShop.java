@@ -870,7 +870,33 @@ InvalidLocationException, InvalidRFIDException {
 
     @Override
     public boolean addProductToSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
-        return false;
+    	if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+    	if (RFID == null)
+            throw new InvalidRFIDException("RFID is null");
+        if (!StringUtils.isNumeric(RFID))
+        	throw new InvalidRFIDException("RFID is not numeric");
+        if (RFID.equals(""))
+            throw new InvalidRFIDException("RFID is empty");
+        if (RFID.length() > 12)
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	
+    	
+    	String productCode;
+    	try {
+    		
+    		productCode = DAOproduct.read(RFID);
+    		
+    	}catch(DAOexception e) {
+    		 e.getMessage();
+             return false;
+    	}
+    	
+    	return addProductToSale(transactionId, productCode, amount);
     }
     
     @Override
@@ -919,7 +945,36 @@ InvalidLocationException, InvalidRFIDException {
 
     @Override
     public boolean deleteProductFromSaleRFID(Integer transactionId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, InvalidQuantityException, UnauthorizedException{
-        return false;
+    	
+    	if (transactionId == null || transactionId <= 0)
+            throw new InvalidTransactionIdException();
+    	if (RFID == null)
+            throw new InvalidRFIDException("RFID is null");
+        if (!StringUtils.isNumeric(RFID))
+        	throw new InvalidRFIDException("RFID is not numeric");
+        if (RFID.equals(""))
+            throw new InvalidRFIDException("RFID is empty");
+        if (RFID.length() > 12)
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+        if (amount < 0)
+            throw new InvalidQuantityException();
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
+            throw new UnauthorizedException();
+    	
+    	
+    	String productCode;
+    	try {
+    		
+    		productCode = DAOproduct.read(RFID);
+    		
+    	}catch(DAOexception e) {
+    		 e.getMessage();
+             return false;
+    	}
+    	
+    	return deleteProductFromoSale(transactionId, productCode, amount);
     }
 
     @Override
