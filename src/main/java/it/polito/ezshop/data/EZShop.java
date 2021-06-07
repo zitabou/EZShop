@@ -590,6 +590,47 @@ public class EZShop implements EZShopInterface {
     @Override
     public boolean recordOrderArrivalRFID(Integer orderId, String RFIDfrom) throws InvalidOrderIdException, UnauthorizedException, 
 InvalidLocationException, InvalidRFIDException {
+        //new exceptions, RFID related
+        if (RFIDfrom == null)
+            throw new InvalidRFIDException("RFID is null");
+        if (!StringUtils.isNumeric(RFIDfrom))
+            throw new InvalidRFIDException("RFID is not numeric");
+        if (RFIDfrom.equals(""))
+            throw new InvalidRFIDException("RFID is empty");
+        if (RFIDfrom.length() != 10 )
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+
+        //same as recordOrderArrival
+        if (orderId == null || orderId <= 0) throw new InvalidOrderIdException();
+        if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager")))
+            throw new UnauthorizedException();
+        ezOrder o = (ezOrder) orders.get(orderId);
+
+        if ( o==null ||  !(o.getStatus().equals("PAYED") || o.getStatus().equals("COMPLETED"))) return false;
+        ezProductType prod = (ezProductType) DAOproductType.readAll().values().stream().filter(p -> p.getBarCode().equals(o.getProductCode()))
+                .collect(Collectors.toList()).get(0);
+
+
+        if (prod.getLocation() == null) throw new InvalidLocationException();
+
+        if (o.getStatus().equals("PAYED")) {
+
+
+            prod.setQuantity(prod.getQuantity() + o.getQuantity());
+            DAOproductType.Update(prod);
+            o.setStatus("COMPLETED");
+            DAOorder.Update(o);
+
+            //new stuff, RFID related
+            int startRFID = Integer.parseInt(RFIDfrom);
+            for(Integer RFID = startRFID; RFID <  startRFID + o.getQuantity(); RFID++){
+                Product p = new Product();
+                p.setRFID(RFID.toString());
+                p.setBarCode(prod.getBarCode());
+                DAOproduct.Create(p);
+            }
+        }
+
         return false;
     }
     @Override
