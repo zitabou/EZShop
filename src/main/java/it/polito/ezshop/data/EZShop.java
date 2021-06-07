@@ -338,10 +338,16 @@ public class EZShop implements EZShopInterface {
         	DAOlocation.Update(loc);
         }
 
-        ProductType prod = new ezProductType();
-        prod.setId(id);
+        ProductType prod = null;
         try {
+        	prod = DAOproductType.read(id);
+        	if(prod == null)
+        		return false;
+        	
             DAOproductType.Delete((ezProductType) prod);
+            
+            if(DAOproduct.readByCode(prod.getBarCode()) != null)
+            	DAOproduct.Delete(prod.getBarCode());
         } catch (DAOexception e) {
             return false;
         }

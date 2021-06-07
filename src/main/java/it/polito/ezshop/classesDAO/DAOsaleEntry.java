@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import it.polito.ezshop.classes.Location;
 import it.polito.ezshop.classes.ezReceiptEntry;
 import it.polito.ezshop.data.TicketEntry;
 
