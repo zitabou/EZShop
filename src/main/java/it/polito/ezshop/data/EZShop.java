@@ -603,7 +603,7 @@ InvalidLocationException, InvalidRFIDException {
             throw new InvalidRFIDException("RFID is not numeric");
         if (RFIDfrom.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFIDfrom.length() != 10 )
+        if (RFIDfrom.length() != 12 )
             throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
 
         //same as recordOrderArrival
