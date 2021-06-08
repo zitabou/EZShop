@@ -20,6 +20,7 @@ public class DAOproduct {
 		Integer generatedKey = -1;
 		try {
 			pstat = conn.prepareStatement("INSERT INTO product_RFID (RFID, barcode) VALUES (?, ?)");
+			
 			pstat.setString(1,prod.getRFID());
 			pstat.setString(2,prod.getBarCode());
 			

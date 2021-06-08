@@ -94,7 +94,7 @@ public class DBManager {
 			//Product RFID
 			stat = conn.createStatement();
 			if(!existsTable("product_RFID")) { //no such table in DB
-				stat.execute("CREATE TABLE product_RFID (id INTEGER not null, RFID VARCHAR(10), barcode VARCHAR(14), primary key(id));");
+				stat.execute("CREATE TABLE product_RFID (RFID VARCHAR(10) not null, barcode VARCHAR(14), primary key(RFID));");
 			}
 			stat.close();
 			

@@ -55,6 +55,8 @@ public class EZShop implements EZShopInterface {
         prodsToReturn = new HashMap<>();
 
         DBManager.getConnection();
+        DAOuser.Create(new ezUser("admin", "admin", "Administrator"));
+        DAOuser.Create(new ezUser("a", "a", "Administrator"));
         DBManager.closeConnection();
 
     }
@@ -67,6 +69,7 @@ public class EZShop implements EZShopInterface {
     	DAOcustomer.DeleteAll();
     	DAOloyaltyCard.DeleteAll();
     	DAOproductType.DeleteAll();
+    	DAOproduct.DeleteAll();
     	DAOlocation.DeleteAll();
     	DAOsaleTransaction.DeleteAll();
     	DAOsaleEntry.DeleteAll();
@@ -603,8 +606,8 @@ InvalidLocationException, InvalidRFIDException {
             throw new InvalidRFIDException("RFID is not numeric");
         if (RFIDfrom.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFIDfrom.length() != 12 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+        if (RFIDfrom.length() != 10 )
+            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
 
         //same as recordOrderArrival
         if (orderId == null || orderId <= 0) throw new InvalidOrderIdException();
@@ -631,13 +634,13 @@ InvalidLocationException, InvalidRFIDException {
             int startRFID = Integer.parseInt(RFIDfrom);
             for(Integer RFID = startRFID; RFID <  startRFID + o.getQuantity(); RFID++){
                 Product p = new Product();
-                p.setRFID(RFID.toString());
+                p.setRFID(StringUtils.leftPad(RFID.toString(), 10, '0'));
                 p.setBarCode(prod.getBarCode());
                 DAOproduct.Create(p);
             }
         }
 
-        return true;
+        return false;
     }
     @Override
     public List<Order> getAllOrders() throws UnauthorizedException {
@@ -874,7 +877,6 @@ InvalidLocationException, InvalidRFIDException {
         	if (transactionId != DAOsaleTransaction.getId() || DAOsaleTransaction.getStatus(transactionId).equals("close"))
         		return false;
         	
-        	
             prod = DAOproductType.read(productCode);
             if(prod == null)
             	return false;
@@ -926,7 +928,7 @@ InvalidLocationException, InvalidRFIDException {
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
         if (RFID.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	
@@ -935,8 +937,11 @@ InvalidLocationException, InvalidRFIDException {
     	try {
     		
     		productCode = DAOproduct.readByRFID(RFID);
-    		if(productCode != null)
+    		if(productCode != null) {
+    			if(DAOproductType.read(productCode).getQuantity()<1)
+    				throw new InvalidQuantityException();
     			return addProductToSale(transactionId, productCode, 1);
+    		}
 
     	}catch(DAOexception | InvalidProductCodeException e) {
     		 e.getMessage();
@@ -1001,7 +1006,7 @@ InvalidLocationException, InvalidRFIDException {
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
         if (RFID.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
+            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
@@ -1307,81 +1312,7 @@ InvalidLocationException, InvalidRFIDException {
     @Override
     public boolean returnProductRFID(Integer returnId, String RFID) throws InvalidTransactionIdException, InvalidRFIDException, UnauthorizedException 
     {
-        if (RFID == null)
-            throw new InvalidRFIDException("RFID is null");
-        if (!StringUtils.isNumeric(RFID))
-            throw new InvalidRFIDException("RFID is not numeric");
-        if (RFID.equals(""))
-            throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
-
-
-        if (activeUser == null || ! (activeUser.getRole().matches("Administrator|ShopManager"))) throw new UnauthorizedException();
-        if(returnId == null || returnId <= 0) throw new InvalidTransactionIdException();
-
-        try {
-
-            String productCode = DAOproduct.readByRFID(RFID);
-            int amount = 1;
-            //retrieve return transaction and referring sale transaction
-            ReturnTransaction ret = DAOreturnTransaction.Read(returnId);
-
-            SaleTransaction referingSale = (SaleTransaction) DAOsaleTransaction.Read(ret.getSaleID());
-
-            //return false if amount to be returned > amount bought
-
-            List<TicketEntry> saleEntries = DAOsaleEntry.Read(ret.getSaleID());
-
-
-            /*entry*/
-            /**/
-            ProductType prod = null;
-            TicketEntry entry = new ezReceiptEntry();
-
-            //if product to return is not in the refering sale transaction -> ret false
-            if(saleEntries== null || saleEntries.stream().map(se -> se.getBarCode()).filter( bc -> bc.equals(productCode)).count() < 1 )
-                return false;
-            for(TicketEntry te : saleEntries) {
-                if(te.getBarCode().equals(productCode)) {
-                    entry.setProductDescription(te.getProductDescription());
-                    entry.setBarCode(productCode);
-                    entry.setAmount(amount);
-                    entry.setPricePerUnit(te.getPricePerUnit());
-                    System.out.println(entry.getProductDescription());
-                    retEntries.add(entry);
-                }
-
-            }
-            prod = DAOproductType.read(productCode);
-            if (prodsToReturn.containsKey(productCode)) {
-                prod = prodsToReturn.get(productCode);
-            }
-            prod.setQuantity(prod.getQuantity() + amount);
-            System.out.println(prod.getBarCode());
-            prodsToUpdate.put(productCode, prod);
-
-            /**/
-            /*entry*/
-            AtomicBoolean amountReturnedIsHigherThanAmountBought = new AtomicBoolean(false);
-            AtomicReference<Double> money= new AtomicReference<>((double) 0);
-            saleEntries.forEach( e -> {
-                if (e.getBarCode().equals(productCode) )
-                    money.set(e.getPricePerUnit() * amount * (1-e.getDiscountRate())); // is already considered in e.getPricePerUnit
-                //money.set(e.getPricePerUnit() * e.getAmount());
-
-            });
-            ret.setAmount(amount);
-            ret.setProdId(productCode);
-            //ret.setMoney(money.get());
-            ret.setMoney(ret.getMoney() + money.get()*(1-referingSale.getDiscountRate()));
-            DAOreturnTransaction.Update(ret);
-
-        }catch(Exception e) {
-            //return false if the transaction do not exist
-            return false;
-        }
-        return true;
+        return false;
     }
 
 
