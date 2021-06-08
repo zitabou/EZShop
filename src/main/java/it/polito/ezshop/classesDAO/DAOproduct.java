@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
+
 import it.polito.ezshop.classes.Product;
 
 public class DAOproduct {
@@ -20,8 +22,8 @@ public class DAOproduct {
 		Integer generatedKey = -1;
 		try {
 			pstat = conn.prepareStatement("INSERT INTO product_RFID (RFID, barcode) VALUES (?, ?)");
-			
-			pstat.setString(1,prod.getRFID());
+			//pstat.setString(1,prod.getRFID());
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
 			pstat.setString(2,prod.getBarCode());
 			
 			pstat.executeUpdate();
@@ -120,7 +122,8 @@ public class DAOproduct {
         try {
 
         	pstat = conn.prepareStatement("SELECT barcode FROM product_RFID WHERE RFID=?");
-        	pstat.setString(1, RFID);
+        	//pstat.setString(1, RFID);
+        	pstat.setString(1,StringUtils.leftPad(RFID, 10, '0'));
         	rs = pstat.executeQuery();
 			
 			if (rs.next()) {
@@ -184,7 +187,8 @@ public class DAOproduct {
 		int result = 0;
 		try{
 			pstat = conn.prepareStatement("UPDATE product_RFID SET RFID = ? WHERE barcode=?");
-			pstat.setString(1, prod.getRFID());
+			//pstat.setString(1, prod.getRFID());
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
 			pstat.setString(2, prod.getBarCode());
 			
 			result = pstat.executeUpdate();
@@ -205,8 +209,9 @@ public class DAOproduct {
 		int result = 0;
 		try{
 			pstat = conn.prepareStatement("UPDATE product_RFID SET barcode = ? WHERE RFID=?");
-			pstat.setString(2, prod.getBarCode());
-			pstat.setString(1, prod.getRFID());
+			pstat.setString(1, prod.getBarCode());
+			//pstat.setString(2, prod.getRFID());
+			pstat.setString(2,StringUtils.leftPad(prod.getRFID(), 10, '0'));
 			
 			result = pstat.executeUpdate();
 			if(result == 0)
@@ -234,7 +239,8 @@ public class DAOproduct {
 		int result = 0;
 		try{
 			pstat = conn.prepareStatement("DELETE FROM product_RFID WHERE RFID=?");
-			pstat.setString(1,prod.getRFID());
+			//pstat.setString(1,prod.getRFID());
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
 			
 			result = pstat.executeUpdate();
 			if(result == 0)

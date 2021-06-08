@@ -54,9 +54,9 @@ public class testRFIDApi {
             Integer prodId = DAOproductType.read("629104150024").getId();
             ezShop.updatePosition(prodId, "4-A-4");
         }
-        if( !DAOproduct.readByCode("629104150024").contains("0000001000") ){
+        if( !DAOproduct.readByCode("629104150024").contains("1000") ){
             Product p = new Product();
-            p.setRFID("0000001000");
+            p.setRFID("1000");
             p.setBarCode("629104150024");
         }
 
@@ -74,7 +74,7 @@ public class testRFIDApi {
         int orderId = ezShop.payOrderFor("629104150024", 3, 1);
         ezShop.recordOrderArrivalRFID(orderId, "0000002000");
         Assert.assertEquals(qty + 3, (int) DAOproductType.read("629104150024").getQuantity());
-        Assert.assertNotNull(DAOproduct.readByRFID("0000002002"));
+        Assert.assertNotNull(DAOproduct.readByRFID("02002"));
 
         //order is in COMPLETED state, no effect
         ezShop.recordOrderArrivalRFID(orderId, "0000002000");
@@ -88,13 +88,15 @@ public class testRFIDApi {
 
     
     @Test
-    public void addProductToSaleRFID() throws InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPricePerUnitException, UnauthorizedException, InvalidOrderIdException, InvalidLocationException, InvalidRFIDException, InvalidTransactionIdException {
-    	//ezShop.login("a","a");
+    public void ProductToSaleRFID() throws InvalidUsernameException, InvalidPasswordException, InvalidProductCodeException, InvalidQuantityException, InvalidPricePerUnitException, UnauthorizedException, InvalidOrderIdException, InvalidLocationException, InvalidRFIDException, InvalidTransactionIdException {
         int orderId = ezShop.payOrderFor("629104150024", 3, 1);
         ezShop.recordOrderArrivalRFID(orderId, "0000002000");
         
         saleId = ezShop.startSaleTransaction();
         Assert.assertTrue(ezShop.addProductToSaleRFID(saleId, "0000002000"));
+        Assert.assertTrue(ezShop.addProductToSaleRFID(saleId, "0000002001"));
+        Assert.assertTrue(ezShop.deleteProductFromSaleRFID(saleId, "0000002002"));
+        Assert.assertFalse(ezShop.deleteProductFromSaleRFID(saleId, "0000002008"));
         ezShop.endSaleTransaction(saleId);
 
     }

@@ -634,7 +634,8 @@ InvalidLocationException, InvalidRFIDException {
             int startRFID = Integer.parseInt(RFIDfrom);
             for(Integer RFID = startRFID; RFID <  startRFID + o.getQuantity(); RFID++){
                 Product p = new Product();
-                p.setRFID(StringUtils.leftPad(RFID.toString(), 10, '0'));
+                p.setRFID(RFID.toString());
+                //p.setRFID(StringUtils.leftPad(RFID.toString(), 10, '0'));
                 p.setBarCode(prod.getBarCode());
                 DAOproduct.Create(p);
             }
