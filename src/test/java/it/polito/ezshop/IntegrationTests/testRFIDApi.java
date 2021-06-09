@@ -4,12 +4,15 @@ import it.polito.ezshop.classes.Product;
 import it.polito.ezshop.classesDAO.*;
 import it.polito.ezshop.data.EZShopInterface;
 import it.polito.ezshop.data.ProductType;
+import it.polito.ezshop.data.TicketEntry;
 import it.polito.ezshop.exceptions.*;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.List;
 
 public class testRFIDApi {
 
@@ -60,15 +63,13 @@ public class testRFIDApi {
             p.setBarCode("629104150024");
         }
 
-        saleId = ezShop.startSaleTransaction();
-        ProductType prod = DAOproductType.read("629104150024");
-        ezShop.addProductToSale(saleId, prod.getBarCode(), 5);
-        ezShop.endSaleTransaction(saleId);
+
+
 
     }
 
     @Test
-    public void testOkCases() throws UnauthorizedException, InvalidQuantityException, InvalidProductCodeException, InvalidPricePerUnitException, InvalidRFIDException, InvalidLocationException, InvalidOrderIdException, InvalidPasswordException, InvalidUsernameException {
+    public void testOkCases() throws UnauthorizedException, InvalidQuantityException, InvalidProductCodeException, InvalidPricePerUnitException, InvalidRFIDException, InvalidLocationException, InvalidOrderIdException, InvalidPasswordException, InvalidUsernameException, InvalidTransactionIdException {
         ezShop.login("a","a");
         int qty = DAOproductType.read("629104150024").getQuantity();
         int orderId = ezShop.payOrderFor("629104150024", 3, 1);
@@ -80,7 +81,22 @@ public class testRFIDApi {
         ezShop.recordOrderArrivalRFID(orderId, "0000002000");
         Assert.assertEquals(qty + 3, (int) DAOproductType.read("629104150024").getQuantity());
 
+        saleId = ezShop.startSaleTransaction();
+        ezShop.addProductToSaleRFID(saleId, "0000002000");
+        ezShop.addProductToSaleRFID(saleId, "0000002001");
+        ezShop.endSaleTransaction(saleId);
 
+        List<TicketEntry> items = DAOsaleEntry.Read(saleId);
+        int quantity = items.get(0).getAmount();
+        Assert.assertEquals(2, quantity);
+
+        Integer retId = ezShop.startReturnTransaction(saleId);
+        ezShop.returnProductRFID(retId, "0000002000");
+        ezShop.endReturnTransaction(retId, true);
+
+        items = DAOsaleEntry.Read(saleId);
+        quantity = items.get(0).getAmount();
+        Assert.assertEquals(1, quantity);
 
     }
   
@@ -103,20 +119,53 @@ public class testRFIDApi {
     
 
     @Test
-    public void testKOCases() throws InvalidTransactionIdException, UnauthorizedException, InvalidPasswordException, InvalidUsernameException, InvalidQuantityException, InvalidPricePerUnitException, InvalidProductCodeException {
+    public void testKOCases() throws InvalidTransactionIdException, UnauthorizedException, InvalidPasswordException, InvalidUsernameException, InvalidQuantityException, InvalidPricePerUnitException, InvalidProductCodeException, InvalidRFIDException {
         ezShop.logout();
 
         Assert.assertThrows(UnauthorizedException.class, () -> {
             ezShop.recordOrderArrivalRFID(1, "0000002000");
+        });
+        Assert.assertThrows(UnauthorizedException.class, () -> {
+            ezShop.returnProductRFID(1, "0000002000");
         });
 
         ezShop.login("admin","admin");
         Assert.assertThrows(InvalidOrderIdException.class, () -> {
             ezShop.recordOrderArrivalRFID(0, "0000002000");
         });
+        Assert.assertThrows(InvalidTransactionIdException.class, () -> {
+            ezShop.returnProductRFID(-1, "0000002000");
+        });
+        Assert.assertThrows(InvalidTransactionIdException.class, () -> {
+            ezShop.returnProductRFID(0, "0000002000");
+        });
+        Assert.assertThrows(InvalidTransactionIdException.class, () -> {
+            ezShop.returnProductRFID(null, "0000002000");
+        });
 
         Assert.assertThrows(InvalidRFIDException.class, () -> {
             ezShop.recordOrderArrivalRFID(1, "2000");
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.recordOrderArrivalRFID(1, null);
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.recordOrderArrivalRFID(1, "00000000000002000");
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.recordOrderArrivalRFID(1, "RFIDcode12ch");
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.returnProductRFID(1, "2000");
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.returnProductRFID(1, null);
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.returnProductRFID(1, "00000000000002000");
+        });
+        Assert.assertThrows(InvalidRFIDException.class, () -> {
+            ezShop.returnProductRFID(1, "RFIDcode12ch");
         });
 
         int orderId = ezShop.payOrderFor("629104150024", 3, 1);
@@ -127,7 +176,15 @@ public class testRFIDApi {
             ezShop.recordOrderArrivalRFID(orderId, "0000002000");
         });
 
+        saleId = ezShop.startSaleTransaction();
+        ezShop.addProductToSaleRFID(saleId, "0000002000");
+        ezShop.addProductToSaleRFID(saleId, "0000002001");
+        ezShop.endSaleTransaction(saleId);
 
+        Integer retId = ezShop.startReturnTransaction(saleId);
+        Assert.assertFalse(ezShop.returnProductRFID(retId, "0000002002"));
+        Assert.assertFalse(ezShop.returnProductRFID(10000, "0000002000"));
+        Assert.assertFalse(ezShop.returnProductRFID(10000, "0000004000"));
 
     }
 
