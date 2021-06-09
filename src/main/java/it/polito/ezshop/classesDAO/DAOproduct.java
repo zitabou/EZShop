@@ -23,7 +23,7 @@ public class DAOproduct {
 		try {
 			pstat = conn.prepareStatement("INSERT INTO product_RFID (RFID, barcode) VALUES (?, ?)");
 			//pstat.setString(1,prod.getRFID());
-			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 12, '0'));
 			pstat.setString(2,prod.getBarCode());
 			
 			pstat.executeUpdate();
@@ -123,7 +123,7 @@ public class DAOproduct {
 
         	pstat = conn.prepareStatement("SELECT barcode FROM product_RFID WHERE RFID=?");
         	//pstat.setString(1, RFID);
-        	pstat.setString(1,StringUtils.leftPad(RFID, 10, '0'));
+        	pstat.setString(1,StringUtils.leftPad(RFID, 12, '0'));
         	rs = pstat.executeQuery();
 			
 			if (rs.next()) {
@@ -188,7 +188,7 @@ public class DAOproduct {
 		try{
 			pstat = conn.prepareStatement("UPDATE product_RFID SET RFID = ? WHERE barcode=?");
 			//pstat.setString(1, prod.getRFID());
-			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 12, '0'));
 			pstat.setString(2, prod.getBarCode());
 			
 			result = pstat.executeUpdate();
@@ -211,7 +211,7 @@ public class DAOproduct {
 			pstat = conn.prepareStatement("UPDATE product_RFID SET barcode = ? WHERE RFID=?");
 			pstat.setString(1, prod.getBarCode());
 			//pstat.setString(2, prod.getRFID());
-			pstat.setString(2,StringUtils.leftPad(prod.getRFID(), 10, '0'));
+			pstat.setString(2,StringUtils.leftPad(prod.getRFID(), 12, '0'));
 			
 			result = pstat.executeUpdate();
 			if(result == 0)
@@ -240,7 +240,7 @@ public class DAOproduct {
 		try{
 			pstat = conn.prepareStatement("DELETE FROM product_RFID WHERE RFID=?");
 			//pstat.setString(1,prod.getRFID());
-			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 10, '0'));
+			pstat.setString(1,StringUtils.leftPad(prod.getRFID(), 12, '0'));
 			
 			result = pstat.executeUpdate();
 			if(result == 0)

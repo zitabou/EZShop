@@ -606,8 +606,8 @@ InvalidLocationException, InvalidRFIDException {
             throw new InvalidRFIDException("RFID is not numeric");
         if (RFIDfrom.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFIDfrom.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
+        if (RFIDfrom.length() != 12 )
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
 
         //same as recordOrderArrival
         if (orderId == null || orderId <= 0) throw new InvalidOrderIdException();
@@ -635,7 +635,7 @@ InvalidLocationException, InvalidRFIDException {
             for(Integer RFID = startRFID; RFID <  startRFID + o.getQuantity(); RFID++){
                 Product p = new Product();
                 p.setRFID(RFID.toString());
-                //p.setRFID(StringUtils.leftPad(RFID.toString(), 10, '0'));
+                //p.setRFID(StringUtils.leftPad(RFID.toString(), 12, '0'));
                 p.setBarCode(prod.getBarCode());
                 DAOproduct.Create(p);
             }
@@ -928,8 +928,8 @@ InvalidLocationException, InvalidRFIDException {
         	throw new InvalidRFIDException("RFID is not numeric");
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
+        if (RFID.length() != 12 )
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	
@@ -1006,8 +1006,8 @@ InvalidLocationException, InvalidRFIDException {
         	throw new InvalidRFIDException("RFID is not numeric");
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() != 10 )
-            throw new InvalidRFIDException("Wrong RFID format (must be 10 digits string)");
+        if (RFID.length() != 12 )
+            throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
         if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
             throw new UnauthorizedException();
     	if (activeUser == null || !(activeUser.getRole().matches("Administrator|ShopManager|Cashier")))
@@ -1319,7 +1319,7 @@ InvalidLocationException, InvalidRFIDException {
             throw new InvalidRFIDException("RFID is not numeric");
         if (RFID.equals(""))
             throw new InvalidRFIDException("RFID is empty");
-        if (RFID.length() != 10 )
+        if (RFID.length() != 12 )
             throw new InvalidRFIDException("Wrong RFID format (must be 12 digits string)");
 
 
