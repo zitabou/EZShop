@@ -37,7 +37,7 @@ public class DAOsaleTransaction {
 	}
 	
 	
-public static String getStatus(Integer saleId) throws DAOexception{
+	public static String getStatus(Integer saleId) throws DAOexception{
 		
 		Connection conn = DBManager.getConnection();
 		String sale_status = null;

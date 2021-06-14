@@ -4,12 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Map;
 
 import it.polito.ezshop.classes.Location;
-import it.polito.ezshop.classes.ezProductType;
-import it.polito.ezshop.data.ProductType;
 
 public class DAOlocation {
 

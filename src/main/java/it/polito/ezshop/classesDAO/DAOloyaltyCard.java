@@ -51,6 +51,8 @@ public class DAOloyaltyCard {
 		}finally {
 			if(pstat != null)
 				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while creating loyalty card " + e.getMessage());}
+			if(rs != null)
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while creating loyalty card " + e.getMessage()); }
 		}
 		return generatedKey;
 	}

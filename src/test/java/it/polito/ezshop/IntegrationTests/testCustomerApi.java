@@ -28,7 +28,6 @@ public class testCustomerApi {
         ezShop = new it.polito.ezshop.data.EZShop();
 
         ezShop.login("a","a");
-
     }
     
     @Test
