@@ -4,7 +4,7 @@ Authors: Vittorio Di Leo, Maurizio Morisio
 
 Date: 21 April 2021
 
-Version: 1.0
+Version: 1.1
 
 # Contents
 
