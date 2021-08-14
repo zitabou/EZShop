@@ -78,9 +78,9 @@ public class DAOproductType {
 			throw new DAOexception("error while reading product" + e.getMessage());
 		}finally {
 			if(pstat != null)
-				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prod.getId() + e.getMessage()); }
+				try {pstat.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prodId + e.getMessage()); }
 			if(rs != null)
-				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prod.getId() + e.getMessage()); }
+				try {rs.close();} catch (SQLException e) {throw new DAOexception("error while reading product" + prodId + e.getMessage()); }
 		}
 		
 		return prod;
